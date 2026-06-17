@@ -1,0 +1,1209 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours-l2d.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DHP - Masking and segmentation</title>
+    <script>
+        window.LESSON_FILES = [
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/healthy/healthy_1.JPG", filename: "healthy_1.JPG", is_binary: true},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/healthy/healthy_2.JPG", filename: "healthy_2.JPG", is_binary: true},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/healthy/healthy_3.JPG", filename: "healthy_3.JPG", is_binary: true},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/healthy/healthy_4.JPG", filename: "healthy_4.JPG", is_binary: true},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/healthy/healthy_5.JPG", filename: "healthy_5.JPG", is_binary: true},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/necrotic/necrotic_1.JPG", filename: "necrotic_1.JPG", is_binary: true},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/necrotic/necrotic_2.JPG", filename: "necrotic_2.JPG", is_binary: true},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/necrotic/necrotic_3.JPG", filename: "necrotic_3.JPG", is_binary: true},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/necrotic/necrotic_4.JPG", filename: "necrotic_4.JPG", is_binary: true},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/necrotic/necrotic_5.JPG", filename: "necrotic_5.JPG", is_binary: true}
+        ];
+        window.LESSON_PACKAGES = ['numpy', 'matplotlib'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/l2d-brain-logo.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./demo-notebook.html">Notebook Formatting Demo</a></li><li><a href="./images-in-python.html">Images in Python</a></li><li><a href="./greyscale-images.html">Data Processing 3</a></li><li><a href="./colour-images.html">Colour images</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-5">
+                    Masking and segmentation
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-5"><li><a href="#introduction">Introduction</a></li><li><a href="#leaf-necrosis-example">Leaf necrosis example</a></li><li><a href="#quantification">Quantification</a></li><li><a href="#summary">Summary</a></li>
+                </ul>
+            </li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 3</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    Masking and segmentation <span class="module-tag">DHP</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">Understand why RGB is not always ideal for colour-based segmentation</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">Convert colour images from RGB to HSV</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">3</span>
+                    <span class="outcome-text">Interpret hue, saturation, and value in a biological context</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">4</span>
+                    <span class="outcome-text">Create masks to isolate necrotic lesions from healthy tissue</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">5</span>
+                    <span class="outcome-text">Quantify segmented regions using pixel-based measurements</span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>In this section of the lesson, we aim to apply <strong>image segmentation</strong> and <strong>masking</strong>, practically. We will demonstrate both RGB-based and HSV-based colour masking techniques. Relating to the latter, the HSV colour space that we introduced previously will be used as an anchor for exploring why RGB may sometimes be an unreliable, cumbersome choice for masking and segmenting certain colour images. In such cases, we will look at how HSV can often be easily used to isolate dominant hues, and the saturation and values of these, within an image. The focus of the main example given will be leaves photographed against a black background: some leaves are healthy, while others have necrotic lesions.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>Segmentation</strong> is the process of partitioning an image into distinct, meaningful regions. Dividing an image up into areas containing signal and background, for example, would qualify as a segmentation of that image.</p>
+            </div>
+        </div>
+        
+                </div>
+            </div>
+            
+            <div class="module-card" id="leaf-necrosis-example">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Leaf necrosis example</h3>
+                        <p>For our next demonstration, let&#x27;s introduce our dataset. We will be using publicly available images of leaves photographed against a black background; with a mix of healthy and partially necrotic leaves. Healthy leaves appear relatively uniform in colour and texture across their surface, and tend to be bright green. However, when dehydrated, the plant will produce leaves with brown, crispy and dry tips and edges, denoting <strong>marginal necrosis</strong>, sometimes called &#x27;leaf scorch&#x27;. These lesions may vary in texture and colour depending on how advanced the necrosis is - anything from pale yellow, turgid leaf tissue, through to darker brown lesions, with a dry and crunchy texture.<br><br>Photographically, thus, our challenge is isolating green from yellow-brown regions of different intensities. This is where the HSV colour space offers an immediate thresholding advantage. When viewed as RGB images, the spectrum of browns does not align or correlate to a simple primary quantity; instead, they exist on a sliding scale of ever-shifting ratios of red, green and blue pixel intensities. When thinking of these same necrotic lesions from the perspective of an HSV colour space, A small range of hues will capture most browns, with a similarly narrow range of saturation values dictating how vivid or pallid these colours appear; and lastly a value range will capture how bright or dark these colours are.<br><br>This does not make the problem entirely simple, since leaf damage rarely progresses in a perfectly uniform way. Between clearly healthy and clearly necrotic tissue, there may be transitional regions with mixed colour, partial dehydration, or subtle gradients in brightness and texture. Nevertheless, HSV gives us a much stronger starting point for thresholding than RGB alone, and is well suited to this kind of exploratory biological image segmentation.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>HSV- or RGB-based thresholding and masking are relatively simple segmentation approaches, and they are not as exhaustive or flexible as more advanced, machine-learning models such as clustering or Convolutional Neural Networks (CNNs). These often cope better with subtle colour variation, complex texture, uneven lighting and ambiguous boundaries.<br><br>However simple colour-based masking remains very useful because it is <em>fast and easy to compute</em> and interpret. When processing large numbers of images on a domestic-spec computer, this can be a major practical advantage.</p>
+            </div>
+        </div>
+        <h4>Loading and visualising the dataset</h4><p>To begin, we will use the <code>imread</code> funciton from <strong>Matplotlib</strong> to read in our image, and then NumPy and Matplotlib to handle the resulting numerical array representations of each image, and plot them onto grids to display them. With some simple logic, we will load our datasets of healthy and necrotic bitter gourd leaf images. For the purposes of this lesson, we selected only <em>five</em> of both healthy and necrotic leaves, for demonstrative intuitiveness, but if you&#x27;d like to try your hand with more images, you can download a whole host of different leaf images from the <a href="https://zenodo.org/records/8105154?">OLID database</a>, for free.</p>
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>Since our demonstration images have a clear nomenclature system, we&#x27;re using the <code>sorted</code> and <code>listdir</code> functions, to create a list of all files in the given folder path (sorted alphanumerically), over which we can iterate using a <code>for</code> loop: which reads each image file into a list for <code>healthy</code> and <code>necrotic</code> leaf images.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-51">from os import listdir
+from matplotlib.image import imread
+
+# Base paths for the image data
+healthy_path = &quot;data/healthy/&quot;
+necrotic_path = &quot;data/necrotic/&quot;
+
+# Create empty lists to store the images
+healthy = []
+necrotic = []
+
+# Read in all healthy images
+for file in sorted(listdir(healthy_path)):
+    healthy.append(imread(healthy_path + file))
+
+# Read in all necrotic images
+for file in sorted(listdir(necrotic_path)):
+    necrotic.append(imread(necrotic_path + file))
+
+# Check the data type and shape of the first image
+print(&quot;Data type:&quot;, healthy[0].dtype)
+print(&quot;Shape (height, width, channels):&quot;, healthy[0].shape)</textarea>
+            </div>
+            <div id="code-cell-51-output" class="output"></div>
+        </div>
+        <p>Utilising much of what we learned towards the end of our Python Fundamentals module, we will be taking a &#x27;professional&#x27; approach to code-writing here, wrapping blocks of useful code into our own functions, that we can easily and repeatedly call.<br><br>We will start by defining a helper function to visualise these images in a neat grid. This allows us to inspect our raw data and visually confirm the differences between the healthy and necrotic leaves.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-52">from matplotlib.pyplot import subplots, show
+
+def image_visualiser(healthy, necrotic, third_row=None):
+    # Determine the number of rows to plot
+    nrows = 3 if third_row is not None else 2
+    
+    fig, ax = subplots(nrows=nrows, ncols=5, figsize=(15, 6 if nrows == 2 else 9))
+    
+    if nrows == 1:
+        ax = ax.reshape(1, -1)
+
+    # Plot healthy leaves on the top row
+    for i in range(len(healthy)):
+        ax[0, i].imshow(healthy[i])
+        ax[0, i].set_title(&quot;Healthy &quot; + str(i+1))
+        ax[0, i].axis(&quot;off&quot;)
+
+    # Plot necrotic leaves on the second row
+    for i in range(len(necrotic)):
+        ax[1, i].imshow(necrotic[i])
+        ax[1, i].set_title(&quot;Necrotic &quot; + str(i+1))
+        ax[1, i].axis(&quot;off&quot;)
+    
+    # Plot optional third row - the need for this will become apparent, later in the lesson.
+    if third_row is not None:
+        for i in range(len(third_row)):
+            ax[2, i].imshow(third_row[i])
+            ax[2, i].set_title(&quot;Necrotic + Detection &quot; + str(i+1))
+            ax[2, i].axis(&quot;off&quot;)
+
+    fig.tight_layout()
+    show()</textarea>
+            </div>
+            <div id="code-cell-52-output" class="output" style="display: none;"></div>
+        </div>
+        <p>Now that it is defined, we can run our new <code>image_visualiser</code> visualisation function, feeding it our <code>healthy</code> and <code>necrotic</code> leaf images as arguments.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-53">image_visualiser(healthy, necrotic)</textarea>
+            </div>
+            <div id="code-cell-53-output" class="output"></div>
+        </div>
+        <h4>Comparing RGB profiles
+
+If we want to isolate the necrotic lesions, our first instinct might be to threshold the RGB channels. By plotting histograms for the individual red, green and blue channels of a healthy leaf versus a necrotic leaf, we can see how their pixel intensity distributions differ.
+
+In the histograms below, you will notice a bump in the red and green channels for the necrotic leaf around the 100–150 intensity mark, while the blue channel is weak in this range. This specific combination produces the colour brown. Why is this cumbersome?</h4>
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>As established earlier in the lesson, attempting to threshold a specific colour using raw RGB ratios is extremely difficult. A colour like brown comprises a complex mixture of moderate red and green intensities, which makes it challenging to set reliable numerical boundaries using RGB alone.</p>
+            </div>
+        </div>
+        <p>To demonstrate this at a glance, let&#x27;s plot frequency histograms for the red, green and blue channels in a healthy leaf, versus a necrotic leaf. We have selected one image from each category, which show leaves that are very obviously healthy, and unhealthy, respectively.</p>
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>As numerical arrays, remember that the third dimension stores the three colour channels. Thus, red is accessed by slicing into the array with index 0, green with index 1 and blue with index 2.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-54"># Pick a clear example of a healthy and necrotic image
+h_img = healthy[0]
+n_img = necrotic[4]
+
+x_start = 5 # X-axis start point
+
+# Split images into RGB channels
+h_red, h_green, h_blue = h_img[:, :, 0], h_img[:, :, 1], h_img[:, :, 2]
+n_red, n_green, n_blue = n_img[:, :, 0], n_img[:, :, 1], n_img[:, :, 2]
+
+fig, ax = subplots(nrows=2, ncols=3, figsize=(15, 6))
+
+# Plot healthy histograms
+ax[0,0].hist(h_red.flatten(), bins=50, color=&quot;red&quot;)
+ax[0,0].set_xlim(x_start, 255)
+ax[0,0].set_title(&quot;Healthy - Red&quot;)
+
+ax[0,1].hist(h_green.flatten(), bins=50, color=&quot;green&quot;)
+ax[0,1].set_xlim(x_start, 255)
+ax[0,1].set_title(&quot;Healthy - Green&quot;)
+
+ax[0,2].hist(h_blue.flatten(), bins=50, color=&quot;blue&quot;)
+ax[0,2].set_xlim(x_start, 255)
+ax[0,2].set_title(&quot;Healthy - Blue&quot;)
+
+# Plot necrotic histograms
+ax[1,0].hist(n_red.flatten(), bins=50, color=&quot;red&quot;)
+ax[1,0].set_xlim(x_start, 255)
+ax[1,0].set_title(&quot;Necrotic - Red&quot;)
+
+ax[1,1].hist(n_green.flatten(), bins=50, color=&quot;green&quot;)
+ax[1,1].set_xlim(x_start, 255)
+ax[1,1].set_title(&quot;Necrotic - Green&quot;)
+
+ax[1,2].hist(n_blue.flatten(), bins=50, color=&quot;blue&quot;)
+ax[1,2].set_xlim(x_start, 255)
+ax[1,2].set_title(&quot;Necrotic - Blue&quot;)
+
+fig.tight_layout()
+show()
+</textarea>
+            </div>
+            <div id="code-cell-54-output" class="output"></div>
+        </div>
+        <p>These RGB histograms show that both the healthy and necrotic leaves contain broad and greatly overlapping distributions of red, green and blue intensities. Since the marginal necrosis is yellow/brown, there isn&#x27;t a hugely obvious point at which to threshold and mask the necrotic areas away from the healhty regions.<br><ul class="nested-list"><li>In the healthy leaf, the green channel is more prominent overall, which fits with the visibly green tissue.</li><br><li>In the necrotic leaf the distributions become broader and shift in a more complex way across all three channels, reflecting the introduction of yellow-brown lesions.</li></ul>Brown and yellow necrotic tissue are not represented by a single RGB channel, but by different mixtures of red, green and blue intensities that overlap considerably with those of healthy tissue.</p><h4>RGB masking of background
+
+Before we take the next measure to isolate the necrotic lesions, we will firstly separate the leaf tissue from the dark photographic background. Since the background is relatively dark and the leaf is bright, this would be a good case for simple RGB thresholding.
+
+Since we have eyeballed our images from the previews we generated on our 2x5 grid earlier, we know that the leaves are generally consistently placed in the middle of the frame. Thus, we can now write a function to estimate the background intensity by sampling the *bottom rows* of the image. This function will therefore estimate the RGB values of the **background** by taking the median red, green and blue intensities from the bottom 10 rows of the image, which are assumed to contain mostly black background.
+
+We can then define a pixel as &#x27;leaf&#x27; if any of its RGB channels exceed this background estimate by a specified `OFFSET`, to capture a bit of variance around our specified background intensity ranges; or if its total brightness across combined R, G and B channels (which we&#x27;ll control with `SUM_OFFSET`) is significantly higher. This ensures we capture all parts of the leaf, even pale or yellowing regions that might not stand out in a single channel.
+
+In the function, we use:
+
+- The variable `any_channel_high`, which becomes `True` whenever *at least one* of the three channels is sufficiently *brighter* than the background.
+
+- The variable `total_brightness`, which becomes `True` whenever the overall brightness of the pixel, across *all three channels together*, is sufficiently *above* background.
+
+The function then returns a **Boolean mask**, where:
+
+- `True` means the pixel is considered part of the leaf
+
+- `False` means it is treated as background 
+
+Using both tests together makes the mask a little more flexible: it can pick up pixels that are strong in one channel, as well as pixels that may not stand out strongly in a single channel but are clearly brighter overall.</h4>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-55">OFFSET = 25          # Per-channel intensity bump above background
+SUM_OFFSET = 80      # Total brightness bump above background
+
+def leaf_mask_rgb(image):
+    # Estimate background values from bottom 10 rows
+    bg_r = np.median(image[-10:, :, 0])
+    bg_g = np.median(image[-10:, :, 1])
+    bg_b = np.median(image[-10:, :, 2])
+
+    # Extract individual channels
+    r, g, b = image[:, :, 0], image[:, :, 1], image[:, :, 2]
+    
+    # Test 1: Is any individual channel significantly brighter than background?
+    any_channel_high = (r &gt; bg_r + OFFSET) | (g &gt; bg_g + OFFSET) | (b &gt; bg_b + OFFSET)
+
+    # Test 2: Is the combined brightness significantly higher?
+    total_brightness = (r + g + b) &gt; (bg_r + bg_g + bg_b + SUM_OFFSET)
+
+    # Return a Boolean mask where True indicates leaf pixels
+    return any_channel_high | total_brightness
+</textarea>
+            </div>
+            <div id="code-cell-55-output" class="output" style="display: none;"></div>
+        </div>
+        <p>Next, we can call our <code>leaf_mask_rgb</code> function to apply this mask. By <em>inverting</em> our Boolean mask (so that <code>True</code> becomes <code>False</code>), we can select all non-leaf pixels and set their RGB values to become pure black (0, 0, 0).<br><br>To do this, we&#x27;ll define a new function called <code>apply_mask</code>, which will apply the Boolean mask to each image by keeping the detected leaf pixels unchanged, and setting everything else to crush down to black. In doing so, it removes the background and leaves us with a cleaner set of images from which the leaf tissue can be analysed more directly.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>We make use of the <code>.copy()</code> method here, to create a copy of our images to which to apply the mask, so that we do not overwrite the original dataset. This is important, as we may find that our threshold values need a bit of adjusting with each call of these functions, and so we don&#x27;t want to ruin the original images with &#x27;mistakes&#x27;, if we don&#x27;t get it right the first time.</p>
+            </div>
+        </div>
+        
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>Remember that <code>~</code> is the negation operator: it puts a &#x27;not&#x27; in front of the logic. In our example, it means &#x27;capture everything that is <em>not</em> in <code>mask</code>, and overwrite its pixel intensities to be black (<code>[0, 0, 0]</code>).</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-56">import numpy as np
+
+def apply_mask(image, mask):
+    # Make a copy of the image to avoid overwriting original data
+    out = image.copy()
+    
+    # Set background pixels to black
+    out[~mask] = [0, 0, 0] 
+    return out</textarea>
+            </div>
+            <div id="code-cell-56-output" class="output" style="display: none;"></div>
+        </div>
+        <p>We can then use two <code>for</code> loops to iterate over each image stored in the <code>healthy</code> and <code>necrotic</code> lists, respectively, and apply the <code>apply_mask</code> function to each one, storing the masked images in two new lists, assigned to variables: <code>healthy_bg_masked</code> and <code>necrotic_bg_masked</code>.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-57">healthy_bg_masked = []
+
+for img in healthy:
+    mask = leaf_mask_rgb(img)
+    healthy_bg_masked.append(apply_mask(img, mask))
+
+necrotic_bg_masked = []
+
+for img in necrotic:
+    mask = leaf_mask_rgb(img)
+    necrotic_bg_masked.append(apply_mask(img, mask))</textarea>
+            </div>
+            <div id="code-cell-57-output" class="output" style="display: none;"></div>
+        </div>
+        <p>Finally, let&#x27;s use the <code>image_visualiser</code> function we defined earlier to visualise our newly background-masked images.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-58"># Visualise the background-masked images
+image_visualiser(healthy_bg_masked, necrotic_bg_masked)</textarea>
+            </div>
+            <div id="code-cell-58-output" class="output"></div>
+        </div>
+        <p>Note the very dark black background, and leaves looking like they&#x27;ve been nicely &#x27;cut out&#x27; from it. However, it is immediately evident to see that this is a &#x27;quick and dirty&#x27; process. While the background is quite well masked across the images, it is not a perfect isolation. There are still some lighter &#x27;grey&#x27; pixels left in there (note the edges of Necrotic 5, for instance), and we could most certainly refine this even further. But it does a relatively good job of isolating leaf from background.<br><br>Use the practice exercise below to play with these thresholds, and see how this affects the outputted masked images.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="leaf-necrosis-example">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>5.</strong></p>
+                <p>In this exercise, take a moment to paste in the code from previous cells, and change any parameter you like to see how adjustments to each can affect the background mask. Parameters you might want to consider include:<ul class="nested-list"><li>The background ranges</li><br><li><code>OFFSET</code> and <code>SUM_OFFSET</code></li><br><li>Whether the 10 bottom rows are used, alone, to determine background intensities</li><br><li>The value of <code>out[~mask]</code> - do you have to crush the background to black?</li></ul>Note: There are no solutions to this exercise, since the point of it is that you simply play around with the functions, to get a better understanding of how they are working.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-59"></textarea>
+            </div>
+            <button id="run-code-cell-59" class="run-button">Run Code</button>
+            <div id="code-cell-59-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-60"></textarea>
+            </div>
+            <button id="run-code-cell-60" class="run-button">Run Code</button>
+            <div id="code-cell-60-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-61"></textarea>
+            </div>
+            <button id="run-code-cell-61" class="run-button">Run Code</button>
+            <div id="code-cell-61-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-62"></textarea>
+            </div>
+            <button id="run-code-cell-62" class="run-button">Run Code</button>
+            <div id="code-cell-62-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="hsv-thresholding">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>HSV thresholding</h3>
+                        <p>With the background removed, we can focus entirely on the leaf tissue. We have overstated our reasoning behind our usage of the <strong>HSV (Hue, Saturation, Value)</strong> colour space for this segmentation task and so, in this section, we will demonstrate this.<br><br>By converting our image into HSV, we can define &#x27;brown&#x27; simply by its hue, rather than guessing mixed ratios of red, green and blue.<br><br>To start off, we will use Matplotlib&#x27;s <code>rgb_to_hsv()</code> function (imported from its <code>colors</code> module), which expects RGB values to be scaled between 0.0 and 1.0. Once converted, we can define logical boundaries for brown and yellow hues, as well as darker regions, to isolate the necrotic tissue.<br><br>At the end of this simple segmentation pipeline, we will composite the generated necrosis mask over our background mask, in order to highlight the diseased areas, in red.<br><br></p><h4>Identifying necrotic lesions</h4><p>Let&#x27;s begin by defining a function that converts an RGB leaf image into HSV, and then applyies a set of colour-based threshold rules. It defines three, separate conditions for:<br><ul class="nested-list"><li>Brown tissue</li><br><li>Yellow tissue</li><br><li>Very dark regions</li></ul>The function then <em>combines</em> these into a single Boolean mask. The result is an array in which <code>True</code> marks pixels that are likely to belong to necrotic tissue, based on their hue, saturation and brightness value (HSV).</p>
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>In this function, we make use of NumPy&#x27;s <code>asarray()</code> function to ensure that the image is stored as a NumPy array of floating-point values. We do this in order to make it easier to rescale the RGB intensities to the <code>0.0-1.0</code> range that Matplotlib expects for HSV conversion.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-63">from matplotlib import colors
+
+def necrosis_mask(rgb):
+    # Typecast image to float and scale between 0.0 and 1.0
+    rgb_array = np.asarray(rgb, dtype=float)
+
+    if rgb_array.max() &gt; 1.0:
+        rgb_array = rgb_array / 255.0 # Scales 0-255 intensities down to 0.0-1.0
+        
+    # Convert to HSV colour space
+    hsv = colors.rgb_to_hsv(rgb_array)
+    
+    h, s, v = hsv[:, :, 0], hsv[:, :, 1], hsv[:, :, 2]
+    
+    # Define HSV boundaries for necrotic tissue
+    brown  = (h &gt;= 0.04) &amp; (h &lt;= 0.10) &amp; (s &gt;= 0.30) &amp; (v &lt;= 0.65)
+    yellow = (h &gt;= 0.12) &amp; (h &lt;= 0.18) &amp; (s &gt;= 0.20) &amp; (v &lt;= 0.85)
+    dark   = (v &lt;= 0.15)
+    
+    # Combine conditions
+    return brown | yellow | dark</textarea>
+            </div>
+            <div id="code-cell-63-output" class="output" style="display: none;"></div>
+        </div>
+        <p>Next, we will write a function that composites these masking steps into a single outputted image.<br><ul class="nested-list"><li>This function applies the leaf mask first (it&#x27;s calling the previous <code>necrosis_mask</code> function), so that any black background pixels are excluded from consideration.</li><br><li>It then overlays the detected necrotic regions in red.</li></ul>The result is a simple visual summary in which background is removed, healthy tissue is retained, and candidate necrotic tissue is highlighted clearly for inspection.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-64">def composite_necrosis(rgb):
+    img = np.asarray(rgb)
+
+    # Ensure 0-255 scaling for the leaf mask function
+    if img.dtype.kind == &#x27;f&#x27; and img.max() &lt;= 1.0:
+        img_for_mask = (img * 255.0).astype(np.uint8)
+    else:
+        img_for_mask = img
+
+    # Compute masks
+    leaf = leaf_mask_rgb(img_for_mask) # Calls our custom, pre-defined RGB masking function
+    nec  = necrosis_mask(img) &amp; leaf # Calls our pre-defined necrosis masking function
+
+    # Paint background black and necrosis red
+    out = img.copy()
+    out[~leaf] = [0, 0, 0] # Background crushed to black
+    out[nec]   = [255, 0, 0] # Marginal necrosis highlighted in bright red
+    return out</textarea>
+            </div>
+            <div id="code-cell-64-output" class="output" style="display: none;"></div>
+        </div>
+        <p>Now that we have applied all of the pre-processing, colour spaces conversions, threhsolding and masking steps to our images, let&#x27;s fully process all of our images, and display a third row, displaying the marginal necrosis highlighted in bright red.</p>
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>In the cell below, we make use of a very powerful construct introduced in Python Fundamentals, know as a <strong>list comprehension</strong>. Up until this point, we have been explicitly defining empty lists, and then, beneath these, using for loops to iterate over our images, to fill them.<br><br>However, here, we are using a list comprehension to write a very similar operation into a much more succinct and cogent line of code. The function call is placed to the left of the <code>for</code> keyword, and applies the <code>composite_necrosis</code> function to each iterator object that the <code>for</code> loop spits out (i.e. each image). The results are then appended implicitly to the <code>healthy_necrosis</code> and <code>necrotic_necrosis</code> lists.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-65"># Process all images (using two list comprehensions)
+healthy_necrosis = [composite_necrosis(img) for img in healthy]
+necrotic_necrosis = [composite_necrosis(img) for img in necrotic]
+
+# Visualise the final results: Healthy (top), Necrotic Masked (middle), Necrotic Detected (bottom)
+image_visualiser(healthy_necrosis, necrotic_bg_masked, necrotic_necrosis)
+
+# We left the healthy_necrosis images out of the visualisation, as this would be repetitive.</textarea>
+            </div>
+            <div id="code-cell-65-output" class="output"></div>
+        </div>
+        
+        <div class="info-box remember-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                REMEMBER
+            </div>
+            <div class="box-content">
+                <p>When we defined the <code>image_visualiser</code> function, right at the very top of this page, you&#x27;ll notice that there was a conditional given for an optional &#x27;third row&#x27; of images, turning it from 2x5 to a 3x5 grid to display images on. The reason for this, was so that we could visualise an extra row, showing the results of our HSV thresholding and masking.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="quantification">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Quantification</h3>
+                        <p>So far, we have focused on the visual representation of detected marginal necrosis. We may also wish to describe them, <em>quantitatively</em>. One of the main advantages of image segmentation is that, once regions of interest have been isolated, they can be treated as measurable data rather than as visualised regions, alone. In this case, a straightforward first step is to <strong>count</strong> how many pixels <em>belong to the leaf as a whole</em>, then count <em>how many of those are classified as necrotic</em>, and express that value as a <strong>percentage</strong> of the total leaf area.<br><br>We then have an easily interpreted way to quantify necrosis, for re-integration of this information into a larger tabular dataset, for example. Although it is only an approximation, and depends on the quality of the thresholding and masking steps that came before it, it is still extremely useful as a fast analysis of our images, allowing us to compare leaves more objectively, or even rank them by apparent severity of damage.</p>
+        <div class="info-box remember-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                REMEMBER
+            </div>
+            <div class="box-content">
+                <p>The logic we will make use of, makes use of the <code>enumerate()</code> method, introduced in our Python Fundamentals module. <code>enumerate()</code> here iterates over our list of necrotic images, capturing both each image as a numerical array, and its index, both of which can be used to label the leaf, and perform a simple mathematical percentage calculation.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-66"># Measure necrosis in each necrotic image
+for index, img in enumerate(necrotic):
+    
+    leaf = leaf_mask_rgb(img) # Total pixels in the leaf, without background.
+    necrosis = necrosis_mask(img) &amp; leaf # Total pixels in the necrotic region of the leaf.
+    
+    percent_necrosis = 100 * necrosis.sum() / leaf.sum()
+    
+    # Prints and gives answer to 2 dp.
+    print(f&quot;Leaf {index+1}: {percent_necrosis:.2f}% necrotic&quot;) </textarea>
+            </div>
+            <div id="code-cell-66-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary</h3>
+                        <p>In the final section of this lesson, we introduced <strong>image segmentation</strong> and <strong>masking</strong> as a way of turning leaf photographs into analysable numerical data. We began by loading and visualising a small dataset of healthy and necrotic leaves, then used simple <strong>RGB-based masking</strong> to separate the leaf from its dark background. We then motivated the move from <strong>RGB</strong> to <strong>HSV colour space</strong>, showing why necrotic yellow-brown lesions are awkward to isolate using raw red, green and blue values alone, and why hue, saturation and value provide a more intuitive basis for colour-based thresholding.<br><br>From there, we built <strong>Boolean masks</strong> to detect candidate necrotic regions, applied these masks to produce <em>composite visual outputs</em>, and finally <em>quantified</em> visible damage by measuring and calculating the percentage of each leaf classified as necrotic. In summary, we demonstrated how thresholding, masking, visualisation, and simple pixel-based measurement can be combined into a practical workflow for exploratory biological image analysis.</p>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./colour-images.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./assignment.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>
