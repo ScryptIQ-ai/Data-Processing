@@ -44,12 +44,12 @@
     <!-- Meta Tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>scryptIQ - DHP - Data Processing 3</title>
+    <title>scryptIQ - DHP - Greyscale images</title>
     <script>
         window.LESSON_FILES = [
             {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/main/dp3/dendrite_greyscale.png", filename: "dendrite_greyscale.png", is_binary: true}
         ];
-        window.LESSON_PACKAGES = ['numpy', 'matplotlib'];
+        window.LESSON_PACKAGES = ['numpy', 'matplotlib', 'ipython'];
     </script>
 </head>
 <body>
@@ -67,7 +67,7 @@
             <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./images-in-python.html">Images in Python</a></li>
             <li>
                 <div class="nav-toggle active" data-target="expandable-section-2">
-                    Data Processing 3
+                    Greyscale images
                     <span class="toggle-icon">▼</span>
                 </div>
                 <ul class="nested-nav expanded" id="expandable-section-2"><li><a href="#introduction">Introduction</a></li><li><a href="#quantitatively-analysing-intensity">Quantitatively analysing intensity</a></li><li><a href="#histograms-of-pixel-intensities">Histograms of pixel intensities</a></li><li><a href="#analysis-of-identified-intensity-ranges">Analysis of identified intensity ranges</a></li><li><a href="#using-an-intensity-picker">Using an intensity picker</a></li><li><a href="#contrast-and-brightness">Contrast and brightness</a></li><li><a href="#inverting-a-greyscale-image">Inverting a greyscale image</a></li><li><a href="#masking-out-specific-features">Masking out specific features</a></li><li><a href="#a-note-on-simple-thresholding">A note on simple thresholding</a></li><li><a href="#summary">Summary</a></li>
@@ -111,7 +111,7 @@
         
             <div class="module-card" id="introduction">
                 <div class="module-header">
-                    Data Processing 3 <span class="module-tag">DHP</span>
+                    Greyscale images <span class="module-tag">DHP</span>
                 </div>
                 <div class="module-body">
                     <h3>Learning Objectives</h3>
@@ -158,25 +158,21 @@
                         <p>In order to efficiently decide on what intensity ranges features of interest occupy, we must firstly do some preliminary, exploratory analysis of the image in question. One of the simplest ways to do this is using a <strong>histogram</strong> to visualise the distribution of different pixel intensities.<br><br>For this example, we will once again turn to matplotlib. The image below shows a dendrite (neuron), and is credited to Shelley Halpain of UC San Diego.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-11">import base64
+                <textarea id="code-cell-11"># Imports for this lesson
+
+import base64
 from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
-
-from IPython.display import HTML, display
 from matplotlib.image import imread
-from matplotlib.pyplot import axis, imshow, show, subplots</textarea>
-            </div>
-            <div id="code-cell-11-output" class="output" style="display: none;"></div>
-        </div>
-        
-        <div class="code-area">
-            <div class="code-container code-fixed">
-                <textarea id="code-cell-12">dendrite = imread(&quot;./data/dendrite_greyscale.png&quot;)
+from matplotlib.pyplot import axis, imshow, show, subplots
+from IPython.display import HTML, display
+
+dendrite = imread(&quot;./data/dendrite_greyscale.png&quot;)
 
 print(f&quot;shape = {dendrite.shape} \ndimensions = {dendrite.ndim} \nsize = {dendrite.size} pixels \ndtype = {dendrite.dtype}&quot;)</textarea>
             </div>
-            <div id="code-cell-12-output" class="output"></div>
+            <div id="code-cell-11-output" class="output"></div>
         </div>
         <p>The output for the code above reveals that <code>imread</code> has produced a <strong>2-dimensional</strong> NumPy array from this image. This indicates that the image is indeed <em>greyscale</em>, as there is no third dimension to this array which, in a colour image, would be used to store intensities ona per-channel basis for red, green, blue and potentially alpha channels, as well.</p>
         <div class="info-box note-box">
@@ -201,9 +197,9 @@ print(f&quot;shape = {dendrite.shape} \ndimensions = {dendrite.ndim} \nsize = {d
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-13">imshow(dendrite);   # semi-colon to suppress alphanumeric output.</textarea>
+                <textarea id="code-cell-12">imshow(dendrite);   # semi-colon to suppress alphanumeric output.</textarea>
             </div>
-            <div id="code-cell-13-output" class="output"></div>
+            <div id="code-cell-12-output" class="output"></div>
         </div>
         
         <div class="info-box important-box">
@@ -218,15 +214,15 @@ print(f&quot;shape = {dendrite.shape} \ndimensions = {dendrite.ndim} \nsize = {d
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-14">imshow(dendrite, cmap=&quot;gray&quot;)
+                <textarea id="code-cell-13">imshow(dendrite, cmap=&quot;gray&quot;)
 axis(&quot;off&quot;);</textarea>
             </div>
-            <div id="code-cell-14-output" class="output"></div>
+            <div id="code-cell-13-output" class="output"></div>
         </div>
         <p>Next, let&#x27;s plot a histogram of all the pixel intensities within the image. By its nature, a histogram shows how frequently different numerical values occur: in this case, this allows us to inspect how the brightness values are distributed across the whole image.<br><br>Since a grayscale image is stored as a 2-dimensional array, with rows and columns corresponding to the coordinates of each pixel, we must first convert this data into a 1-dimensional sequence of intensity values before passing it to <code>hist()</code>. We can do this using the <code>.ravel()</code> method, which flattens the 2-D array into a single continuous vector while preserving all of the original pixel values. This allows Matplotlib to count how many pixels fall within each intensity range and display the resulting distribution as a histogram. We&#x27;ll use the keyword argument <code>bins</code> to determine how many bins or &#x27;bars&#x27; the histogram chunks our data into.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-15"># Read the grayscale image into Python
+                <textarea id="code-cell-14"># Read the grayscale image into Python
 image_gray = imread(&quot;./data/dendrite_greyscale.png&quot;)
 
 # Create a figure and axes object
@@ -242,7 +238,7 @@ ax.set_ylabel(&quot;Frequency&quot;)
 
 show()</textarea>
             </div>
-            <div id="code-cell-15-output" class="output"></div>
+            <div id="code-cell-14-output" class="output"></div>
         </div>
         <p>As we can see in this image, the frequency of pixels at or close to 0.0 is very high. This fits with what we&#x27;re seeing in the image itself, where most of the pixel grid is taken up by black background.<br><br>Thus, to better highlight the dendrite-occupying regions of the image, we may want to only plot values above 0.05. We can do this by using the <code>set_xlim</code> method to specify a minimum and maximum value to be displayed on the x axis.<br><br>Accordingly, since our first histogram indicates that the frequency of non-black pixels is considerably greater than grey and white pixels, we may want to use <code>set_ylim</code> to constrain the upper frequency limit of the y-axis, to better &#x27;zoom&#x27; into our frequency plot.</p>
         <div class="info-box note-box">
@@ -257,7 +253,7 @@ show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-16">fig, ax = subplots()
+                <textarea id="code-cell-15">fig, ax = subplots()
 
 # Plot histogram of all pixel intensities
 ax.hist(dendrite.ravel(), bins=50)
@@ -273,12 +269,12 @@ ax.set_ylim(0, 0.015e6)
 
 show()</textarea>
             </div>
-            <div id="code-cell-16-output" class="output"></div>
+            <div id="code-cell-15-output" class="output"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-17">fig, ax = subplots(ncols=2)
+                <textarea id="code-cell-16">fig, ax = subplots(ncols=2)
 
 dendrite_crop = dendrite[500:1000, 1200:1700]
 
@@ -293,12 +289,12 @@ ax[1].set_title(&quot;Intensity Distribution&quot;, fontsize=10)
 
 fig.tight_layout()</textarea>
             </div>
-            <div id="code-cell-17-output" class="output"></div>
+            <div id="code-cell-16-output" class="output"></div>
         </div>
         <p>When the dark background pixels are excluded from the histogram, we start to see two broader intensity groupings becoming more apparent. In this cropped image, the brightest structures are the labelled <em>dendritic processes</em>, which appear as elongated branching fibres. The dimmer grey features are <em>punctate signals</em> distributed around and along these processes.<br><br>In fluorescence microscopy images such as this, these puncta often correspond to localised, labelled structures; for example synaptic puncta or other subcellular compartments. Despite this, their precise biological identity depends on the stain or marker that was used. The two broad peaks in the histogram therefore likely reflect different classes of foreground signal intensity, with brighter pixels arising mainly from the dendrites and dimmer pixels arising from smaller punctate features.<br><br>Immediately, the histogram has helped to inform us that these common peaks lie between intensities of 0.2-0.4, and 0.8-0.9. We can use this early exploratory analysis of our image to inform us of the components present within the image, which may help us to isolate or mask them out.<br><br>We can then generate a similar plot, this time across the entire image, to see if those two peaks hold true.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-18">fig, ax = subplots(ncols=2)
+                <textarea id="code-cell-17">fig, ax = subplots(ncols=2)
 
 ax[0].imshow(dendrite, cmap=&quot;gray&quot;)
 ax[0].axis(&quot;off&quot;)
@@ -311,7 +307,7 @@ ax[1].set_title(&quot;Intensity Distribution&quot;, fontsize=10)
 
 fig.tight_layout()</textarea>
             </div>
-            <div id="code-cell-18-output" class="output"></div>
+            <div id="code-cell-17-output" class="output"></div>
         </div>
         <p>And, again, we can see the two peaks are still present across the wider image.</p>
                     </div>
@@ -325,7 +321,7 @@ fig.tight_layout()</textarea>
                         <p>Now that we have used the image and its histograms to help us narrow in on two intensity ranges of interest, we can go on to figure out the proportion of these two intensity ranges, both in the image as a whole, and as a portion of the total non-background, signal-only pixels in the image.<br><br>We&#x27;ll do this using basic logical and mathematical operations, many of which may be familiar to you from our Python Fundamentals module.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-19"># Estimate the proportion of pixels occupying the two main intensity peaks
+                <textarea id="code-cell-18"># Estimate the proportion of pixels occupying the two main intensity peaks
 
 peak_1_mask = (dendrite &gt;= 0.2) &amp; (dendrite &lt;= 0.4)
 peak_2_mask = (dendrite &gt;= 0.8) &amp; (dendrite &lt;= 0.9)
@@ -358,7 +354,7 @@ print()
 print(f&quot;Peak 1 (0.2-0.4) represents {peak_1_non_background_pct:.2f}% of non-background signal&quot;)
 print(f&quot;Peak 2 (0.8-0.9) represents {peak_2_non_background_pct:.2f}% of non-background signal&quot;)</textarea>
             </div>
-            <div id="code-cell-19-output" class="output"></div>
+            <div id="code-cell-18-output" class="output"></div>
         </div>
         <p>Thus, just over 25% of non-background pixels appear to be punctate signals, while just under 14% appear to be dendritic processes.</p>
                     </div>
@@ -372,7 +368,7 @@ print(f&quot;Peak 2 (0.8-0.9) represents {peak_2_non_background_pct:.2f}% of non
                         <p>Although fully interactive image viewers can be convenient, they often rely on additional HTML and JavaScript components behind the scenes. For demonstration, we have included one two cells down in this learning material.<br><br>However, for real-world purposes and keeping your workflow Pythonic and easy to use, it is often more useful to work with a much simpler Python-based intensity picker. In the example below, we can choose a value for <code>row</code> and <code>col</code> directly, and Matplotlib then marks the selected pixel with a red ring while Python reports its intensity value. The axes system can help you to zero in on a particular region, with a small red ring indicating where in the image your selected coordinate lies.<br><br>This is not essential for all image analysis workflows, but it is a helpful way of reinforcing the concept of an image as a numerical array, where every visible point in the image corresponds to a specific position and value in that array.</p>
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-20"># Change these values to inspect a different pixel, then rerun the cell.
+                <textarea id="code-cell-19"># Change these values to inspect a different pixel, then rerun the cell.
 # The red ring will highlight the coordinate you have selected.
 
 row = 400
@@ -390,13 +386,13 @@ print(f&quot;Pixel at row {row}, column {col} has intensity {intensity:.3f}&quot
 show()
 </textarea>
             </div>
-            <button id="run-code-cell-20" class="run-button">Run Code</button>
-            <div id="code-cell-20-output" class="output"></div>
+            <button id="run-code-cell-19" class="run-button">Run Code</button>
+            <div id="code-cell-19-output" class="output"></div>
         </div>
         <p>For fun, the code cell below contains an interactive example, where mousing over the image shows the intensity. This is more complex to write, and contains code that goes beyond the scope of this lesson, so should be used with caution. It does, however, contain a live-updating intensity value, depending on where your cursor hovers over the displayed image.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-21">image_path = Path(&quot;./data/dendrite_greyscale.png&quot;)
+                <textarea id="code-cell-20">image_path = Path(&quot;./data/dendrite_greyscale.png&quot;)
 image_base64 = base64.b64encode(image_path.read_bytes()).decode(&quot;ascii&quot;)
 viewer_id = &quot;dendrite-pixel-viewer&quot;
 
@@ -443,7 +439,7 @@ display(HTML(f&#x27;&#x27;&#x27;
 &#x27;&#x27;&#x27;))
 </textarea>
             </div>
-            <div id="code-cell-21-output" class="output"></div>
+            <div id="code-cell-20-output" class="output"></div>
         </div>
         
                     </div>
@@ -487,7 +483,7 @@ display(HTML(f&#x27;&#x27;&#x27;
         <p>Being able to adjust the apparent <strong>brightness</strong> of an image after it has been loaded into Python can therefore be useful when the original image looks noticeably too dark or too bright for clear visual inspection. This can help make features easier to see and interpret. However, it is important to remember that post hoc brightness adjustment does not recover information that was never captured properly in the first place. It is best understood as a visualisation aid, rather than a true correction of the original acquisition conditions.<br><br>Adjusting <strong>contrast</strong> can also be helpful when different structures in an image occupy different parts of the intensity range, but do not stand apart clearly enough for easy visual inspection. In simple terms, increasing contrast stretches the differences between darker and brighter pixels, which can make prominent structures appear more distinct. In this example, raising the contrast helps the brighter dendritic processes stand out more strongly, while the dimmer punctate signals become less visually dominant. This can be a useful quick visual aid when we want to emphasise the main branching structures.<br><br>In the code cell below, let&#x27;s visualise our greyscale image in a 3-way tile, displaying: how it looks in its original form, with increased brightness, and finally increased contrast.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-22"># Increase brightness by adding a constant
+                <textarea id="code-cell-21"># Increase brightness by adding a constant
 brighter = np.clip(dendrite + 0.2, 0, 1)
 
 # Increase contrast by stretching values away from the midpoint
@@ -512,7 +508,7 @@ fig.tight_layout()
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-22-output" class="output"></div>
+            <div id="code-cell-21-output" class="output"></div>
         </div>
         
         <div class="info-box note-box">
@@ -536,7 +532,7 @@ plt.show()</textarea>
                         <p>As we have demonstrated with all the analysis and image manipulation discussed so far, the way that an image is displayed can alter how it is perceived by the observer&#x27;s eye. Depending on the imaging method, important features may appear as dark objects on a pale background, or as bright objects on a dark background. Inverting a grayscale image can therefore be useful when the original presentation makes structures harder to distinguish at a glance.<br><br>Inverting a grayscale image refers to <em>reversing its intensity values</em> so that dark pixels become bright and bright pixels become dark. In an 8-bit image, for instance, this would map values near 0 towards 255 and values near 255 towards 0; in a normalised image the same applies to intensities from 0.0-1.0. This can be useful when important structures are easier for the eye to interpret as bright objects on a dark background, or when the original display makes subtle features difficult to distinguish.<br><br>In practice, inversion can improve visual contrast for certain images, making important features pop out more clearly. As with brightness and contrast adjustment, however, inversion changes only the visual representation of the data, not the underlying signal, itself.<br><br>With Python, we can use simple arithmetic to invert a grayscale image by reversing its intensity values across the available range. For images stored as normalised floating-point data, where intensities run from 0.0 to 1.0, this can be done simply by <em>subtracting the image array from 1</em>. For 8-bit images, inversion is usually performed by <em>subtracting the image from 255</em>, instead.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-23"># Invert the image
+                <textarea id="code-cell-22"># Invert the image
 image_inverted = 1 - dendrite
 
 # Display the original and inverted images
@@ -552,7 +548,7 @@ ax[1].axis(&quot;off&quot;)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-23-output" class="output"></div>
+            <div id="code-cell-22-output" class="output"></div>
         </div>
         
                     </div>
@@ -566,7 +562,7 @@ plt.show()</textarea>
                         <p>Once we have identified intensity ranges that likely correspond to different structures, we can go one step further and use them to build <strong>image masks</strong>. A mask is simply a Boolean array of the same shape as the image, where <code>True</code> marks pixels we want to keep and <code>False</code> marks pixels we want to suppress. This allows us to isolate particular classes of signal directly from the original image, rather than merely counting how often they occur.<br><br>In this example, the brighter dendritic processes occupy the upper intensity peak, while the dimmer punctate signals occupy the lower one. Since we already defined Boolean masks for these intensity ranges earlier in the notebook, we can now reuse those same variables directly. By applying one mask to the dendritic range and the other to the punctate range, we can generate two new views of the same image: one showing just the dendritic processes, and another showing just the punctate features. To make the effect of the mask clear, the excluded background pixels can be set to a dark grey value rather than pure black, so that the retained structures stand out while the masked regions remain visibly suppressed.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-24"># Reuse the masks defined earlier from the thresholded intensity ranges
+                <textarea id="code-cell-23"># Reuse the masks defined earlier from the thresholded intensity ranges
 puncta_mask = peak_1_mask
 dendrite_mask = peak_2_mask
 
@@ -599,7 +595,7 @@ fig.tight_layout()
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-24-output" class="output"></div>
+            <div id="code-cell-23-output" class="output"></div>
         </div>
         
                     </div>
@@ -623,7 +619,7 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-25">import numpy as np
+                <textarea id="code-cell-24">import numpy as np
 import matplotlib.pyplot as plt
 
 # 1. Create a boolean mask for intensities between 0.8 and 0.9 (inclusive)
@@ -638,8 +634,8 @@ binary_image[] =
 # 4. Display the binary image
 # ...</textarea>
             </div>
-            <button id="run-code-cell-25" class="run-button">Run Code</button>
-            <div id="code-cell-25-output" class="output"></div>
+            <button id="run-code-cell-24" class="run-button">Run Code</button>
+            <div id="code-cell-24-output" class="output"></div>
         </div>
         
                     </div>
