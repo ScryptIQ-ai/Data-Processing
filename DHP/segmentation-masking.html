@@ -73,13 +73,13 @@
 
         <h3>Content</h3>
         <ul>
-            <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./demo-notebook.html">Notebook Formatting Demo</a></li><li><a href="./images-in-python.html">Images in Python</a></li><li><a href="./greyscale-images.html">Data Processing 3</a></li><li><a href="./colour-images.html">Colour images</a></li>
+            <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./images-in-python.html">Images in Python</a></li><li><a href="./greyscale-images.html">Data Processing 3</a></li><li><a href="./colour-images.html">Colour images</a></li>
             <li>
-                <div class="nav-toggle active" data-target="expandable-section-5">
+                <div class="nav-toggle active" data-target="expandable-section-4">
                     Masking and segmentation
                     <span class="toggle-icon">▼</span>
                 </div>
-                <ul class="nested-nav expanded" id="expandable-section-5"><li><a href="#introduction">Introduction</a></li><li><a href="#leaf-necrosis-example">Leaf necrosis example</a></li><li><a href="#quantification">Quantification</a></li><li><a href="#summary">Summary</a></li>
+                <ul class="nested-nav expanded" id="expandable-section-4"><li><a href="#introduction">Introduction</a></li><li><a href="#leaf-necrosis-example">Leaf necrosis example</a></li><li><a href="#quantification">Quantification</a></li><li><a href="#summary">Summary</a></li>
                 </ul>
             </li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
         </ul>
@@ -158,6 +158,18 @@
             </div>
         </div>
         
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-41"># TESTING CELL!!!!!!!!!!!
+
+from pathlib import Path
+
+for p in sorted(Path(&quot;./data&quot;).rglob(&quot;*&quot;)):
+    print(p)</textarea>
+            </div>
+            <div id="code-cell-41-output" class="output"></div>
+        </div>
+        
                 </div>
             </div>
             
@@ -188,7 +200,7 @@
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-51">from os import listdir
+                <textarea id="code-cell-42">from os import listdir
 from matplotlib.image import imread
 
 # Base paths for the image data
@@ -211,12 +223,12 @@ for file in sorted(listdir(necrotic_path)):
 print(&quot;Data type:&quot;, healthy[0].dtype)
 print(&quot;Shape (height, width, channels):&quot;, healthy[0].shape)</textarea>
             </div>
-            <div id="code-cell-51-output" class="output"></div>
+            <div id="code-cell-42-output" class="output"></div>
         </div>
         <p>Utilising much of what we learned towards the end of our Python Fundamentals module, we will be taking a &#x27;professional&#x27; approach to code-writing here, wrapping blocks of useful code into our own functions, that we can easily and repeatedly call.<br><br>We will start by defining a helper function to visualise these images in a neat grid. This allows us to inspect our raw data and visually confirm the differences between the healthy and necrotic leaves.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-52">from matplotlib.pyplot import subplots, show
+                <textarea id="code-cell-43">from matplotlib.pyplot import subplots, show
 
 def image_visualiser(healthy, necrotic, third_row=None):
     # Determine the number of rows to plot
@@ -249,14 +261,14 @@ def image_visualiser(healthy, necrotic, third_row=None):
     fig.tight_layout()
     show()</textarea>
             </div>
-            <div id="code-cell-52-output" class="output" style="display: none;"></div>
+            <div id="code-cell-43-output" class="output" style="display: none;"></div>
         </div>
         <p>Now that it is defined, we can run our new <code>image_visualiser</code> visualisation function, feeding it our <code>healthy</code> and <code>necrotic</code> leaf images as arguments.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-53">image_visualiser(healthy, necrotic)</textarea>
+                <textarea id="code-cell-44">image_visualiser(healthy, necrotic)</textarea>
             </div>
-            <div id="code-cell-53-output" class="output"></div>
+            <div id="code-cell-44-output" class="output"></div>
         </div>
         <h4>Comparing RGB profiles
 
@@ -285,7 +297,7 @@ In the histograms below, you will notice a bump in the red and green channels fo
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-54"># Pick a clear example of a healthy and necrotic image
+                <textarea id="code-cell-45"># Pick a clear example of a healthy and necrotic image
 h_img = healthy[0]
 n_img = necrotic[4]
 
@@ -327,7 +339,7 @@ fig.tight_layout()
 show()
 </textarea>
             </div>
-            <div id="code-cell-54-output" class="output"></div>
+            <div id="code-cell-45-output" class="output"></div>
         </div>
         <p>These RGB histograms show that both the healthy and necrotic leaves contain broad and greatly overlapping distributions of red, green and blue intensities. Since the marginal necrosis is yellow/brown, there isn&#x27;t a hugely obvious point at which to threshold and mask the necrotic areas away from the healhty regions.<br><ul class="nested-list"><li>In the healthy leaf, the green channel is more prominent overall, which fits with the visibly green tissue.</li><br><li>In the necrotic leaf the distributions become broader and shift in a more complex way across all three channels, reflecting the introduction of yellow-brown lesions.</li></ul>Brown and yellow necrotic tissue are not represented by a single RGB channel, but by different mixtures of red, green and blue intensities that overlap considerably with those of healthy tissue.</p><h4>RGB masking of background
 
@@ -352,7 +364,7 @@ The function then returns a **Boolean mask**, where:
 Using both tests together makes the mask a little more flexible: it can pick up pixels that are strong in one channel, as well as pixels that may not stand out strongly in a single channel but are clearly brighter overall.</h4>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-55">OFFSET = 25          # Per-channel intensity bump above background
+                <textarea id="code-cell-46">OFFSET = 25          # Per-channel intensity bump above background
 SUM_OFFSET = 80      # Total brightness bump above background
 
 def leaf_mask_rgb(image):
@@ -374,7 +386,7 @@ def leaf_mask_rgb(image):
     return any_channel_high | total_brightness
 </textarea>
             </div>
-            <div id="code-cell-55-output" class="output" style="display: none;"></div>
+            <div id="code-cell-46-output" class="output" style="display: none;"></div>
         </div>
         <p>Next, we can call our <code>leaf_mask_rgb</code> function to apply this mask. By <em>inverting</em> our Boolean mask (so that <code>True</code> becomes <code>False</code>), we can select all non-leaf pixels and set their RGB values to become pure black (0, 0, 0).<br><br>To do this, we&#x27;ll define a new function called <code>apply_mask</code>, which will apply the Boolean mask to each image by keeping the detected leaf pixels unchanged, and setting everything else to crush down to black. In doing so, it removes the background and leaves us with a cleaner set of images from which the leaf tissue can be analysed more directly.</p>
         <div class="info-box note-box">
@@ -399,7 +411,7 @@ def leaf_mask_rgb(image):
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-56">import numpy as np
+                <textarea id="code-cell-47">import numpy as np
 
 def apply_mask(image, mask):
     # Make a copy of the image to avoid overwriting original data
@@ -409,12 +421,12 @@ def apply_mask(image, mask):
     out[~mask] = [0, 0, 0] 
     return out</textarea>
             </div>
-            <div id="code-cell-56-output" class="output" style="display: none;"></div>
+            <div id="code-cell-47-output" class="output" style="display: none;"></div>
         </div>
         <p>We can then use two <code>for</code> loops to iterate over each image stored in the <code>healthy</code> and <code>necrotic</code> lists, respectively, and apply the <code>apply_mask</code> function to each one, storing the masked images in two new lists, assigned to variables: <code>healthy_bg_masked</code> and <code>necrotic_bg_masked</code>.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-57">healthy_bg_masked = []
+                <textarea id="code-cell-48">healthy_bg_masked = []
 
 for img in healthy:
     mask = leaf_mask_rgb(img)
@@ -426,15 +438,15 @@ for img in necrotic:
     mask = leaf_mask_rgb(img)
     necrotic_bg_masked.append(apply_mask(img, mask))</textarea>
             </div>
-            <div id="code-cell-57-output" class="output" style="display: none;"></div>
+            <div id="code-cell-48-output" class="output" style="display: none;"></div>
         </div>
         <p>Finally, let&#x27;s use the <code>image_visualiser</code> function we defined earlier to visualise our newly background-masked images.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-58"># Visualise the background-masked images
+                <textarea id="code-cell-49"># Visualise the background-masked images
 image_visualiser(healthy_bg_masked, necrotic_bg_masked)</textarea>
             </div>
-            <div id="code-cell-58-output" class="output"></div>
+            <div id="code-cell-49-output" class="output"></div>
         </div>
         <p>Note the very dark black background, and leaves looking like they&#x27;ve been nicely &#x27;cut out&#x27; from it. However, it is immediately evident to see that this is a &#x27;quick and dirty&#x27; process. While the background is quite well masked across the images, it is not a perfect isolation. There are still some lighter &#x27;grey&#x27; pixels left in there (note the edges of Necrotic 5, for instance), and we could most certainly refine this even further. But it does a relatively good job of isolating leaf from background.<br><br>Use the practice exercise below to play with these thresholds, and see how this affects the outputted masked images.</p>
                     </div>
@@ -451,41 +463,41 @@ image_visualiser(healthy_bg_masked, necrotic_bg_masked)</textarea>
                 PRACTICE EXERCISE
             </div>
             <div class="box-content">
-                <p><strong>5.</strong></p>
+                <p><strong>4.</strong></p>
                 <p>In this exercise, take a moment to paste in the code from previous cells, and change any parameter you like to see how adjustments to each can affect the background mask. Parameters you might want to consider include:<ul class="nested-list"><li>The background ranges</li><br><li><code>OFFSET</code> and <code>SUM_OFFSET</code></li><br><li>Whether the 10 bottom rows are used, alone, to determine background intensities</li><br><li>The value of <code>out[~mask]</code> - do you have to crush the background to black?</li></ul>Note: There are no solutions to this exercise, since the point of it is that you simply play around with the functions, to get a better understanding of how they are working.</p>
             </div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-59"></textarea>
+                <textarea id="code-cell-50"></textarea>
             </div>
-            <button id="run-code-cell-59" class="run-button">Run Code</button>
-            <div id="code-cell-59-output" class="output"></div>
+            <button id="run-code-cell-50" class="run-button">Run Code</button>
+            <div id="code-cell-50-output" class="output"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-60"></textarea>
+                <textarea id="code-cell-51"></textarea>
             </div>
-            <button id="run-code-cell-60" class="run-button">Run Code</button>
-            <div id="code-cell-60-output" class="output"></div>
+            <button id="run-code-cell-51" class="run-button">Run Code</button>
+            <div id="code-cell-51-output" class="output"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-61"></textarea>
+                <textarea id="code-cell-52"></textarea>
             </div>
-            <button id="run-code-cell-61" class="run-button">Run Code</button>
-            <div id="code-cell-61-output" class="output"></div>
+            <button id="run-code-cell-52" class="run-button">Run Code</button>
+            <div id="code-cell-52-output" class="output"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-62"></textarea>
+                <textarea id="code-cell-53"></textarea>
             </div>
-            <button id="run-code-cell-62" class="run-button">Run Code</button>
-            <div id="code-cell-62-output" class="output"></div>
+            <button id="run-code-cell-53" class="run-button">Run Code</button>
+            <div id="code-cell-53-output" class="output"></div>
         </div>
         
                     </div>
@@ -509,7 +521,7 @@ image_visualiser(healthy_bg_masked, necrotic_bg_masked)</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-63">from matplotlib import colors
+                <textarea id="code-cell-54">from matplotlib import colors
 
 def necrosis_mask(rgb):
     # Typecast image to float and scale between 0.0 and 1.0
@@ -531,12 +543,12 @@ def necrosis_mask(rgb):
     # Combine conditions
     return brown | yellow | dark</textarea>
             </div>
-            <div id="code-cell-63-output" class="output" style="display: none;"></div>
+            <div id="code-cell-54-output" class="output" style="display: none;"></div>
         </div>
         <p>Next, we will write a function that composites these masking steps into a single outputted image.<br><ul class="nested-list"><li>This function applies the leaf mask first (it&#x27;s calling the previous <code>necrosis_mask</code> function), so that any black background pixels are excluded from consideration.</li><br><li>It then overlays the detected necrotic regions in red.</li></ul>The result is a simple visual summary in which background is removed, healthy tissue is retained, and candidate necrotic tissue is highlighted clearly for inspection.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-64">def composite_necrosis(rgb):
+                <textarea id="code-cell-55">def composite_necrosis(rgb):
     img = np.asarray(rgb)
 
     # Ensure 0-255 scaling for the leaf mask function
@@ -555,7 +567,7 @@ def necrosis_mask(rgb):
     out[nec]   = [255, 0, 0] # Marginal necrosis highlighted in bright red
     return out</textarea>
             </div>
-            <div id="code-cell-64-output" class="output" style="display: none;"></div>
+            <div id="code-cell-55-output" class="output" style="display: none;"></div>
         </div>
         <p>Now that we have applied all of the pre-processing, colour spaces conversions, threhsolding and masking steps to our images, let&#x27;s fully process all of our images, and display a third row, displaying the marginal necrosis highlighted in bright red.</p>
         <div class="info-box tip-box">
@@ -570,7 +582,7 @@ def necrosis_mask(rgb):
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-65"># Process all images (using two list comprehensions)
+                <textarea id="code-cell-56"># Process all images (using two list comprehensions)
 healthy_necrosis = [composite_necrosis(img) for img in healthy]
 necrotic_necrosis = [composite_necrosis(img) for img in necrotic]
 
@@ -579,7 +591,7 @@ image_visualiser(healthy_necrosis, necrotic_bg_masked, necrotic_necrosis)
 
 # We left the healthy_necrosis images out of the visualisation, as this would be repetitive.</textarea>
             </div>
-            <div id="code-cell-65-output" class="output"></div>
+            <div id="code-cell-56-output" class="output"></div>
         </div>
         
         <div class="info-box remember-box">
@@ -613,7 +625,7 @@ image_visualiser(healthy_necrosis, necrotic_bg_masked, necrotic_necrosis)
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-66"># Measure necrosis in each necrotic image
+                <textarea id="code-cell-57"># Measure necrosis in each necrotic image
 for index, img in enumerate(necrotic):
     
     leaf = leaf_mask_rgb(img) # Total pixels in the leaf, without background.
@@ -624,7 +636,7 @@ for index, img in enumerate(necrotic):
     # Prints and gives answer to 2 dp.
     print(f&quot;Leaf {index+1}: {percent_necrosis:.2f}% necrotic&quot;) </textarea>
             </div>
-            <div id="code-cell-66-output" class="output"></div>
+            <div id="code-cell-57-output" class="output"></div>
         </div>
         
                     </div>

@@ -65,13 +65,13 @@
 
         <h3>Content</h3>
         <ul>
-            <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./demo-notebook.html">Notebook Formatting Demo</a></li>
+            <li><a href="./introduction.html" class="">Introduction</a></li>
             <li>
-                <div class="nav-toggle active" data-target="expandable-section-2">
+                <div class="nav-toggle active" data-target="expandable-section-1">
                     Images in Python
                     <span class="toggle-icon">▼</span>
                 </div>
-                <ul class="nested-nav expanded" id="expandable-section-2"><li><a href="#introduction">Introduction</a></li><li><a href="#images-in-python">Images in Python</a></li><li><a href="#images-as-numpy-arrays">Images as NumPy arrays</a></li><li><a href="#reading-image-files-into-python">Reading image files into Python</a></li><li><a href="#displaying-images-using-matplotlib">Displaying images using matplotlib</a></li><li><a href="#summary">Summary</a></li>
+                <ul class="nested-nav expanded" id="expandable-section-1"><li><a href="#introduction">Introduction</a></li><li><a href="#images-in-python">Images in Python</a></li><li><a href="#images-as-numpy-arrays">Images as NumPy arrays</a></li><li><a href="#reading-image-files-into-python">Reading image files into Python</a></li><li><a href="#displaying-images-using-matplotlib">Displaying images using matplotlib</a></li><li><a href="#summary">Summary</a></li>
                 </ul>
             </li><li><a href="./greyscale-images.html">Data Processing 3</a></li><li><a href="./colour-images.html">Colour images</a></li><li><a href="./segmentation-masking.html">Masking and segmentation</a></li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
         </ul>
@@ -198,22 +198,22 @@
                         <p>Before we can inspect or analyse an image in Python, we first need to be able to read the image file into memory, as an array. In this lesson, we will focus on using the <code>imread</code> function from the <code>matplotlib.image</code> submodule; a common and convenient function for loading image data directly into a NumPy-compatible format.<br><br>That is not to say that there aren&#x27;t other methods for doing this. For instance, you may encounter <code>Image.open()</code> from the <strong>Pillow</strong> library, <code>imageio.imread()</code> or even <code>cv2.imread()</code> from <strong>OpenCV</strong>. But <code>imread</code> is a good starting point, as it keeps the process simple and closely aligned with array-based image analysis. We will use it consistently throughout this course, going forward, whenever we are dealing with image files.<br><br>Let&#x27;s start with this image of a bitter gourd leaf.</p><p><img src="./images/Fig2_healthy_5.JPG" alt="" class="notebook-image"></p><p>We can make use of the <code>imread</code> function to load in the file, and check its <code>type</code>:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-11">from matplotlib.image import imread
+                <textarea id="code-cell-1">from matplotlib.image import imread
 
 leaf_image = imread(&#x27;./data/healthy_5.JPG&#x27;)
 
 type(leaf_image)</textarea>
             </div>
-            <div id="code-cell-11-output" class="output"></div>
+            <div id="code-cell-1-output" class="output"></div>
         </div>
         <p>Now that the image has been loaded as a NumPy array, we can inspect some of its properties.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-12">height, width, channels = leaf_image.shape # For easy pixel counting
+                <textarea id="code-cell-2">height, width, channels = leaf_image.shape # For easy pixel counting
 
 print(f&quot;shape = {leaf_image.shape} \ndimensions (channels) = {leaf_image.ndim} \nsize = {height * width} pixels or {(height * width) / 1000000} megapixels \ndtype = {leaf_image.dtype}&quot;)</textarea>
             </div>
-            <div id="code-cell-12-output" class="output"></div>
+            <div id="code-cell-2-output" class="output"></div>
         </div>
         
         <div class="info-box note-box">
@@ -265,18 +265,18 @@ print(f&quot;shape = {leaf_image.shape} \ndimensions (channels) = {leaf_image.nd
 </table><p>We can also inspect the range of values stored in the array, and access individual pixels or small regions using ordinary NumPy indexing.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-13">leaf_image.min(), leaf_image.max()</textarea>
+                <textarea id="code-cell-3">leaf_image.min(), leaf_image.max()</textarea>
             </div>
-            <div id="code-cell-13-output" class="output"></div>
+            <div id="code-cell-3-output" class="output"></div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-14"># RGB values for one pixel near the top-left corner
+                <textarea id="code-cell-4"># RGB values for one pixel near the top-left corner
 
 leaf_image[0, 0]</textarea>
             </div>
-            <div id="code-cell-14-output" class="output"></div>
+            <div id="code-cell-4-output" class="output"></div>
         </div>
         
         <div class="info-box remember-box">
@@ -291,11 +291,11 @@ leaf_image[0, 0]</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-15"># A small 3 x 3 patch of pixels from the image
+                <textarea id="code-cell-5"># A small 3 x 3 patch of pixels from the image
 
 leaf_image[:3, :3]</textarea>
             </div>
-            <div id="code-cell-15-output" class="output"></div>
+            <div id="code-cell-5-output" class="output"></div>
         </div>
         
                     </div>
@@ -309,13 +309,13 @@ leaf_image[:3, :3]</textarea>
                         <p>Now that we have read the image in as a NumPy array, we can display it graphically using Matplotlib. An oft-used approach is employing the<code>imshow</code> function within matplotlib&#x27;s <code>pyplot</code> submodule, which renders the array as an image. In the code below, we use <code>plt.axis(&#x27;off&#x27;)</code> to hide axes when we only want to view the image itself. If we left this out, the numbering on x and y axes would correspond to the dimensions of the image, in pixels.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-16">import matplotlib.pyplot as plt
+                <textarea id="code-cell-6">import matplotlib.pyplot as plt
 
 plt.imshow(leaf_image)
 plt.axis(&#x27;off&#x27;)
 plt.show()</textarea>
             </div>
-            <div id="code-cell-16-output" class="output"></div>
+            <div id="code-cell-6-output" class="output"></div>
         </div>
         <p>As with any array, you can slice into an image in order to focus on particular zones or areas of interest. This can, for instance, allow the inspection local detail, filling the figure canvas with a cropped region of the image in question.<br><br>With colour images, we typically slice across the first two dimensions to select rows and columns of pixels, while the third dimension stores the colour channels, and is kept, in tact.</p>
         <div class="info-box note-box">
@@ -330,17 +330,17 @@ plt.show()</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-17"># Take a rectangular crop from the image
+                <textarea id="code-cell-7"># Take a rectangular crop from the image
 
 leaf_crop = leaf_image[500:1200, 800:1500]
 leaf_crop.shape</textarea>
             </div>
-            <div id="code-cell-17-output" class="output"></div>
+            <div id="code-cell-7-output" class="output"></div>
         </div>
         <p>Using <code>subplots</code> - with which you will be familiar from previous lessons in this module - you can easily create tiled figures, displaying different regions of the image</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-18">from matplotlib.pyplot import subplots
+                <textarea id="code-cell-8">from matplotlib.pyplot import subplots
 
 leaf_crop_2 = leaf_image[1300:1900, 1600:2300]
 leaf_crop_3 = leaf_image[1000:1700, 1500:2200]
@@ -365,7 +365,7 @@ ax[1, 1].set_title(&quot;Crop 3&quot;,fontsize=10)
 
 plt.show()</textarea>
             </div>
-            <div id="code-cell-18-output" class="output"></div>
+            <div id="code-cell-8-output" class="output"></div>
         </div>
         
                     </div>
@@ -382,14 +382,14 @@ plt.show()</textarea>
                 PRACTICE EXERCISE
             </div>
             <div class="box-content">
-                <p><strong>2.</strong></p>
+                <p><strong>1.</strong></p>
                 <p>Let&#x27;s practice loading a new image, checking its attributes and taking a crop of a specific feature.<ol class="nested-list"><li>Use <code>imread</code> to load the image <code>healthy_1.JPG</code> located in the <code>./data/healthy/</code> directory, and store it in a variable called <code>leaf_2</code>.</li><br><li>Print the shape and data type of the loaded image.</li><br><li>Create a cropped version of this image, selecting rows 500 to 1700 and columns 1000 to 2000, and store it in a variable called <code>leaf_2_crop</code>.</li><br><li>Display <code>leaf_2_crop</code> using Matplotlib&#x27;s <code>imshow</code> function, making sure to hide the axes.</li></ol></p>
             </div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-19">from matplotlib.image import imread
+                <textarea id="code-cell-9">from matplotlib.image import imread
 import matplotlib.pyplot as plt
 
 # 1. Load the image healthy_1.JPG from ./data/healthy/
@@ -405,17 +405,17 @@ leaf_2_crop =
 # 4. Display the cropped image
 # </textarea>
             </div>
-            <button id="run-code-cell-19" class="run-button">Run Code</button>
-            <div id="code-cell-19-output" class="output"></div>
+            <button id="run-code-cell-9" class="run-button">Run Code</button>
+            <div id="code-cell-9-output" class="output"></div>
         </div>
         
         <div class="code-area">
-            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-20')">
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-10')">
                 <span class="code-collapse-icon">▶</span>
                 <span class="code-collapse-label">Show solution</span>
             </div>
-            <div class="code-container code-fixed code-solution code-collapsed" id="code-cell-20-container">
-                <textarea id="code-cell-20">from matplotlib.image import imread
+            <div class="code-container code-fixed code-solution code-collapsed" id="code-cell-10-container">
+                <textarea id="code-cell-10">from matplotlib.image import imread
 import matplotlib.pyplot as plt
 
 # 1. Load the image healthy_1.JPG from ./data/healthy/
@@ -450,7 +450,7 @@ plt.show()</textarea>
             
 
         <div class="page-navigation">
-            <a href="./demo-notebook.html" class="nav-button prev">
+            <a href="./introduction.html" class="nav-button prev">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                     <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
                 </svg>
