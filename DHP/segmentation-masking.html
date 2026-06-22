@@ -447,34 +447,13 @@ image_visualiser(healthy_bg_masked, necrotic_bg_masked)</code></pre>
             </div>
             <div class="box-content">
                 <p><strong>4.</strong></p>
-                <p>In this exercise, take a moment to paste in the code from previous cells, and change any parameter you like to see how adjustments to each can affect the background mask. Parameters you might want to consider include:<ul class="nested-list"><li>The background ranges</li><br><li><code>OFFSET</code> and <code>SUM_OFFSET</code></li><br><li>Whether the 10 bottom rows are used, alone, to determine background intensities</li><br><li>The value of <code>out[~mask]</code> - do you have to crush the background to black?</li></ul>Note: There are no solutions to this exercise, since the point of it is that you simply play around with the functions, to get a better understanding of how they are working.</p>
+                <p>To complete this particular exercise, you will need to download this lesson as a Jupyter Notebook from the &#x27;Resources&#x27; tab on the left sidebar, as this particular page is not interactive.<br>For this exercise, take a moment to paste in the code from previous cells, and change any parameter you like to see how adjustments to each can affect the background mask. Parameters you might want to consider include:<ul class="nested-list"><li>The background ranges</li><br><li><code>OFFSET</code> and <code>SUM_OFFSET</code></li><br><li>Whether the 10 bottom rows are used, alone, to determine background intensities</li><br><li>The value of <code>out[~mask]</code> - do you have to crush the background to black?</li></ul>Note: There are no solutions to this exercise, since the point of it is that you simply play around with the functions, to get a better understanding of how they are working.</p>
             </div>
         </div>
         
         <div class="code-area">
             <div class="code-container code-fixed">
                 <pre><code class="language-python" id="code-48"></code></pre>
-            </div>
-            
-        </div>
-        
-        <div class="code-area">
-            <div class="code-container code-fixed">
-                <pre><code class="language-python" id="code-49"></code></pre>
-            </div>
-            
-        </div>
-        
-        <div class="code-area">
-            <div class="code-container code-fixed">
-                <pre><code class="language-python" id="code-50"></code></pre>
-            </div>
-            
-        </div>
-        
-        <div class="code-area">
-            <div class="code-container code-fixed">
-                <pre><code class="language-python" id="code-51"></code></pre>
             </div>
             
         </div>
@@ -500,7 +479,7 @@ image_visualiser(healthy_bg_masked, necrotic_bg_masked)</code></pre>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <pre><code class="language-python" id="code-52">from matplotlib import colors
+                <pre><code class="language-python" id="code-49">from matplotlib import colors
 
 def necrosis_mask(rgb):
     # Typecast image to float and scale between 0.0 and 1.0
@@ -527,7 +506,7 @@ def necrosis_mask(rgb):
         <p>Next, we will write a function that composites these masking steps into a single outputted image.<br><ul class="nested-list"><li>This function applies the leaf mask first (it&#x27;s calling the previous <code>necrosis_mask</code> function), so that any black background pixels are excluded from consideration.</li><br><li>It then overlays the detected necrotic regions in red.</li></ul>The result is a simple visual summary in which background is removed, healthy tissue is retained, and candidate necrotic tissue is highlighted clearly for inspection.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <pre><code class="language-python" id="code-53">def composite_necrosis(rgb):
+                <pre><code class="language-python" id="code-50">def composite_necrosis(rgb):
     img = np.asarray(rgb)
 
     # Ensure 0-255 scaling for the leaf mask function
@@ -561,7 +540,7 @@ def necrosis_mask(rgb):
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <pre><code class="language-python" id="code-54"># Process all images (using two list comprehensions)
+                <pre><code class="language-python" id="code-51"># Process all images (using two list comprehensions)
 healthy_necrosis = [composite_necrosis(img) for img in healthy]
 necrotic_necrosis = [composite_necrosis(img) for img in necrotic]
 
@@ -604,7 +583,7 @@ image_visualiser(healthy_necrosis, necrotic_bg_masked, necrotic_necrosis)
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <pre><code class="language-python" id="code-55"># Measure necrosis in each necrotic image
+                <pre><code class="language-python" id="code-52"># Measure necrosis in each necrotic image
 for index, img in enumerate(necrotic):
     
     leaf = leaf_mask_rgb(img) # Total pixels in the leaf, without background.
