@@ -390,8 +390,22 @@ show()
             <div id="code-cell-19-output" class="output"></div>
         </div>
         <p>For fun, the code cell below contains an interactive example, where mousing over the image shows the intensity. This is more complex to write, and contains code that goes beyond the scope of this lesson, so should be used with caution. It does, however, contain a live-updating intensity value, depending on where your cursor hovers over the displayed image.</p>
+        <div class="info-box warning-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                WARNING
+            </div>
+            <div class="box-content">
+                <p>The cell below will not run in the written materials here, but you should be able to run it if you download the Jupyter Notebook from the Resources section, at the bottom of the left sidebar, and run this in your own coding environment.</p>
+            </div>
+        </div>
+        
         <div class="code-area">
-            <div class="code-container code-fixed">
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-20')">
+                <span class="code-collapse-icon">▶</span>
+                <span class="code-collapse-label">Show code</span>
+            </div>
+            <div class="code-container code-fixed code-collapsed" id="code-cell-20-container">
                 <textarea id="code-cell-20">image_path = Path(&quot;./data/dendrite_greyscale.png&quot;)
 image_base64 = base64.b64encode(image_path.read_bytes()).decode(&quot;ascii&quot;)
 viewer_id = &quot;dendrite-pixel-viewer&quot;
@@ -439,7 +453,7 @@ display(HTML(f&#x27;&#x27;&#x27;
 &#x27;&#x27;&#x27;))
 </textarea>
             </div>
-            <div id="code-cell-20-output" class="output"></div>
+            <div id="code-cell-20-output" class="output" style="display: none;"></div>
         </div>
         
                     </div>
