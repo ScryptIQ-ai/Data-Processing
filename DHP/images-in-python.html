@@ -166,7 +166,17 @@
                 <p>A <strong>pixel</strong> - or <em>picture element</em> - is the smallest individual unit of a digital image. In a raster image (an image made up of a grid of individual pixels), each pixel stores a numerical value that represents brightness in a greyscale image, or colour information in a colour image. When thousands or millions of pixels are arranged in a grid, they combine to form the complete image we see on screen.</p>
             </div>
         </div>
-        <p>Representing images in this way allows us to inspect their structure, measure their dimensions and process them efficiently using familiar numerical methods. This means that an image is not only something we can display, but also a dataset that we can analyse, transform and manipulate computationally. Once an image has been loaded as an array, we can crop it, measure it, filter it or modify it using ordinary NumPy operations.<br><br>The two most common types of image we encounter are <strong>greyscale</strong> and <strong>colour</strong>.<br><ul class="nested-list"><li>In a <strong>greyscale image</strong>, each pixel stores a <em>single intensity value</em> representing brightness, ranging from black through shades of grey to white. Because only one value is needed for each pixel, greyscale images are typically stored as two-dimensional arrays.</li><br><li>In a <strong>colour image</strong>, each pixel usually stores multiple values for different colour channels, most commonly red, green and blue (RGB). Colour images are therefore typically stored as three-dimensional arrays, where the first two dimensions describe the image height and width, and the third dimension stores the colour-channel values.</li></ul>Another important feature of an image array is its <strong>data type</strong> (<code>dtype</code>), which tells us how the pixel values are stored in memory. Many image files are represented using the <code>uint8</code> data type, meaning that each value is stored as an unsigned 8-bit integer between <code>0</code> and <code>255</code>. In a greyscale image, these values typically run from black (<code>0</code>) to white (<code>255</code>), while in a colour image they represent the intensity of each individual colour channel.<br><br>It is also worth noting that different Python libraries do not always store colour channels in exactly the same order. While RGB is very common, some libraries may use alternative conventions, so it is always good practice to check the shape and structure of an image array after loading it.</p>
+        <p>Representing images in this way allows us to inspect their structure, measure their dimensions and process them efficiently using familiar numerical methods. This means that an image is not only something we can display, but also a dataset that we can analyse, transform and manipulate computationally. Once an image has been loaded as an array, we can crop it, measure it, filter it or modify it using ordinary NumPy operations.<br><br>The two most common types of image we encounter are <strong>greyscale</strong> and <strong>colour</strong>.<br><ul class="nested-list"><li>In a <strong>greyscale image</strong>, each pixel stores a <em>single intensity value</em> representing brightness, ranging from black through shades of grey to white. Because only one value is needed for each pixel, greyscale images are typically stored as two-dimensional arrays.</li><br><li>In a <strong>colour image</strong>, each pixel usually stores multiple values for different colour channels, most commonly red, green and blue (RGB). Colour images are therefore typically stored as three-dimensional arrays, where the first two dimensions describe the image height and width, and the third dimension stores the colour-channel values.</li></ul></p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p></p>
+            </div>
+        </div>
+        <p><ul class="nested-list"><li>When checking the <code>.shape</code> attribute, greyscale images return a tuple of two values. An image of resolution 500 x 500 pixels, will simply have a shape of <code>(500, 500)</code>.</li><br><li>When checking the <code>.shape</code> attribute, colour images return a tuple of three values. An RGB image of resolution 500 x 500 pixels, will simply have a shape of <code>(500, 500, 3)</code>. If the image has a transparency layer, it is RGBA, with the alpha layer showing up as a fourth channel in dimension 3. The given example as RGBA would have a shape of <code>(500, 500, 4)</code>.</li></ul></p><p>Another important feature of an image array is its <strong>data type</strong> (<code>dtype</code>), which tells us how the pixel values are stored in memory. Many image files are represented using the <code>uint8</code> data type, meaning that each value is stored as an unsigned 8-bit integer between <code>0</code> and <code>255</code>. In a greyscale image, these values typically run from black (<code>0</code>) to white (<code>255</code>), while in a colour image they represent the intensity of each individual colour channel.<br><br>It is also worth noting that different Python libraries do not always store colour channels in exactly the same order. While RGB is very common, some libraries may use alternative conventions, so it is always good practice to check the shape and structure of an image array after loading it.</p>
         <div class="info-box tip-box">
             <div class="box-title">
                 <span class="box-icon"></span>
@@ -206,7 +216,17 @@ type(leaf_image)</textarea>
             </div>
             <div id="code-cell-1-output" class="output"></div>
         </div>
-        <p>Now that the image has been loaded as a NumPy array, we can inspect some of its properties.</p>
+        
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p></p>
+            </div>
+        </div>
+        <p>While our example file here is a <code>.JPG</code> file, <code>imread()</code> function can actually read a wide range of common image file formats, including <strong>JPEG (<code>.jpg</code>, <code>.jpeg</code>)</strong>, <strong>PNG (<code>.png</code>)</strong>, <strong>TIFF (<code>.tif</code>, <code>.tiff</code>)</strong>, <strong>BMP (<code>.bmp</code>)</strong>, <strong>GIF (<code>.gif</code>)</strong> and many others, automatically decoding the file into a NumPy array for further analysis.</p><p>Now that the image has been loaded as a NumPy array, we can inspect some of its properties.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
                 <textarea id="code-cell-2">height, width, channels = leaf_image.shape # For easy pixel counting
@@ -262,7 +282,17 @@ print(f&quot;shape = {leaf_image.shape} \ndimensions (channels) = {leaf_image.nd
 <td><code>(height, width, 4)</code></td>
 </tr>
 </tbody>
-</table><p>We can also inspect the range of values stored in the array, and access individual pixels or small regions using ordinary NumPy indexing.</p>
+</table>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p></p>
+            </div>
+        </div>
+        <p>When you encounter the acronym <code>uint</code> in data types such as <code>uint8</code>, it stands for <strong>unsigned integer</strong>. The number that follows specifies the number of <strong>bits</strong> used to store each value. For example, <code>uint8</code> represents an <strong>unsigned 8-bit integer</strong>, meaning it can store whole numbers from <strong>0 to 255</strong>: a common format in imaging.</p><p>We can also inspect the range of values stored in the array, and access individual pixels or small regions using ordinary NumPy indexing.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
                 <textarea id="code-cell-3">leaf_image.min(), leaf_image.max()</textarea>
@@ -297,7 +327,36 @@ leaf_image[:3, :3]</textarea>
             </div>
             <div id="code-cell-5-output" class="output"></div>
         </div>
-        
+        <p>The way this NumPy array is structured can be visualised as a <strong>3 × 3 grid of pixels</strong>, as shown in the table, below. The <strong>outer list</strong> corresponds to the image rows, each <strong>inner list</strong> corresponds to the columns, each being a three-element array (<code>[R, G, B]</code>) containing the <strong>Red, Green</strong> and  <strong>Blue</strong> values describing the colour of a single pixel.</p><table class="markdown-table">
+<thead>
+<tr>
+<th></th>
+<th><strong>Column 1</strong></th>
+<th><strong>Column 2</strong></th>
+<th><strong>Column 3</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Row 1</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[62, 63, 58]</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[38, 39, 34]</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[10, 11, 6]</strong></td>
+</tr>
+<tr>
+<td><strong>Row 2</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[72, 73, 68]</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[47, 48, 43]</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[14, 15, 10]</strong></td>
+</tr>
+<tr>
+<td><strong>Row 3</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[67, 68, 63]</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[51, 52, 47]</strong></td>
+<td><span style="color:grey">R&nbsp;&nbsp;&nbsp;G&nbsp;&nbsp;&nbsp;B</span><br><strong>[22, 23, 18]</strong></td>
+</tr>
+</tbody>
+</table>
                     </div>
                 </div>
             </div>
@@ -306,7 +365,7 @@ leaf_image[:3, :3]</textarea>
                 <div class="module-body">
                     <div class="module-section">
                         <h3>Displaying images using matplotlib</h3>
-                        <p>Now that we have read the image in as a NumPy array, we can display it graphically using Matplotlib. An oft-used approach is employing the<code>imshow</code> function within matplotlib&#x27;s <code>pyplot</code> submodule, which renders the array as an image. In the code below, we use <code>plt.axis(&#x27;off&#x27;)</code> to hide axes when we only want to view the image itself. If we left this out, the numbering on x and y axes would correspond to the dimensions of the image, in pixels.</p>
+                        <p>Now that we have read the image in as a NumPy array, we can display it graphically using Matplotlib. An oft-used approach is employing the <code>imshow</code> function within matplotlib&#x27;s <code>pyplot</code> submodule, which renders the array as an image. In the code below, we use <code>plt.axis(&#x27;off&#x27;)</code> to hide axes when we only want to view the image itself. If we left this out, the numbering on x and y axes would correspond to the dimensions of the image, in pixels.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
                 <textarea id="code-cell-6">import matplotlib.pyplot as plt
@@ -383,7 +442,7 @@ plt.show()</textarea>
             </div>
             <div class="box-content">
                 <p><strong>1.</strong></p>
-                <p>Let&#x27;s practice loading a new image, checking its attributes and taking a crop of a specific feature.<ol class="nested-list"><li>Use <code>imread</code> to load the image <code>healthy_1.JPG</code> located in the <code>./data/healthy/</code> directory, and store it in a variable called <code>leaf_2</code>.</li><br><li>Print the shape and data type of the loaded image.</li><br><li>Create a cropped version of this image, selecting rows 500 to 1700 and columns 1000 to 2000, and store it in a variable called <code>leaf_2_crop</code>.</li><br><li>Display <code>leaf_2_crop</code> using Matplotlib&#x27;s <code>imshow</code> function, making sure to hide the axes.</li></ol></p>
+                <p>Let&#x27;s practice loading a new image, checking its attributes and taking a crop of a specific feature.<ol class="nested-list"><li>Use <code>imread</code> to load the image <code>healthy_1.JPG</code> located in the <code>./data/</code> directory, and store it in a variable called <code>leaf_2</code>.</li><br><li>Print the shape and data type of the loaded image.</li><br><li>Create a cropped version of this image, selecting rows 500 to 1700 and columns 1000 to 2000, and store it in a variable called <code>leaf_2_crop</code>.</li><br><li>Display <code>leaf_2_crop</code> using Matplotlib&#x27;s <code>imshow</code> function, making sure to hide the axes.</li></ol></p>
             </div>
         </div>
         
