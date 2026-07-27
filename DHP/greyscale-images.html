@@ -404,10 +404,10 @@ print(f&quot;Pixel at row {row}, column {col} has intensity {intensity:.3f}&quot
                 TIP
             </div>
             <div class="box-content">
-                <p></p>
+                <p>In this last line, we&#x27;re using an <strong>f-string</strong> (as introduced in Python Fundamentals 1). Notice that the expression <code>{intensity:.3f}</code> contains the format specifier <code>.3f</code>, where <code>f</code> indicates a floating-point number and <code>.3</code> specifies that it should be displayed to <strong>three decimal places</strong>. Also note that the row and column coordinates are enclosed in square brackets (<code>[col]</code> and <code>[row]</code>) when passed to <code>scatter()</code>, because the function expects lists of x and y coordinates, even when plotting a single point.</p>
             </div>
         </div>
-        <p>In this last line, we&#x27;re using an <strong>f-string</strong> (as introduced in Python Fundamentals 1). Notice that the expression <code>{intensity:.3f}</code> contains the format specifier <code>.3f</code>, where <code>f</code> indicates a floating-point number and <code>.3</code> specifies that it should be displayed to <strong>three decimal places</strong>. Also note that the row and column coordinates are enclosed in square brackets (<code>[col]</code> and <code>[row]</code>) when passed to <code>scatter()</code>, because the function expects lists of x and y coordinates, even when plotting a single point.</p><p>For fun, the code cell below contains an interactive example, where mousing over the image shows the intensity. This is more complex to write, and contains code that goes beyond the scope of this lesson, so should be used with caution. It does, however, contain a live-updating intensity value, depending on where your cursor hovers over the displayed image.</p>
+        <p>For fun, the code cell below contains an interactive example, where mousing over the image shows the intensity. This is more complex to write, and contains code that goes beyond the scope of this lesson, so should be used with caution. It does, however, contain a live-updating intensity value, depending on where your cursor hovers over the displayed image.</p>
         <div class="info-box warning-box">
             <div class="box-title">
                 <span class="box-icon"></span>
@@ -598,20 +598,20 @@ plt.show()</textarea>
                 NOTE
             </div>
             <div class="box-content">
-                <p></p>
+                <p>To isolate each feature, we first create an independent copy of the original image using the <code>.copy()</code> method, ensuring that the original array remains unchanged. We can then use the corresponding Boolean mask to retain only the pixels of interest, replacing all others with a constant dark grey value (<code>0.2</code>) for visual context.</p>
             </div>
         </div>
-        <p>To isolate each feature, we first create an independent copy of the original image using the <code>.copy()</code> method, ensuring that the original array remains unchanged. We can then use the corresponding Boolean mask to retain only the pixels of interest, replacing all others with a constant dark grey value (<code>0.2</code>) for visual context.</p>
+        
         <div class="info-box remember-box">
             <div class="box-title">
                 <span class="box-icon"></span>
                 REMEMBER
             </div>
             <div class="box-content">
-                <p></p>
+                <p>Notice that the <code>~</code> operator performs <strong>logical negation</strong>, so in the code below, <code>~dendrite_mask</code>, for instance, selects every pixel that is <strong>not</strong> part of the dendritic mask.</p>
             </div>
         </div>
-        <p>Notice that the <code>~</code> operator performs <strong>logical negation</strong>, so in the code below, <code>~dendrite_mask</code>, for instance, selects every pixel that is <strong>not</strong> part of the dendritic mask.</p>
+        
         <div class="code-area">
             <div class="code-container code-fixed">
                 <textarea id="code-cell-24"># Reuse the masks defined earlier from the thresholded intensity ranges

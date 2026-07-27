@@ -71,7 +71,7 @@
                     Colour images
                     <span class="toggle-icon">▼</span>
                 </div>
-                <ul class="nested-nav expanded" id="expandable-section-3"><li><a href="#introduction">Introduction</a></li><li><a href="#the-rgb-colour-space">The RGB colour space</a></li><li><a href="#splitting-and-visualising-channels">Splitting and visualising channels</a></li><li><a href="#merging-channels">Merging channels</a></li><li><a href="#false-colour-images">False-colour images</a></li><li><a href="#colour-space-conversions">Colour Space Conversions</a></li><li><a href="#obtaining-feature-target-hsv-values">Obtaining feature target HSV values</a></li><li><a href="#summary">Summary</a></li>
+                <ul class="nested-nav expanded" id="expandable-section-3"><li><a href="#introduction">Introduction</a></li><li><a href="#the-rgb-colour-space">The RGB colour space</a></li><li><a href="#splitting-and-visualising-channels">Splitting and visualising channels</a></li><li><a href="#merging-channels">Merging channels</a></li><li><a href="#false-colour-images">False-colour images</a></li><li><a href="#colour-space-conversions">Colour space conversions</a></li><li><a href="#obtaining-feature-target-hsv-values">Obtaining feature target HSV values</a></li><li><a href="#summary">Summary</a></li>
                 </ul>
             </li><li><a href="./segmentation-masking.html">Masking and segmentation</a></li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
         </ul>
@@ -449,8 +449,7 @@ ax[3].imshow(milo_blue, cmap=&quot;gray&quot;)
 ax[3].set_title(&quot;Milo Blue Channel&quot;, fontsize=9)
 ax[3].axis(&quot;off&quot;)
 
-fig.tight_layout();
-</textarea>
+fig.tight_layout();</textarea>
             </div>
             <div id="code-cell-36-output" class="output"></div>
         </div>
@@ -552,7 +551,7 @@ image_swapped_inverted =
             <div class="module-card" id="colour-space-conversions">
                 <div class="module-body">
                     <div class="module-section">
-                        <h3>Colour Space Conversions</h3>
+                        <h3>Colour space conversions</h3>
                         <p>Despite its abundance, the RGB colour space is not always the most intuitive or useful representation of an image, for analysis. In many cases, it is helpful to convert an image into a different <strong>colour space</strong>, in which the colour information is organised according to other properties such as hue, saturation, and brightness. This can make it easier to describe colours in a way that aligns more closely with human perception, and can also simplify tasks such as identifying particular colour ranges or separating biological features from background.</p>
         <div class="info-box key-terms-box">
             <div class="box-title">
@@ -627,10 +626,10 @@ plt.show()</textarea>
                 NOTE
             </div>
             <div class="box-content">
-                <p></p>
+                <p>The code cell below makes use of the NumPy function <code>np.where(condition, value_if_true, value_if_false)</code>, which evaluates every element of an array independently. For each pixel, if the corresponding value in <code>dark_mask</code> is <code>True</code>, the original hue, saturation or value is retained; if it is <code>False</code>, the pixel is replaced with <code>np.nan</code> (<em>Not a Number</em>). This produces three new arrays (<code>hue_visible</code>, <code>sat_visible</code> and <code>val_visible</code>) that preserve the HSV values only in the brighter regions of the image, while leaving the darker regions blank in the subsequent visualisations.</p>
             </div>
         </div>
-        <p>The code cell below makes use of the NumPy function <code>np.where(condition, value_if_true, value_if_false)</code>, which evaluates every element of an array independently. For each pixel, if the corresponding value in <code>dark_mask</code> is <code>True</code>, the original hue, saturation or value is retained; if it is <code>False</code>, the pixel is replaced with <code>np.nan</code> (<em>Not a Number</em>). This produces three new arrays (<code>hue_visible</code>, <code>sat_visible</code> and <code>val_visible</code>) that preserve the HSV values only in the brighter regions of the image, while leaving the darker regions blank in the subsequent visualisations.</p>
+        
         <div class="code-area">
             <div class="code-container code-fixed">
                 <textarea id="code-cell-41">import numpy as np

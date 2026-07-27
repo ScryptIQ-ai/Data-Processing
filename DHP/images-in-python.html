@@ -173,10 +173,10 @@
                 NOTE
             </div>
             <div class="box-content">
-                <p></p>
+                <p><ul class="nested-list"><li>When checking the <code>.shape</code> attribute, greyscale images return a tuple of two values. An image of resolution 500 x 500 pixels, will simply have a shape of <code>(500, 500)</code>.</li><br><li>When checking the <code>.shape</code> attribute, colour images return a tuple of three values. An RGB image of resolution 500 x 500 pixels, will simply have a shape of <code>(500, 500, 3)</code>. If the image has a transparency layer, it is RGBA, with the alpha layer showing up as a fourth channel in dimension 3. The given example as RGBA would have a shape of <code>(500, 500, 4)</code>.</li></ul></p>
             </div>
         </div>
-        <p><ul class="nested-list"><li>When checking the <code>.shape</code> attribute, greyscale images return a tuple of two values. An image of resolution 500 x 500 pixels, will simply have a shape of <code>(500, 500)</code>.</li><br><li>When checking the <code>.shape</code> attribute, colour images return a tuple of three values. An RGB image of resolution 500 x 500 pixels, will simply have a shape of <code>(500, 500, 3)</code>. If the image has a transparency layer, it is RGBA, with the alpha layer showing up as a fourth channel in dimension 3. The given example as RGBA would have a shape of <code>(500, 500, 4)</code>.</li></ul></p><p>Another important feature of an image array is its <strong>data type</strong> (<code>dtype</code>), which tells us how the pixel values are stored in memory. Many image files are represented using the <code>uint8</code> data type, meaning that each value is stored as an unsigned 8-bit integer between <code>0</code> and <code>255</code>. In a greyscale image, these values typically run from black (<code>0</code>) to white (<code>255</code>), while in a colour image they represent the intensity of each individual colour channel.<br><br>It is also worth noting that different Python libraries do not always store colour channels in exactly the same order. While RGB is very common, some libraries may use alternative conventions, so it is always good practice to check the shape and structure of an image array after loading it.</p>
+        <p>Another important feature of an image array is its <strong>data type</strong> (<code>dtype</code>), which tells us how the pixel values are stored in memory. Many image files are represented using the <code>uint8</code> data type, meaning that each value is stored as an unsigned 8-bit integer between <code>0</code> and <code>255</code>. In a greyscale image, these values typically run from black (<code>0</code>) to white (<code>255</code>), while in a colour image they represent the intensity of each individual colour channel.<br><br>It is also worth noting that different Python libraries do not always store colour channels in exactly the same order. While RGB is very common, some libraries may use alternative conventions, so it is always good practice to check the shape and structure of an image array after loading it.</p>
         <div class="info-box tip-box">
             <div class="box-title">
                 <span class="box-icon"></span>
@@ -223,10 +223,10 @@ type(leaf_image)</textarea>
                 NOTE
             </div>
             <div class="box-content">
-                <p></p>
+                <p>While our example file here is a <code>.JPG</code> file, <code>imread()</code> function can actually read a wide range of common image file formats, including <strong>JPEG (<code>.jpg</code>, <code>.jpeg</code>)</strong>, <strong>PNG (<code>.png</code>)</strong>, <strong>TIFF (<code>.tif</code>, <code>.tiff</code>)</strong>, <strong>BMP (<code>.bmp</code>)</strong>, <strong>GIF (<code>.gif</code>)</strong> and many others, automatically decoding the file into a NumPy array for further analysis.</p>
             </div>
         </div>
-        <p>While our example file here is a <code>.JPG</code> file, <code>imread()</code> function can actually read a wide range of common image file formats, including <strong>JPEG (<code>.jpg</code>, <code>.jpeg</code>)</strong>, <strong>PNG (<code>.png</code>)</strong>, <strong>TIFF (<code>.tif</code>, <code>.tiff</code>)</strong>, <strong>BMP (<code>.bmp</code>)</strong>, <strong>GIF (<code>.gif</code>)</strong> and many others, automatically decoding the file into a NumPy array for further analysis.</p><p>Now that the image has been loaded as a NumPy array, we can inspect some of its properties.</p>
+        <p>Now that the image has been loaded as a NumPy array, we can inspect some of its properties.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
                 <textarea id="code-cell-2">height, width, channels = leaf_image.shape # For easy pixel counting
@@ -289,10 +289,10 @@ print(f&quot;shape = {leaf_image.shape} \ndimensions (channels) = {leaf_image.nd
                 KEY TERMS
             </div>
             <div class="box-content">
-                <p></p>
+                <p>When you encounter the acronym <code>uint</code> in data types such as <code>uint8</code>, it stands for <strong>unsigned integer</strong>. The number that follows specifies the number of <strong>bits</strong> used to store each value. For example, <code>uint8</code> represents an <strong>unsigned 8-bit integer</strong>, meaning it can store whole numbers from <strong>0 to 255</strong>: a common format in imaging.</p>
             </div>
         </div>
-        <p>When you encounter the acronym <code>uint</code> in data types such as <code>uint8</code>, it stands for <strong>unsigned integer</strong>. The number that follows specifies the number of <strong>bits</strong> used to store each value. For example, <code>uint8</code> represents an <strong>unsigned 8-bit integer</strong>, meaning it can store whole numbers from <strong>0 to 255</strong>: a common format in imaging.</p><p>We can also inspect the range of values stored in the array, and access individual pixels or small regions using ordinary NumPy indexing.</p>
+        <p>We can also inspect the range of values stored in the array, and access individual pixels or small regions using ordinary NumPy indexing.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
                 <textarea id="code-cell-3">leaf_image.min(), leaf_image.max()</textarea>
