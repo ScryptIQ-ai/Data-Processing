@@ -128,6 +128,13 @@
 <td>Forgetting that images are simply multidimensional arrays</td>
 </tr>
 <tr>
+<td><strong>Cropping & Slicing</strong></td>
+<td>Applies NumPy slicing to spatial data</td>
+<td><code>image[y1:y2, x1:x2]</code></td>
+<td>Isolate specific regions of an image</td>
+<td>Confusing rows/columns with x/y Cartesian coordinates</td>
+</tr>
+<tr>
 <td><strong>Displaying Images</strong></td>
 <td>Applies plotting skills to image visualisation</td>
 <td><code>imshow()</code>, <code>axis('off')</code></td>
@@ -137,8 +144,8 @@
 <tr>
 <td><strong>Greyscale Images</strong></td>
 <td>Builds on numerical data analysis</td>
-<td>Pixel intensities, array indexing</td>
-<td>Explore brightness and image structure</td>
+<td>Pixel intensities, <code>cmap="gray"</code></td>
+<td>Explore intensity and image structure</td>
 <td>Assuming all images use the same intensity range</td>
 </tr>
 <tr>
@@ -149,18 +156,18 @@
 <td>Interpreting histograms without viewing the image</td>
 </tr>
 <tr>
-<td><strong>Thresholding</strong></td>
-<td>Applies logical operations to images</td>
-<td>Boolean masks, comparisons</td>
-<td>Isolate features based on intensity</td>
-<td>Thresholds may not generalise between images</td>
-</tr>
-<tr>
 <td><strong>Image Manipulation</strong></td>
 <td>Uses mathematical operations on arrays</td>
 <td>Arithmetic on pixel values</td>
 <td>Adjust brightness, contrast and inversion</td>
 <td>Using incorrect intensity scales when transforming images</td>
+</tr>
+<tr>
+<td><strong>Thresholding</strong></td>
+<td>Applies logical operations to images</td>
+<td>Boolean masks, comparisons</td>
+<td>Isolate features based on intensity</td>
+<td>Thresholds may not generalise between images</td>
 </tr>
 <tr>
 <td><strong>RGB Images</strong></td>
@@ -170,39 +177,25 @@
 <td>Confusing channel order or channel meaning</td>
 </tr>
 <tr>
-<td><strong>Colour Channels</strong></td>
-<td>Applies array slicing to image analysis</td>
-<td>Channel extraction and merging</td>
-<td>Investigate the contribution of each colour channel</td>
-<td>Forgetting that each channel is itself an image</td>
+<td><strong>False Colouring</strong></td>
+<td>Applies array manipulation to visualisation</td>
+<td><code>np.dstack()</code>, channel swapping</td>
+<td>Highlight features by reassigning colour channels</td>
+<td>Altering scientific data in misleading ways</td>
 </tr>
 <tr>
 <td><strong>Colour Spaces</strong></td>
-<td>Foundation for image segmentation</td>
-<td>RGB ↔ HSV conversion</td>
+<td>Foundation for robust image segmentation</td>
+<td><code>rgb_to_hsv()</code></td>
 <td>Separate colour from brightness information</td>
 <td>Assuming RGB is always the best space for analysis</td>
 </tr>
 <tr>
-<td><strong>Masking</strong></td>
+<td><strong>Advanced Masking</strong></td>
 <td>Extends thresholding to feature extraction</td>
-<td>Boolean masks, logical operators</td>
-<td>Isolate regions of interest</td>
+<td>Multiple masks, logical operators (<code>&</code>, <code>|</code>)</td>
+<td>Isolate complex regions of interest</td>
 <td>Poor thresholds can miss important features</td>
-</tr>
-<tr>
-<td><strong>HSV Segmentation</strong></td>
-<td>Applies colour-space analysis to biological images</td>
-<td>HSV thresholds</td>
-<td>Detect features based on colour</td>
-<td>Hue ranges may require experimentation</td>
-</tr>
-<tr>
-<td><strong>Biological Image Analysis</strong></td>
-<td>Combines image handling and segmentation workflows</td>
-<td>RGB masks, HSV masks</td>
-<td>Quantify features such as lesions, parasites or stained cells</td>
-<td>Biological samples often exhibit natural variation</td>
 </tr>
 </tbody>
 </table>
