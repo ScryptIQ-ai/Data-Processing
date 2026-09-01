@@ -175,10 +175,9 @@ df_facs.head()</textarea>
         </div>
         <p>We can see from the first few rows that each cell has a numerical value attributed to <code>CD3</code>, <code>CD19</code> and <code>CD56</code> expression, together with its corresponding <code>Cell_Type</code>.<br><br>Before plotting the data, let&#x27;s check how many cells belong to each simulated population.</p>
         <div class="code-area">
-            <div class="code-container code-editor">
+            <div class="code-container code-fixed">
                 <textarea id="code-cell-46">df_facs[&quot;Cell_Type&quot;].value_counts()</textarea>
             </div>
-            <button id="run-code-cell-46" class="run-button">Run Code</button>
             <div id="code-cell-46-output" class="output"></div>
         </div>
         
@@ -245,7 +244,7 @@ fig.show()</textarea>
                 <p><strong>Occlusion:</strong> The visual hiding of one observation or group of observations behind another when three-dimensional data are projected onto a two-dimensional display.</p>
             </div>
         </div>
-        <p>In addition to manual rotation with the mouse, we can also specify the <em>initial</em> Plotly camera position, programmatically. This can be useful when we want collaborators or readers to see the figure from a particular starting perspective. The <code>eye</code> coordinates describe the position of the virtual camera relative to the centre of the 3-D scene.</p>
+        <p>In addition to manual rotation with the mouse, we can also specify the <em>initial</em> Plotly camera position, programmatically. This can be useful when we want collaborators or readers to see the figure from a particular starting perspective. The <code>eye</code> coordinates describe the position of the virtual camera relative to the centre of the 3-D scene. Have a play with different values for <code>x</code>, <code>y</code> and <code>z</code> in the cell, below, and re-run it to see how this affects the starting position of the &#x27;virtual camera&#x27;.</p>
         <div class="code-area">
             <div class="code-container code-editor">
                 <textarea id="code-cell-48">fig.update_layout(

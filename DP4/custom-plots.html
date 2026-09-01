@@ -176,10 +176,12 @@ df.head(1)</textarea>
         </div>
         <p><em>The answer is given in the collapsed box below</em></p>
         <div class="code-area">
-            <div class="code-container code-fixed">
-                <textarea id="code-cell-4">COLLAPSIBLE
-
-df.groupby([&#x27;species&#x27;, &#x27;sex&#x27;]).agg(**{
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-4')">
+                <span class="code-collapse-icon">▶</span>
+                <span class="code-collapse-label">Show code</span>
+            </div>
+            <div class="code-container code-fixed code-collapsed" id="code-cell-4-container">
+                <textarea id="code-cell-4">df.groupby([&#x27;species&#x27;, &#x27;sex&#x27;]).agg(**{
         &quot;bill_length_mean&quot; : (&quot;bill_length_mm&quot;, &quot;mean&quot;)
 })</textarea>
             </div>
@@ -260,10 +262,12 @@ axes[0].set_ylim((30, 65));</textarea>
         </div>
         
         <div class="code-area">
-            <div class="code-container code-fixed">
-                <textarea id="code-cell-8">COLLAPSIBLE
-
-species = [&#x27;Adelie&#x27;, &#x27;Gentoo&#x27;, &#x27;Chinstrap&#x27;]
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-8')">
+                <span class="code-collapse-icon">▶</span>
+                <span class="code-collapse-label">Show code</span>
+            </div>
+            <div class="code-container code-fixed code-collapsed" id="code-cell-8-container">
+                <textarea id="code-cell-8">species = [&#x27;Adelie&#x27;, &#x27;Gentoo&#x27;, &#x27;Chinstrap&#x27;]
 sexes = [&#x27;M&#x27;, &#x27;F&#x27;]
 
 x = np.arange(len(species))
@@ -529,10 +533,12 @@ sns.pointplot(
         </div>
         <p>The answer is given in the collapsed cell below with an additional set of code that returns the average for each group via the <em>groupby</em> method.</p>
         <div class="code-area">
-            <div class="code-container code-fixed">
-                <textarea id="code-cell-17">COLLAPSIBLE
-
-def quantify_plot(data, y, x=None, hue=None):
+            <div class="code-collapse-header" onclick="toggleCodeCollapse('code-cell-17')">
+                <span class="code-collapse-icon">▶</span>
+                <span class="code-collapse-label">Show code</span>
+            </div>
+            <div class="code-container code-fixed code-collapsed" id="code-cell-17-container">
+                <textarea id="code-cell-17">def quantify_plot(data, y, x=None, hue=None):
     &quot;&quot;&quot;Plot individual data points with mean and 95% CI, and summarise group means.
 
     Draws a strip plot (raw data points, semi-transparent) overlaid with a
