@@ -200,6 +200,16 @@ df_facs.head()</textarea>
                     <div class="module-section">
                         <h3>Constructing a 3-D scatter plot</h3>
                         <p>As aforementioned, with <strong>3-D scatter plots</strong>, we add a third coordinate, <code>z</code>, allowing us to represent three measurements at a time. In the case of our flow cytometry data, this means that each simulated cell can be positioned in 3-dimensional space according to its expression of <strong>CD3</strong>, <strong>CD19</strong> and <strong>CD56</strong>, simultaneously.<br><br>Using Plotly Express&#x27; <code>px.scatter_3d()</code> function, we can draw a 3-D plot quite easily. The syntax closely resembles that of the <code>px.scatter()</code> function used in the previous lesson section, with the addition of a <code>z</code> argument for the third axis.</p>
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>Ordinarily, we will use the <code>fig.show()</code> function to display a Plotly plot. When running such code in your IDE or Codespace, you should and will be able to run this, normally. However, in order for them to display in our online lesson materials, we have to output the plots as HTML. For this, we are using the <code>fig.to_html()</code> function. Should you wish to copy and paste the code into your IDE, or download the lesson as a Jupyter Notebook, we are leaving the <code>fig.show()</code> function call inside each cell, but have commented it out.</p>
+            </div>
+        </div>
+        
         <div class="code-area">
             <div class="code-container code-fixed">
                 <textarea id="code-cell-47">import plotly.express as px
@@ -211,7 +221,9 @@ fig = px.scatter_3d(
     z=&quot;CD56&quot;
 )
 
-fig.show()</textarea>
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <div id="code-cell-47-output" class="output"></div>
         </div>
@@ -257,7 +269,9 @@ fig.show()</textarea>
     }
 )
 
-fig.show()</textarea>
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <button id="run-code-cell-48" class="run-button">Run Code</button>
             <div id="code-cell-48-output" class="output"></div>
@@ -293,7 +307,9 @@ fig.show()</textarea>
     hover_data=[&quot;CD3&quot;, &quot;CD19&quot;, &quot;CD56&quot;]
 )
 
-fig.show()</textarea>
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <div id="code-cell-49-output" class="output"></div>
         </div>
@@ -321,7 +337,9 @@ fig.show()</textarea>
     opacity=0.7
 )
 
-fig_size.show()</textarea>
+# fig_size.show()
+
+fig_size.to_html()</textarea>
             </div>
             <div id="code-cell-50-output" class="output"></div>
         </div>
@@ -340,7 +358,9 @@ fig_size.show()</textarea>
     opacity=0.85
 )
 
-fig_size.show()</textarea>
+# fig_size.show()
+
+fig_size.to_html()</textarea>
             </div>
             <div id="code-cell-51-output" class="output"></div>
         </div>
@@ -390,7 +410,10 @@ fig_size.show()</textarea>
     color=&quot;Cell_Type&quot;,
     title=&quot;CD3 Expression by Cell Type&quot;
 )
-fig.show()</textarea>
+
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <div id="code-cell-53-output" class="output"></div>
         </div>
@@ -436,7 +459,9 @@ fig.update_layout(
     }
 )
 
-fig.show()</textarea>
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <div id="code-cell-54-output" class="output"></div>
         </div>
@@ -457,7 +482,9 @@ fig.show()</textarea>
     title=&quot;CD19 vs CD56 Expression&quot;
 )
 
-fig_2d.show()</textarea>
+# fig_2d.show()
+
+fig_2d.to_html()</textarea>
             </div>
             <div id="code-cell-55-output" class="output"></div>
         </div>
@@ -478,7 +505,9 @@ fig_2d.show()</textarea>
     title=&quot;CD3 vs CD19 Expression&quot;
 )
 
-fig_2d.show()</textarea>
+# fig_2d.show()
+
+fig_2d.to_html()</textarea>
             </div>
             <div id="code-cell-56-output" class="output"></div>
         </div>

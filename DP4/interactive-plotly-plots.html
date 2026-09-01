@@ -220,9 +220,20 @@ df.head()</textarea>
                     <div class="module-section">
                         <h3>Drawing an interactive plot</h3>
                         <p>Let&#x27;s create our first interactive scatter plot. We will plot <em>maximum heart rate achieved</em> (<code>thalach</code>) against <em>age</em> (<code>age</code>). Maximum heart rate achieved is measured when a patient is exercising, and is expected to decline with advancing age. This is partly due to age-related changes in cardiovascular function, and how the heart responds to strenuous exercise.<br><br>We can also colour the points according to heart disease diagnosis (<code>Diagnosis</code>) to explore whether any immediate differences between the two diagnostic groups emerge.<br><br>With Plotly Express, we can create a scatter plot using the <code>px.scatter()</code> function. Our exploration of Seaborn in the previous section will certainly give the syntax used some familiarity.<br><br>We first pass our DataFrame, <code>df</code>, to the <code>px.scatter()</code> function, using the <code>x</code> and <code>y</code> arguments to specify which columns should be plotted on the x and y axes respectively:<br><ul class="nested-list"><li><code>x=&quot;age&quot;</code> places <strong>patient age</strong> on the x-axis</li><br><li><code>y=&quot;thalach&quot;</code> places <strong>maximum heart rate achieved</strong> on the y-axis</li><br><li><code>color=&quot;Diagnosis&quot;</code> colours each point according to the value in the <code>Diagnosis</code> column</li></ul>The <code>px.scatter()</code> function then creates a Plotly <strong>figure object</strong>, which we assign to the variable <code>fig</code> - rather like we did in earlier Data Processing lessons with Matplotlib. Calling <code>fig.show()</code> then displays the completed interactive figure, where each point represents <strong>one patient</strong> in the dataset, positioned according to their age and maximum heart rate achieved.<br><br>As you explore the figure, consider whether the expected decline in maximum heart rate with advancing age is apparent within our data, and whether this relationship appears similar across the two diagnostic groups.</p>
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>Ordinarily, we will use the <code>fig.show()</code> function to display a Plotly plot. When running such code in your IDE or Codespace, you should and will be able to run this, normally. However, in order for them to display in our online lesson materials, we have to output the plots as HTML. For this, we are using the <code>fig.to_html()</code> function. Should you wish to copy and paste the code into your IDE, or download the lesson as a Jupyter Notebook, we are leaving the <code>fig.show()</code> function call inside each cell, but have commented it out.</p>
+            </div>
+        </div>
+        
         <div class="code-area">
             <div class="code-container code-fixed">
                 <textarea id="code-cell-29">fig = px.scatter(df, x=&quot;age&quot;, y=&quot;thalach&quot;, color=&quot;Diagnosis&quot;)
+
 # fig.show()
 fig.to_html()</textarea>
             </div>
@@ -236,6 +247,16 @@ fig.to_html()</textarea>
             </div>
             <div class="box-content">
                 <p>As you mouse over your Plotly figure, you will notice an auto-hiding toolbar in the top-right corner. Explore these buttons and controls as you please. They allow you to navigate, make selections, pan around, zoom in or out of your plot, and - at a single click - reset the view. You can also save the figure as a static PNG file, which you can then open separately, if you wish.</p>
+            </div>
+        </div>
+        
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>Another way you can zoom into your data points is to click and drag (which brings up a &#x27;+&#x27; cursor), and draw a rectangular marquee around a selection of data points. Plotly will then automatically zoom to fill the figure space with the area outlined by your selection. To reset the view, you can simply double click within the figure space.</p>
             </div>
         </div>
         <h4>Adding a trendline</h4><p>Visually inspecting a scatter plot can suggest that two variables might be related, but the appearance of a pattern alone does not really quantify that relationship.<br><br>Within Plotly Express, we can fit a simple regression line directly to a scatter plot using the <code>trendline</code> argument. This provides an immediate way to investigate whether an apparent relationship within our visualisation is supported by a fitted statistical model.<br><br>Setting <code>trendline=&quot;ols&quot;</code> fits an <strong>ordinary least squares (OLS) regression</strong> line. For a simple linear regression, this takes the form:<br><br>$$
@@ -261,7 +282,9 @@ $$<br><br>where $m$ represents the <strong>slope</strong> of the fitted line and
     trendline=&quot;ols&quot;
 )
 
-fig.show()</textarea>
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <div id="code-cell-30-output" class="output"></div>
         </div>
@@ -299,7 +322,7 @@ for _, row in results.iterrows():
                 IMPORTANT
             </div>
             <div class="box-content">
-                <p>You will also notice that we assigned the plot to a variable named <code>fig</code>, and then called <code>fig.show()</code>. In Plotly, this <code>fig</code> variable holds a <strong>Figure</strong> object.<br><br>Unlike Matplotlib&#x27;s <code>pyplot</code> interface, where plotting commands often add <em>elements</em> to <strong>Figure</strong> and <strong>Axes</strong> objects managed behind the scenes, Plotly Express explicitly creates and returns a <strong>Figure object</strong> which contains the data to be plotted, <em>together with</em> instructions describing how the plot should look and behave. Plotly then uses this object to render the interactive figure. Reiterating this, let&#x27;s check the <code>type</code> of our Plotly figure object:</p>
+                <p>You will also notice that we assigned the plot to a variable named <code>fig</code>, and then called <code>fig.show()</code> function (or <code>fig.to_html()</code> for the online lesson materials). In Plotly, this <code>fig</code> variable holds a <strong>Figure</strong> object.<br><br>Unlike Matplotlib&#x27;s <code>pyplot</code> interface, where plotting commands often add <em>elements</em> to <strong>Figure</strong> and <strong>Axes</strong> objects managed behind the scenes, Plotly Express explicitly creates and returns a <strong>Figure object</strong> which contains the data to be plotted, <em>together with</em> instructions describing how the plot should look and behave. Plotly then uses this object to render the interactive figure. Reiterating this, let&#x27;s check the <code>type</code> of our Plotly figure object:</p>
             </div>
         </div>
         
@@ -368,7 +391,9 @@ fig.show()</textarea>
     }
 )
 
-fig.show()</textarea>
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <div id="code-cell-34-output" class="output"></div>
         </div>
@@ -391,7 +416,9 @@ fig.update_layout(
     legend_title=&quot;Heart Disease&quot;
 )
 
-fig.show()</textarea>
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <div id="code-cell-35-output" class="output"></div>
         </div>
@@ -405,7 +432,9 @@ fig.show()</textarea>
     }
 )
 
-fig.show()</textarea>
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <div id="code-cell-36-output" class="output"></div>
         </div>
@@ -434,7 +463,9 @@ fig.show()</textarea>
     }
 )
 
-fig.show()</textarea>
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <div id="code-cell-37-output" class="output"></div>
         </div>
@@ -451,7 +482,9 @@ fig.show()</textarea>
         }
 )
 
-fig.show()</textarea>
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <div id="code-cell-38-output" class="output"></div>
         </div>
@@ -484,7 +517,9 @@ fig.show()</textarea>
 
 fig.update_layout(title_x=0.5)
 
-fig.show()</textarea>
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <div id="code-cell-39-output" class="output"></div>
         </div>
@@ -529,7 +564,9 @@ fig.show()</textarea>
     ]
 )
 
-fig.show()</textarea>
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <div id="code-cell-40-output" class="output"></div>
         </div>
@@ -617,7 +654,9 @@ fig.update_layout(
     ]
 )
 
-fig.show()</textarea>
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <div id="code-cell-41-output" class="output"></div>
         </div>
