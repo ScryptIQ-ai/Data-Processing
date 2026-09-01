@@ -171,7 +171,7 @@
             <div class="code-container code-fixed">
                 <textarea id="code-cell-26">import plotly.express as px</textarea>
             </div>
-            <div id="code-cell-26-output" class="output"></div>
+            <div id="code-cell-26-output" class="output" style="display: none;"></div>
         </div>
         
                     </div>
@@ -235,7 +235,7 @@ df.head()</textarea>
                 <textarea id="code-cell-29">fig = px.scatter(df, x=&quot;age&quot;, y=&quot;thalach&quot;, color=&quot;Diagnosis&quot;)
 
 # fig.show()
-fig.to_html()</textarea>
+print(fig.to_html())</textarea>
             </div>
             <div id="code-cell-29-output" class="output"></div>
         </div>
@@ -284,7 +284,7 @@ $$<br><br>where $m$ represents the <strong>slope</strong> of the fitted line and
 
 # fig.show()
 
-fig.to_html()</textarea>
+print(fig.to_html(include_plotlyjs=&quot;cdn&quot;))</textarea>
             </div>
             <div id="code-cell-30-output" class="output"></div>
         </div>
@@ -352,7 +352,9 @@ for _, row in results.iterrows():
     hover_data=[&quot;exang&quot;, &quot;trestbps&quot;]
 )
 
-fig.show()</textarea>
+# fig.show()
+
+fig.to_html()</textarea>
             </div>
             <div id="code-cell-33-output" class="output"></div>
         </div>
