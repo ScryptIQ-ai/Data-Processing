@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP4 - 3-D Data Visualisation</title>
+    <script>
+        window.LESSON_FILES = [
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp4/facs_data.csv", filename: "facs_data.csv", is_binary: false},
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp4/synthetic_gene_expression.csv", filename: "synthetic_gene_expression.csv", is_binary: false}
+        ];
+        window.LESSON_PACKAGES = ['pandas', 'numpy', 'matplotlib', 'plotly'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/scryptIQ_logo_dark.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./custom-plots.html">Custom Plots</a></li><li><a href="./interactive-plotly-plots.html">Interactive Plots with Plotly</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-3">
+                    3-D Data Visualisation
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-3"><li><a href="#introduction">Introduction</a></li><li><a href="#generating-synthetic-flow-cytometry-data">Generating synthetic flow cytometry data</a></li><li><a href="#constructing-a-3-d-scatter-plot">Constructing a 3-D scatter plot</a></li><li><a href="#navigating-the-3-d-space">Navigating the 3-D space</a></li><li><a href="#enhancing-a-3-d-visualisation">Enhancing a 3-D visualisation</a></li><li><a href="#quantifying-what-we-see">Quantifying what we see</a></li><li><a href="#summary">Summary</a></li>
+                </ul>
+            </li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3 class="collapsible-header collapsed">
+            Previous Modules
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+            <li><a href="../DP1/introduction.html">DP1</a></li>
+            <li><a href="../DP2/introduction.html">DP2</a></li>
+            <li><a href="../DP3/introduction.html">DP3</a></li>
+        </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 4</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    3-D Data Visualisation <span class="module-tag">DP4</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">Construct interactive 3-D scatter plots using Plotly Express</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">Map three numerical variables to <strong>x-, y- and z-axes</strong></span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">3</span>
+                    <span class="outcome-text">Navigate a 3-D Plotly figure</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">4</span>
+                    <span class="outcome-text">Customise the axes, labels and appearance of a 3-D Plotly figure</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">5</span>
+                    <span class="outcome-text">Use 3-D visualisation to explore patterns and subpopulations within multi-marker flow cytometry data</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">6</span>
+                    <span class="outcome-text">Recognise the limitations of 3-D plots, including <strong>occlusion</strong></span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>Real-world datasets often contain many measurements; a measurement per sample, per cell, per patient or per run of a given experiment. While two-dimensional plots allow us to compare two numerical variables at a time, they can sometimes hide structure that only becomes apparent when a <strong>third variable</strong> is considered simultaneously. The next step from interactive plots as a way to customise the display of additional data on your plots, is naturally displaying and plotting your data in three dimensions.<br><br>A <strong>3-D plot</strong> builds the axes system by adding a third axis referred to as the <strong>z-axis</strong>, allowing individual points on a plot to be positioned according to three numerical measurements, simultaneously. This can be useful when exploring genuinely multidimensional datasets.<br><br>In this section of Data Processing 4, we will demonstrate 3-D plotting using synthetic <strong>flow cytometry</strong> data containing measurements for three cell-surface markers: <strong>CD3</strong>, <strong>CD19</strong> and <strong>CD56</strong>. These markers help distinguish between each of these immune cell populations, and by plotting all three simultaneously, we can explore whether simulated <strong>T cells</strong>, <strong>B cells</strong> and <strong>natural killer (NK) cells</strong> occupy distinct regions of three-dimensional marker-expression space.<br><br>Continuing on from the previous section, we will be constructing our 3-D plots using <strong>Plotly</strong>, pulling on a familiar syntactical thread, throughout. Three-dimensional visualisations provide the viewer with a multi-perspective experience, as a function of the ability to rotate, zoom and navigate your data, changing the perception of how these points are projected; as opposed to the rather limited perspective that you might get from viewing your data from only a single fixed vantage point.</p>
+                </div>
+            </div>
+            
+            <div class="module-card" id="generating-synthetic-flow-cytometry-data">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Generating synthetic flow cytometry data</h3>
+                        <p>Let us first get acquainted with the dataset we will use in this section of the lesson. For demonstrative purposes, we have decided to use a <strong>synthetic flow cytometry dataset</strong> that has been generated for you. Synthetic data allow us to reproduce the kinds of patterns found in real-world biological datasets while keeping the underlying cell populations deliberately clear for pedagogical purposes.<br><br><strong>Flow cytometry</strong> measures characteristics of individual cells, commonly including the fluorescence associated with labelled proteins on the cell surface. Each row in our dataset therefore represents a <strong>single simulated cell</strong>, whilst numerical columns describe the expression of three cell-surface markers:<br><ul class="nested-list"><li><code>CD3</code> - associated strongly with T cells</li><br><li><code>CD19</code> - associated strongly with B cells</li><br><li><code>CD56</code> - commonly associated with natural killer (NK) cells</li></ul>The <code>Cell_Type</code> column records the simulated immune cell population to which each observation belongs.<br><br>Our dataset contains 3,000 <em>simulated</em> cells: 1,500 T cells, 1,000 B cells and 500 NK cells. The marker values have been generated so that these populations occupy different, but partially overlapping, regions of marker-expression space.<br><br>The dataset we will make use of here is modelled on the fluorescence measurements routinely generated in <strong>flow cytometry</strong>. In a flow-cytometry experiment, cells from a heterogeneous sample pass individually through one or more laser beams, where fluorescently labelled antibodies can be used to target specific proteins bound to the surface membrane, allowing the fluorescence associated with each marker to be measured for individual cells, alongside properties derived from scattered light. <strong>Fluorescence-Activated Cell Sorting (FACS)</strong>, therefore, is a specialised form of flow cytometry that can additionally <em>sort</em> cells into different populations based on these measured characteristics.<br><br>Our synthetic dataset contains three continuous variables representing the fluorescence intensities associated with three cell-surface markers: CD3, CD19 and CD56, whose expression profiles are typically associated with T-, B- and natural killer cell types. The dataset is a sound demonstrative candidate for 3-D visualisation, as it allows us to explore how the three measurements jointly contribute to the structure and separation of different cell populations.<br><br>Let&#x27;s begin by reading our data into a Pandas DataFrame, using <code>.head()</code> to get a quick overview of its structure, and column headers.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-45">import pandas as pd
+
+df_facs = pd.read_csv(&quot;data/facs_data.csv&quot;)
+df_facs.head()</textarea>
+            </div>
+            <div id="code-cell-45-output" class="output"></div>
+        </div>
+        <p>We can see from the first few rows that each cell has a numerical value attributed to <code>CD3</code>, <code>CD19</code> and <code>CD56</code> expression, together with its corresponding <code>Cell_Type</code>.<br><br>Before plotting the data, let&#x27;s check how many cells belong to each simulated population.</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-46">df_facs[&quot;Cell_Type&quot;].value_counts()</textarea>
+            </div>
+            <button id="run-code-cell-46" class="run-button">Run Code</button>
+            <div id="code-cell-46-output" class="output"></div>
+        </div>
+        
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>The dataset contains three immune cell populations of different sizes. This is useful to bear in mind as we begin visualising the data, where a denser cluster of points may reflect a larger number of cells rather than greater biological variability.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="constructing-a-3-d-scatter-plot">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Constructing a 3-D scatter plot</h3>
+                        <p>As aforementioned, with <strong>3-D scatter plots</strong>, we add a third coordinate, <code>z</code>, allowing us to represent three measurements at a time. In the case of our flow cytometry data, this means that each simulated cell can be positioned in 3-dimensional space according to its expression of <strong>CD3</strong>, <strong>CD19</strong> and <strong>CD56</strong>, simultaneously.<br><br>Using Plotly Express&#x27; <code>px.scatter_3d()</code> function, we can draw a 3-D plot quite easily. The syntax closely resembles that of the <code>px.scatter()</code> function used in the previous lesson section, with the addition of a <code>z</code> argument for the third axis.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-47">import plotly.express as px
+
+fig = px.scatter_3d(
+    df_facs,
+    x=&quot;CD3&quot;,
+    y=&quot;CD19&quot;,
+    z=&quot;CD56&quot;
+)
+
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-47-output" class="output"></div>
+        </div>
+        <p>Each point in the figure represents <em>one simulated cell</em>. Its position in three-dimensional space is determined by that cell&#x27;s expression of the three markers; with its relative expression of all three markers contributing to each cell&#x27;s position. Note that as with Plotly&#x27;s 2-D scatter plots, mousing over each individual data point, reveals a hover label showing the plotted values for each of the cell surface markers.<br><br>You might notice that there are regions of greater point density within the plot. However, since all cells currently share the same appearance, it is difficult to determine which regions correspond to particular immune cell populations. Further into the lesson, we will use additional visual properties such as colour to make these populations easier to identify.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>Z-axis:</strong> The third spatial axis in a 3-D coordinate system. In our plot, the z-axis represents expression of the <code>CD56</code> marker, alongside <code>CD3</code> on the x-axis and <code>CD19</code> on the y-axis.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="navigating-the-3-d-space">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Navigating the 3-D space</h3>
+                        <p>One of the main advantages of an interactive 3-D plot is that we are not restricted to a single viewing angle, and Plotly makes rotating the plot freely, very easy. Simply click and drag within the figure to <strong>rotate</strong> the data in three-dimensional space. You can also zoom in and out, pan across the figure and reset the camera using the Plotly toolbar.<br><br>As you rotate the plot, notice the apparent &#x27;shift&#x27; in relationships between the clusters. From some angles, two populations may appear well separated. From others, they may partially overlap or one population may obscure another. This is a phenomenon known as <strong>occlusion</strong>. The ability to change perspective is particularly important in biological imaging and multidimensional data analysis. Apparent separation or overlap can depend strongly on the direction from which a structure is viewed.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>Occlusion:</strong> The visual hiding of one observation or group of observations behind another when three-dimensional data are projected onto a two-dimensional display.</p>
+            </div>
+        </div>
+        <p>In addition to manual rotation with the mouse, we can also specify the <em>initial</em> Plotly camera position, programmatically. This can be useful when we want collaborators or readers to see the figure from a particular starting perspective. The <code>eye</code> coordinates describe the position of the virtual camera relative to the centre of the 3-D scene.</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-48">fig.update_layout(
+    scene_camera={
+        &quot;eye&quot;: {
+            &quot;x&quot;: 1.6,
+            &quot;y&quot;: 1.6,
+            &quot;z&quot;: 0.1
+        }
+    }
+)
+
+fig.show()</textarea>
+            </div>
+            <button id="run-code-cell-48" class="run-button">Run Code</button>
+            <div id="code-cell-48-output" class="output"></div>
+        </div>
+        
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>Alongside zooming, you can hold down the <em>control</em> key, while clicking and dragging your 3-D plot, to reposition it within your figure&#x27;s borders.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="enhancing-a-3-d-visualisation">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Enhancing a 3-D visualisation</h3>
+                        <p>So far, we have deliberately ignored the known identity of each simulated cell and explored the structure of the data using marker expression alone.<br><br>This gives us a useful exploratory question:<br><br><strong>Do the clusters that we can see in CD3-CD19-CD56 space correspond to biologically distinct immune cell populations?</strong><br><br>We can now reveal the <code>Cell_Type</code> information and examine whether the spatial structure of the data agrees with the simulated biological identities.</p><h4>Adding colour and size dimensions</h4><p>Perhaps the most obvious way to encode an additional categorical variable without changing the spatial position of the observations, is to alter its colour.<br><br>Here, we will colour each cell according to its known <code>Cell_Type</code>. Using the <code>color</code> keyword argument, we can simply provide the name of a categorical variable in our data. Plotly will automatically assign a different colour to each unique data category present within that variable.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-49">fig = px.scatter_3d(
+    df_facs,
+    x=&quot;CD3&quot;,
+    y=&quot;CD19&quot;,
+    z=&quot;CD56&quot;,
+    color=&quot;Cell_Type&quot;,
+    hover_data=[&quot;CD3&quot;, &quot;CD19&quot;, &quot;CD56&quot;]
+)
+
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-49-output" class="output"></div>
+        </div>
+        <p>The three spatial clusters can now be related directly to their immune cell identities. Remember that, broadly:<br><ul class="nested-list"><li><strong>T cells</strong> tend to occupy a relatively CD3-high region, reflecting greater cell-surface expression of CD3</li><br><li><strong>B cells</strong> tend to occupy a relatively CD19-high region, reflecting greater expression of CD19</li><br><li><strong>NK cells</strong> tend to occupy a relatively CD56-high region, reflecting greater expression of CD56</li></ul></p>
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>These assignments loosely reflect the way lineage-associated markers are used in real immunophenotyping. However, real flow cytometry rarely identifies a cell type from a single marker in isolation. Cell populations are typically identified using <em>combinations</em> of markers, interpreted within the context of an appropriate gating strategy.</p>
+            </div>
+        </div>
+        <p>Notice that assigning <code>Cell_Type</code> to the <code>color</code> argument also tells Plotly Express to create a separate <strong>trace</strong> for each cell population. Populations can thus be individually shown or hidden using the legend, just as we saw with categorical colour, earlier in this lesson.</p><p>Plotly can also map a numerical variable to <strong>marker size</strong>. For demonstrative purposes, we can map <code>CD3</code> expression to the size of each point. This creates an additional visual encoding of the <em>same</em> variable already displayed on the x-axis.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-50">fig_size = px.scatter_3d(
+    df_facs,
+    x=&quot;CD3&quot;,
+    y=&quot;CD19&quot;,
+    z=&quot;CD56&quot;,
+    color=&quot;Cell_Type&quot;,
+    size=&quot;CD3&quot;,
+    hover_data=[&quot;CD3&quot;, &quot;CD19&quot;, &quot;CD56&quot;],
+    opacity=0.7
+)
+
+fig_size.show()</textarea>
+            </div>
+            <div id="code-cell-50-output" class="output"></div>
+        </div>
+        <p>Notice how the centres of some clusters appear almost white. This is a consequence of <strong>overplotting</strong> and transparency rather than a feature of the underlying biology.<br><br>Since each plotted point represents an individual simulated cell, and we have set the marker <code>opacity</code> to <code>0.7</code>, each point is now partially transparent. In densely populated regions, many markers are rendered such that they stack on top of one another. Plotly&#x27;s 3-D renderer blends these overlapping semi-transparent points, producing the bright, indistinct regions visible near the centres of each cluster.<br><br>Concurrently, since marker sizes now also encode <code>CD3</code> expression, cells with <em>higher CD3 expression</em> are represented by <em>larger points</em>, which is particularly apparent within the T-cell population. However, these larger markers also increase the amount of overlap between neighbouring observations.<br><br>This demonstrates an important limitation of adding further visual dimensions: even though <em>position</em>, <em>colour</em> and <em>size</em> allow us to represent several properties simultaneously, increasing the amount of information encoded within a plot can also make parts of the underlying distribution more difficult to see.</p><h4>Improving our visualisation</h4><p>Since the dense centres of our clusters are becoming difficult to distinguish, an immediate improvement that comes to mind would be to encircle each point in a line border. However, unlike Plotly&#x27;s two-dimensional scatter plots, <code>scatter_3d</code> does <em>not</em> support drawing an outline around each marker. Instead, we can improve the figure by making the markers <em>smaller</em> and slightly <em>less transparent</em>.<br><br>As we are mapping <code>CD3</code> expression to marker size, we can use the <code>size_max</code> argument to limit the maximum size that any point can reach. This preserves the relative size differences between cells while reducing overplotting.</p><p><strong>NOTE:</strong> While Plotly Express does provide a <code>size_max</code> argument, it interestingly has no equivalent <code>size_min</code>. Observations with very low values can therefore appear as extremely small markers when size is mapped to a continuous variable, and you may need to zoom into the plot to see them clearly. This is one <em>potential drawback</em> of using marker size to encode data: small values can become difficult to perceive or compare.</p><p>Increasing the <code>opacity</code> slightly also reduces the washed-out appearance produced when many semi-transparent markers are rendered together. The result should make individual observations and the internal structure of each population easier to distinguish.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-51">fig_size = px.scatter_3d(
+    df_facs,
+    x=&quot;CD3&quot;,
+    y=&quot;CD19&quot;,
+    z=&quot;CD56&quot;,
+    color=&quot;Cell_Type&quot;,
+    size=&quot;CD3&quot;,
+    size_max=8,
+    hover_data=[&quot;CD3&quot;, &quot;CD19&quot;, &quot;CD56&quot;],
+    opacity=0.85
+)
+
+fig_size.show()</textarea>
+            </div>
+            <div id="code-cell-51-output" class="output"></div>
+        </div>
+        
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>To make up for Plotly&#x27;s lack of a <code>size_min</code> argument and to better see the points in the cluster centres, you can click the &#x27;zoom&#x27; button in the top right of the figure, clicking and dragging downward in the figure canvas, in order to zoom in. The white clouds will eventually come into focus as individual points. You can also zoom in and out of your plot by placing the mouse somewhere on the figure, and scrolling with your mouse (using either a scroll wheel or a similar gesture on a trackpad, for instance).</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="quantifying-what-we-see">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Quantifying what we see</h3>
+                        <p>As is apparent, the coloured 3-D plot suggests clear differences in marker expression between the three immune cell populations. While visualisation can be an excellent aid, apparent separation in a figure alone should not be treated as quantitative evidence.<br><br>It might be tempting, for instance, to propose that T cells have higher CD3 expression than B cells or NK cells in this dataset. However, before applying any statistical test, we can begin by summarising the marker-expression distributions, numerically.<br><br>Let&#x27;s start by calculating the <strong>median expression</strong> of each marker within a given cell population. We can do this using the Pandas <code>.median()</code> method.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-52">df_facs.groupby(&quot;Cell_Type&quot;)[[&quot;CD3&quot;, &quot;CD19&quot;, &quot;CD56&quot;]].median()</textarea>
+            </div>
+            <div id="code-cell-52-output" class="output"></div>
+        </div>
+        
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>Calculating the median is often useful when summarising measurements that may contain skewed distributions or extreme observations. In flow cytometry, the term <strong>median fluorescence intensity (MFI)</strong> is, in fact, commonly used to summarise the fluorescence distribution of a cell population. Our synthetic marker values are arbitrary rather than calibrated fluorescence measurements, but the same underlying principle still applies.</p>
+            </div>
+        </div>
+        <p>The Pandas DataFrame above allows us to check whether the patterns suggested by our 3-D visualisation are also reflected numerically. Let&#x27;s use a box plot to compare the distribution of CD3 expression across our three cell populations. In keeping with the plots we&#x27;ve done in this and the previous section of this lesson, let&#x27;s use Plotly for this, using its <code>px.box</code> function.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-53">fig = px.box(
+    df_facs, 
+    x=&quot;Cell_Type&quot;, 
+    y=&quot;CD3&quot;, 
+    color=&quot;Cell_Type&quot;,
+    title=&quot;CD3 Expression by Cell Type&quot;
+)
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-53-output" class="output"></div>
+        </div>
+        <p>As this is a Plotly plot, it retains the same informative interactivity that we have been acquainting ourselves with. If you hover your cursor over the boxes, you will see the exact quartiles, as well as the median values that we calculated in the previous step, in the hover label.<br><br>The box plot makes the distribution of CD3 expression within each population easier to compare directly, rather than the 3-D figure. The take-home message here is that exploratory visualisation and focused quantitative comparison can call for different representations of the same data. We would like to encourage your own thinking and playfulness here when approaching your data, as the choice of box plotting here is sensible given the nature of the data at hand.<br><ul class="nested-list"><li>A 3-D plot was useful for displaying and uncovering multidimensional structure</li><br><li>But ultimately, a 2-D plot was the more sound choice for comparing a specific variable between defined groups</li></ul>Whilst a statistical test could be used to formally investigate differences between populations, the appropriate test would depend on the experimental design, distribution of the measurements and scientific line of investigation being pursued.</p><h4>Customising the 3-D axes</h4><p>When working with 3-D plots in Plotly, the properties that define the three-dimensional plotting space are grouped within a component called the <strong>scene</strong>. We can customise these properties using the <code>scene</code> argument within Plotly&#x27;s <code>update_layout()</code> method.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p>The <code>scene</code> controls features specific to the 3-D environment, including the x-, y- and z-axes, their relative proportions and the position of the <strong>virtual camera</strong> through which we view the data. Aspect ratio is also controlled <em>via</em> the plot&#x27;s scene.</p>
+            </div>
+        </div>
+        <p>Since the scene contains several components, including the x-, y- and z-axes, each of these are specified and supplied in a <strong>nested dictionary</strong>. Within this, we can provide a <em>separate</em> dictionary containing the settings for each axis.<br><br>For example, we can replace abbreviated variable names with more informative axis labels, define axis ranges and adjust the relative proportions of the 3-D space. The nested <code>scene</code> dictionary contains a separate dictionary for each axis, allowing us to customise the axes, independently.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>Scene adjustments are not merely aesthetic. Changing the scale or proportions of an axis can influence how strongly patterns, distances and separation between observations appear in three dimensions.</p>
+            </div>
+        </div>
+        <p>Let&#x27;s start by simply labelling the x-, y- and z-axes.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-54">fig = px.scatter_3d(
+    df_facs,
+    x=&quot;CD3&quot;,
+    y=&quot;CD19&quot;,
+    z=&quot;CD56&quot;,
+    color=&quot;Cell_Type&quot;,
+    hover_data=[&quot;CD3&quot;, &quot;CD19&quot;, &quot;CD56&quot;]
+)
+
+# Adjust the scene by labelling our three axes
+
+fig.update_layout(
+    scene={
+        &quot;xaxis&quot;: {&quot;title&quot;: &quot;CD3 Expression&quot;},
+        &quot;yaxis&quot;: {&quot;title&quot;: &quot;CD19 Expression&quot;},
+        &quot;zaxis&quot;: {&quot;title&quot;: &quot;CD56 Expression&quot;}
+    }
+)
+
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-54-output" class="output"></div>
+        </div>
+        <p>We can also control the <em>relative proportions</em> of the three axes. By default, Plotly uses <code>aspectmode=&quot;auto&quot;</code> to determine the proportions of a 3-D scene automatically. We can instead specify how we want the axes to be scaled.<br><ul class="nested-list"><li>Setting <code>aspectmode=&quot;cube&quot;</code> gives the x-, y- and z-axes equal physical lengths within the plotting area, <em>regardless</em> of the numerical range represented by each axis.</li></ul>This can produce a visually balanced figure, but it may <em>distort</em> our perception of distances and spatial relationships if the three variables span substantially different ranges.<br><ul class="nested-list"><li>Alternatively, <code>aspectmode=&quot;data&quot;</code> scales the physical lengths of the axes in proportion to their data ranges.</li></ul>As CD3, CD19 and CD56 are represented on the same measurement scale in our synthetic dataset, this allows differences along each axis to be represented using a consistent visual scale.<br><br>In other words, a difference of one fluorescence unit is represented by approximately the same physical distance along each axis, helping to preserve the geometry of our data.</p><h4>When to opt for 2-D over 3-D visualisations</h4><p>So far, we have seen that plotting CD3, CD19 and CD56 simultaneously allows us to explore the organisation of our three simulated immune cell populations in a single 3-D space. However, more dimensions do not <em>necessarily</em> make a visualisation more informative.<br><br>Unless viewed using a virtual reality headset, a 3-D figure displayed on a flat computer screen is ultimately still projected onto a two-dimensional surface. This introduces some important limitations:<br><ul class="nested-list"><li>Distances can be difficult to judge</li><br><li>Points can obscure one another</li><br><li>The apparent separation between populations can change as we rotate the figure</li></ul>It is therefore important to question whether visualising your data in 3-D is actually adding anything meaningful. If not, a simpler 2-D visualisation may communicate the relationships in your data more clearly. That&#x27;s not to discourage you from plotting your data in 3-D to explore it, but also to cement in your mind that 3-D is not always the answer.<br><br>Let&#x27;s consider a specific question relative to the synthetic data we&#x27;ve been using, in this section of the lesson.<br><br><em>Can we distinguish the simulated B-cell and NK-cell populations from their marker expression, alone?</em><br><br>From our earlier exploration, we know that B cells tend to have greater CD19 expression, while NK cells tend to have greater CD56 expression. If these are the two marker dimensions most relevant to our question, we may not need CD3 to visualise their separation. Let&#x27;s therefore examine <em>only</em> CD19 and CD56.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-55">fig_2d = px.scatter(
+    df_facs,
+    x=&quot;CD19&quot;,
+    y=&quot;CD56&quot;,
+    color=&quot;Cell_Type&quot;,
+    opacity=0.7,
+    labels={
+        &quot;CD19&quot;: &quot;CD19 Expression&quot;,
+        &quot;CD56&quot;: &quot;CD56 Expression&quot;,
+        &quot;Cell_Type&quot;: &quot;Cell Type&quot;
+    },
+    title=&quot;CD19 vs CD56 Expression&quot;
+)
+
+fig_2d.show()</textarea>
+            </div>
+            <div id="code-cell-55-output" class="output"></div>
+        </div>
+        <p>In this particular 2-D projection, the distinction between the B-cell and NK-cell populations is immediately visible. While we lose the advantage of displaying CD3 expression on the same plot, we can now more meaningfully compare cells along the CD19 and CD56 axes without needing to rotate the figure or interpret depth.<br><br>Importantly, we have <strong>not changed the observations themselves</strong>. We have simply chosen to visualise the two dimensions that are most relevant to our particular question.<br><br>CD3 expression may still contain useful biological information, but it is not necessary to resolve the distinction between B- and NK-cells. Breaking the problem down into lower-dimensional comparisons can be favourable.<br><br>Let&#x27;s next consider a different question.<br><br><em>Can we distinguish all three simulated cell populations using their marker-expression profiles?</em><br><br>Here, removing one marker may have a greater cost. Let&#x27;s examine CD3 and CD19, while omitting CD56.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-56">fig_2d = px.scatter(
+    df_facs,
+    x=&quot;CD3&quot;,
+    y=&quot;CD19&quot;,
+    color=&quot;Cell_Type&quot;,
+    opacity=0.7,
+    labels={
+        &quot;CD3&quot;: &quot;CD3 Expression&quot;,
+        &quot;CD19&quot;: &quot;CD19 Expression&quot;,
+        &quot;Cell_Type&quot;: &quot;Cell Type&quot;
+    },
+    title=&quot;CD3 vs CD19 Expression&quot;
+)
+
+fig_2d.show()</textarea>
+            </div>
+            <div id="code-cell-56-output" class="output"></div>
+        </div>
+        <p>This projection retains enough information to distinguish all three simulated cell populations. T cells tend towards relatively high CD3 expression, B cells towards relatively high CD19 expression and NK cells occupy a region in which both markers are comparatively low.<br><br>However, we have removed <strong>CD56</strong>, so we can no longer see an important feature that characterises the NK-cell population in our simulated dataset: its relatively high CD56 expression.</p>
+        <div class="info-box remember-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                REMEMBER
+            </div>
+            <div class="box-content">
+                <p>This illustrates an important trade-off when reducing dimensionality. A 2-D projection may preserve <em>enough</em> information to distinguish populations clearly, while still concealing biologically meaningful variation that exists along the omitted dimension.<br><br>This is an important principle to bear in mind when we approach <strong>classical machine learning</strong> in the next scryptIQ course module. In these lessons, we will encounter datasets with many more features, or dimensions, than we can readily visualise or intuitively comprehend.<br><br>We will explore <strong>dimensionality reduction</strong> as an unsupervised transformation technique that represents high-dimensional data using a smaller number of dimensions, while attempting to preserve important information and structure. This can make complex datasets easier to visualise, interpret and, in some cases, analyse computationally.<br><br>As we have seen here, however, reducing dimensionality inevitably changes the representation of our data. We must therefore consider not only <em>how much</em> information is retained, but also <em>what information may be <strong>lost</strong> or obscured</em>.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="quantifying-what-we-see">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>5.</strong></p>
+                <p>Load the supplied <code>synthetic_gene_expression.csv</code> dataset and inspect its contents.<br>Create an interactive <strong>3-D scatter plot</strong> showing the expression of <code>TP53</code>, <code>MYC</code> and <code>BCL2</code>.<ul class="nested-list"><li>Colour observations according to <code>Condition</code>.</li><br><li>Customise the marker opacity and axis labels.</li><br><li>Ensure that the relative scaling of the three axes reflects the data.</li><br><li>Use the resulting visualisation to identify any apparent structure or separation between the experimental conditions.</li></ul><em>HINT: Use the comments to guide the code you write.</em></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-57"># Load the synthetic gene-expression dataset
+df_genes = pd.read_csv(&quot;data/synthetic_gene_expression.csv&quot;)
+
+# Take a look at the structure of the dataset
+df_genes.head()
+
+# Create a 3-D scatter plot using TP53, MYC and BCL2
+
+# Colour observations according to experimental condition
+
+# Remember to customise the marker opacity, axis labels and aspect mode
+</textarea>
+            </div>
+            <button id="run-code-cell-57" class="run-button">Run Code</button>
+            <div id="code-cell-57-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary</h3>
+                        <p>In this section of Data Processing 4, we explored how <strong>3-D visualisations</strong> can be used to investigate relationships between three continuous variables, simultaneously. Using a synthetic dataset, we constructed interactive 3-D scatter plots with Plotly, navigating the three-dimensional space, using colour and marker size to encode additional information and customise the axes. We also explored the <code>scene</code>, and the &#x27;virtual camera&#x27; and geometry of the 3-D space that are encoded within it. We also considered some of the limitations of 3-D visualisation on a flat screen, including occlusion, perspective and the additional complexity involved in interpreting depth on a two-dimensional screen. By comparing 2-D and 3-D representations of our data, we also explored an important principle of scientific visualisation: adding dimensions can reveal otherwise hidden structure, but the most useful visualisation is not necessarily the one containing the most dimensions. Instead, our choice of dimensions should be guided by the structure of our data and, most importantly, the scientific question we are trying to answer.</p>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./interactive-plotly-plots.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./assignment.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>

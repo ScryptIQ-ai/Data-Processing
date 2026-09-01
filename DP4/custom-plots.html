@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP4 - Custom Plots</title>
+    <script>
+        window.LESSON_FILES = [
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp/penguins_cleaned.csv", filename: "penguins_cleaned.csv", is_binary: false}
+        ];
+        window.LESSON_PACKAGES = ['pandas', 'numpy', 'matplotlib', 'seaborn', 'scipy'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/scryptIQ_logo_dark.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-1">
+                    Custom Plots
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-1"><li><a href="#introduction">Introduction</a></li><li><a href="#exploring-the-data">Exploring the data</a></li><li><a href="#standard-plot">Standard Plot</a></li><li><a href="#combining-plots">Combining plots</a></li><li><a href="#layering-the-plots">Layering the plots</a></li><li><a href="#as-a-function">As a Function</a></li><li><a href="#confirming-the-assumptions">Confirming the assumptions</a></li><li><a href="#summary">Summary</a></li>
+                </ul>
+            </li><li><a href="./interactive-plotly-plots.html">Interactive Plots with Plotly</a></li><li><a href="./3-d-plots.html">3-D Data Visualisation</a></li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3 class="collapsible-header collapsed">
+            Previous Modules
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+            <li><a href="../DP1/introduction.html">DP1</a></li>
+            <li><a href="../DP2/introduction.html">DP2</a></li>
+            <li><a href="../DP3/introduction.html">DP3</a></li>
+        </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 4</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    Custom Plots <span class="module-tag">DP4</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">Understand how to combine plotting functions for more <em>informative</em> visualisations</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">To create a function for repeatable, custom plots</span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>Throughout <em>Data Processing</em> the basics of plotting have been introduced, to help explore and understand the datasets at hand. Typically, each plot will tell you one or two things about the data: be it the shape, distribution, or averages. All of this information can be relevant to your downstream decisions, yet it can be clunky to create and view all of the plots separately. To this end, it can be useful to start blending plots together on the <strong>same</strong> axes, to better represent the data in one visualisation.<br><br>In this section we will build upon and combine <strong>seaborn</strong> plots to make an enriched visualisation, one that can be called upon repeatably after being wrapped into a function.</p>
+                </div>
+            </div>
+            
+            <div class="module-card" id="exploring-the-data">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Exploring the data</h3>
+                        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-1">import pandas as pd
+import numpy as np  
+
+import matplotlib.pyplot as plt 
+import seaborn as sns  </textarea>
+            </div>
+            <div id="code-cell-1-output" class="output" style="display: none;"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-2">df = pd.read_csv(&quot;./data/penguins_cleaned.csv&quot;)
+
+df.head(1)</textarea>
+            </div>
+            <div id="code-cell-2-output" class="output"></div>
+        </div>
+        <p>To demonstrate we will be working with the <em>penguins</em> dataset from <a href="../DP1/pandas.html"><strong>DP1</strong></a>, as it is also the demonstration dataset for <em>seaborn&#x27;s</em> documentation. In this scenario we are interested in comparing the average bill length of each <strong>species</strong>, further segmented by <strong>sex</strong>.<br><br>Before plotting it can be useful to programmatically find the mean of each of these groups, to sanity check any plots. Try using what was taught in <strong>DP1</strong> (<em>groupbys</em>) to find the <strong>mean</strong> value for each species, segmented by sex.</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-3">df</textarea>
+            </div>
+            <button id="run-code-cell-3" class="run-button">Run Code</button>
+            <div id="code-cell-3-output" class="output"></div>
+        </div>
+        <p><em>The answer is given in the collapsed box below</em></p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-4">COLLAPSIBLE
+
+df.groupby([&#x27;species&#x27;, &#x27;sex&#x27;]).agg(**{
+        &quot;bill_length_mean&quot; : (&quot;bill_length_mm&quot;, &quot;mean&quot;)
+})</textarea>
+            </div>
+            <div id="code-cell-4-output" class="output" style="display: none;"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="standard-plot">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Standard Plot</h3>
+                        <p>To visualise the results the <em>barplot</em> function can be used, giving a bar whose height equals the average (by default the mean).</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-5">sns.barplot(df, x=&#x27;species&#x27;, y=&#x27;bill_length_mm&#x27;, hue=&#x27;sex&#x27;);</textarea>
+            </div>
+            <div id="code-cell-5-output" class="output"></div>
+        </div>
+        <p>By default, <em>seaborn</em>, provides error bars that are a <strong>95% confidence interval</strong>. In <a href="../DP1/data-augmentation.html#altogether"><strong>DP1</strong></a> we demonstrated <em>parametric</em> confidence intervals where the lower and upper bounds are calculated from the standard error $SE = \frac{\sigma}{\sqrt{n}}$, scaled to the 95% percentiles:<br><br>$$CI_{95} = \frac{1.96 \cdot \sigma}{\sqrt{n}}$$<br><br>where:<ul class="nested-list"><li>σ = the standard deviation</li><br><li>n = the number of samples</li><br><li>1.96 = 95% of the distribution</li></ul></p><p>This equation assumes the data is normally distributed, as explored in <strong>DP2</strong>, as the standard error around the average is thought to be symmetrical. Here, <em>seaborn</em>, instead uses a <em>non-parametric</em> version of confidence intervals, using <strong>bootstrap resampling</strong> to find the average $N$ times from a random subsample of the data. From this new distribution, the the lower and upper values are obtained by finding the values at the 2.5th and 97.5th percentile. This method is robust to any distribution, and will have - for example - non-symmetrical values in the case of a skewed set of data.</p><p>The quantile range can be altered by giving to the argument <strong>errorbar</strong> a tuple <code>(&quot;ci&quot;, 99)</code> where the first item indicates the type of estimation statistic and the second the quantile range of the upper and lower boundries. Below we have increased the confidence range to be 99% of the resampled means, and increased the number of iterations from <code>1000</code> (the default) to <code>3000</code>.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-6">sns.barplot(df, 
+        x=&#x27;species&#x27;, 
+        y=&#x27;bill_length_mm&#x27;, 
+        hue=&#x27;sex&#x27;, 
+        errorbar=(&quot;ci&quot;, 99), 
+        n_boot=3000
+    );</textarea>
+            </div>
+            <div id="code-cell-6-output" class="output"></div>
+        </div>
+        
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>When the number of arguments to your function becomes too long, bring them onto their owns lines, indented away from the left. This provides a much cleaner view of the code, for you and others to read. It is also typical for the closing bracket to be further to the left than the opening bracket.</p>
+            </div>
+        </div>
+        <h4>Adding to the plot</h4><p>The bar plots provide a clear visual representation of the absolute difference between the mean. Yet, it provides nothing about the distribution of the data per group. Placing boxplots to the side adds this information, providing a quick visual indication of whether the averages and their confidences are appropriate.<br><br>The double plot below is adequate for what we set out to understand, but it is clunky with a lot of the space either unoccupied or containing un-needed colour - such as the majority of the bar plot base. To this extent, we will use varying tools from seaborn to create a plot that both shows the average, the confidence around said average, plus the distribution of the whole dataset.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-7">fig, axes = plt.subplots(figsize=(10,4), ncols=2, sharey=True, layout=&#x27;constrained&#x27;)
+
+sns.barplot(df, 
+        x=&#x27;species&#x27;, 
+        y=&#x27;bill_length_mm&#x27;, 
+        hue=&#x27;sex&#x27;, 
+        errorbar=(&quot;ci&quot;, 95), 
+        ax=axes[0]
+    );
+
+sns.boxplot(df, 
+        x=&#x27;species&#x27;, 
+        y=&#x27;bill_length_mm&#x27;, 
+        hue=&#x27;sex&#x27;, 
+        ax=axes[1]
+    );
+
+axes[0].set_ylim((30, 65));</textarea>
+            </div>
+            <div id="code-cell-7-output" class="output"></div>
+        </div>
+        
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>To emphasise how much work <em>seaborn</em> abstracts away, a genAI LLM was asked to produce the above plot using only Matplotlib. Click on the box to see the code.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-8">COLLAPSIBLE
+
+species = [&#x27;Adelie&#x27;, &#x27;Gentoo&#x27;, &#x27;Chinstrap&#x27;]
+sexes = [&#x27;M&#x27;, &#x27;F&#x27;]
+
+x = np.arange(len(species))
+width = 0.8 / len(sexes)
+
+fig, axes = plt.subplots(figsize=(10, 4), ncols=2, sharey=True, layout=&#x27;constrained&#x27;)
+
+for i, sex in enumerate(sexes):
+    means = [df[(df[&#x27;species&#x27;] == sp) &amp; (df[&#x27;sex&#x27;] == sex)][&#x27;bill_length_mm&#x27;].mean() for sp in species]
+    sems = [df[(df[&#x27;species&#x27;] == sp) &amp; (df[&#x27;sex&#x27;] == sex)][&#x27;bill_length_mm&#x27;].sem() for sp in species]
+    ci95 = [1.96 * s for s in sems]
+    offset = (i - (len(sexes) - 1) / 2) * width
+    axes[0].bar(x + offset, means, width, yerr=ci95, label=sex, capsize=3)
+
+axes[0].set_ylim((30, 65));
+axes[0].set_xticks(x)
+axes[0].set_xticklabels(species)
+axes[0].set_xlabel(&#x27;species&#x27;)
+axes[0].set_ylabel(&#x27;bill_length_mm&#x27;)
+axes[0].legend(title=&#x27;sex&#x27;)
+
+box_width = 0.8 / len(sexes)
+for i, sex in enumerate(sexes):
+    data = [df[(df[&#x27;species&#x27;] == sp) &amp; (df[&#x27;sex&#x27;] == sex)][&#x27;bill_length_mm&#x27;].dropna() for sp in species]
+    offset = (i - (len(sexes) - 1) / 2) * box_width
+    positions = x + offset
+    bp = axes[1].boxplot(data, positions=positions, widths=box_width * 0.9, patch_artist=True)
+    colour = plt.cm.tab10(i)
+
+    for box in bp[&#x27;boxes&#x27;]:
+        box.set_facecolor(colour)
+
+    for median in bp[&#x27;medians&#x27;]:
+        median.set_color(&#x27;black&#x27;)
+        
+    if i == 0:
+        handles = []
+    handles.append(bp[&#x27;boxes&#x27;][0])
+
+
+axes[1].set_xticks(x)
+axes[1].set_xticklabels(species)
+axes[1].set_xlabel(&#x27;species&#x27;)
+
+plt.show()</textarea>
+            </div>
+            <div id="code-cell-8-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="combining-plots">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Combining plots</h3>
+                        <p>A large drawback of a bar plot, and in a small way boxplots, is that the data points themselves are discarded despite the fact the numerical <em>y-axis</em> is present. Plotting the data points, per group, inherently gives the viewer an approximation of the dataset&#x27;s distribution, which can then be used to internally validate the information from the statistical mean and error. For example, you may observe that there are extreme outliers or even a bimodal distribution that would invalidate the assumptions from differences in the mean. Boxplots do achieve this goal, however, by plotting the interquartile range you are visually preventing any other measurements of variance - such as confidence intervals - from being shown too.</p><p><em>seaborn</em> provides the <a href="https://seaborn.pydata.org/generated/seaborn.stripplot.html">strip plot</a> function for generating categorical scatterplots, that is plots where one axis contains a single measurement and the other is split by categories, as seen below. This plot will show <strong>all</strong> the data points per category with added jitter to prevent overlapping; it is a great tool to enrich another plot as it provides the viewer with the raw data distribution, leaving no confusion around the truth behind the plot.<br><br>Just from this plot alone you can see the difference between the two sexes.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-9">sns.stripplot(
+    data=df,
+    x=&#x27;species&#x27;,
+    y=&#x27;bill_length_mm&#x27;,
+    hue=&#x27;sex&#x27;,
+    alpha=0.3,
+    legend=True,
+);</textarea>
+            </div>
+            <div id="code-cell-9-output" class="output"></div>
+        </div>
+        <p>By default, strip plot has the <strong>hue</strong> categories on the same axis, which is useful for direct comparison. However, it precludes us from adding new plots on the same axis, as more information becomes layered, increasing the visual clutter.<br><br>Changing the <em>argument</em> <strong>dodge</strong> to <code>True</code> from <code>False</code> sets the data that is altered by hue further apart from each other, giving each its own space for each category. With this in place, the plot is ready to have the confidence intervals per sub-group overlaid.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-10">sns.stripplot(
+    data=df,
+    x=&#x27;species&#x27;,
+    y=&#x27;bill_length_mm&#x27;,
+    hue=&#x27;sex&#x27;,
+    alpha=0.5,
+    legend=True,
+    dodge=True
+);</textarea>
+            </div>
+            <div id="code-cell-10-output" class="output"></div>
+        </div>
+        <h4>Adding Confidence Intervals</h4><p>Both the bar and box plot consume a lot of the plotting space with both informative and redundant information. As the strip plot now provides the information about the distribution of the data, the last piece of information needed is the average and the <em>confidence</em> around it. Delving into the seaborn toolbox again, we can use <a href="https://seaborn.pydata.org/generated/seaborn.pointplot.html">point plot</a>, which shows the averages for each group plus their error.</p>
+        <div class="info-box remember-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                REMEMBER
+            </div>
+            <div class="box-content">
+                <p>By default, both <strong>errorbar</strong> and <strong>n_boot</strong> are <code>(&quot;ci&quot;, 95)</code> and <code>1000</code>, as they are below. If you are happy with these you do not need to explicitly call them, however, we do here for clarity when teaching.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-11">sns.pointplot(
+    data=df,
+    x=&#x27;species&#x27;,
+    y=&#x27;bill_length_mm&#x27;,
+    hue=&#x27;sex&#x27;,
+    estimator=&quot;mean&quot;,
+    errorbar=(&quot;ci&quot;, 95),
+    n_boot=1000,
+);</textarea>
+            </div>
+            <div id="code-cell-11-output" class="output"></div>
+        </div>
+        <p>By default, each group of the same <em>hue</em> is linked together by a solid line to further visualise the differences between groups. In this use case, this will be switched off by passing <code>&quot;none&quot;</code> to <strong>linestyle</strong>. Additionally, the average marker is altered to a line, and the size is adjusted to an appropriate size found visually.<br><br>Try altering the values to see how they change:</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-12">sns.pointplot(
+    data=df,
+    x=&#x27;species&#x27;,
+    y=&#x27;bill_length_mm&#x27;,
+    hue=&#x27;sex&#x27;,
+    estimator=&quot;mean&quot;,
+    linestyle=&quot;none&quot;,
+    errorbar=(&quot;ci&quot;, 95),
+    n_boot=1000,
+    markers=&quot;_&quot;,        # make the average marker a line
+    markersize=25,      # increase its width
+    markeredgewidth=3,  # increase its height
+);</textarea>
+            </div>
+            <button id="run-code-cell-12" class="run-button">Run Code</button>
+            <div id="code-cell-12-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="layering-the-plots">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Layering the plots</h3>
+                        <p><em>seaborn</em> plots can be layered onto the same plot by passing the same axis to the <strong>ax</strong> argument, similar to working with matplotlib.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-13">fig, ax = plt.subplots(figsize=(6,4))
+
+sns.stripplot(
+    data=df,
+    x=&#x27;species&#x27;,
+    y=&#x27;bill_length_mm&#x27;,
+    hue=&#x27;sex&#x27;,
+    ax=ax,
+    alpha=0.2,
+    legend=False,
+    dodge=True
+)
+
+sns.pointplot(
+    data=df,
+    x=&#x27;species&#x27;,
+    y=&#x27;bill_length_mm&#x27;,
+    hue=&#x27;sex&#x27;,
+    ax=ax,
+    estimator=&quot;mean&quot;,
+    linestyle=&quot;none&quot;,
+    errorbar=(&quot;ci&quot;, 95),
+    n_boot=1000,
+    markers=&quot;_&quot;,
+    markersize=25,
+    markeredgewidth=3,
+    dodge=True
+);</textarea>
+            </div>
+            <div id="code-cell-13-output" class="output"></div>
+        </div>
+        <p>Doing so creates a plot close to what is wanted, as sadly the automated dodge function is different for each function, preventing them from properly overlapping. As the <em>argument</em> <strong>dodge</strong> also takes a floating point number that scales the amount of dodge from the centre, we can pass it this equation:<br><br>$$0.8-\frac{0.8}{N_{hue}}$$<br><br>where $N_{hue}$ is the number of unique categories in the hue column.<br><br>This will ensure, no matter the number of categories in the <em>hue</em> column, that they dodge from the centre the same amount.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-14">fig, ax = plt.subplots(figsize=(8,4))
+
+sns.stripplot(
+    data=df,
+    x=&#x27;species&#x27;,
+    y=&#x27;bill_length_mm&#x27;,
+    hue=&#x27;sex&#x27;,
+    ax=ax,
+    alpha=0.2,
+    legend=False,
+    dodge=0.8 - 0.8 / len(set(df[&#x27;sex&#x27;]))
+)
+
+sns.pointplot(
+    data=df,
+    x=&#x27;species&#x27;,
+    y=&#x27;bill_length_mm&#x27;,
+    hue=&#x27;sex&#x27;,
+    ax=ax,
+    estimator=&quot;mean&quot;,
+    linestyle=&quot;none&quot;,
+    errorbar=(&quot;ci&quot;, 95),
+    n_boot=1000,
+    markers=&quot;_&quot;,
+    markersize=25,
+    markeredgewidth=3,
+    dodge=0.8 - 0.8 / len(set(df[&#x27;sex&#x27;]))
+);</textarea>
+            </div>
+            <div id="code-cell-14-output" class="output"></div>
+        </div>
+        
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>The equation to have the same dodge for all functions was obtained by via other user feedback on <em>Stack Overflow</em>.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="layering-the-plots">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>1.</strong></p>
+                <p>Part 1:<br>Add a box plot super imposed over the top<br>Part 2:<br>Add a second column plot to the one above. This plot should be a:<ul class="nested-list"><li>KDE plot of the whole dataset, split by <code>sex</code></li><br><li>The values of of the KDE should be shared with the y-axis of the custom plot</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-15"></textarea>
+            </div>
+            <button id="run-code-cell-15" class="run-button">Run Code</button>
+            <div id="code-cell-15-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="as-a-function">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>As a Function</h3>
+                        <p>Once the setup to create the plot is formalised, you will nearly always want to wrap it into a function. To amend the code to work as a function, the changeable aspects of the plot — the data, the x- and y-axis, and the hue — will need to be rendered into function arguments.<br><br>Using the cell below, try to complete the function:</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-16">def student_quantify_plot():
+</textarea>
+            </div>
+            <button id="run-code-cell-16" class="run-button">Run Code</button>
+            <div id="code-cell-16-output" class="output"></div>
+        </div>
+        <p>The answer is given in the collapsed cell below with an additional set of code that returns the average for each group via the <em>groupby</em> method.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-17">COLLAPSIBLE
+
+def quantify_plot(data, y, x=None, hue=None):
+    &quot;&quot;&quot;Plot individual data points with mean and 95% CI, and summarise group means.
+
+    Draws a strip plot (raw data points, semi-transparent) overlaid with a
+    point plot (mean ± 95% confidence interval) for a quantitative variable,
+    optionally split by one or two categorical grouping variables. Also
+    returns a table of group means.
+
+    :param data: Long-format DataFrame containing the columns to plot.
+    :type data: pandas.DataFrame
+    :param y: Column name of the quantitative variable to plot on the y-axis.
+    :type y: str
+    :param x: Column name of the categorical variable to plot on the x-axis, defaults to None.
+    :type x: str, optional
+    :param hue: Column name of the categorical variable used for colour grouping (a second grouping factor), defaults to None.
+    :type hue: str, optional
+    :return: A tuple of the created figure and a DataFrame of group means.
+    :rtype: tuple[matplotlib.figure.Figure, pandas.DataFrame]
+    &quot;&quot;&quot;
+
+    fig, ax = plt.subplots()
+
+    # If, no hue grouping, no need to dodge
+    if hue is None:
+        dodge = False
+    else:
+        dodge = 0.8 - 0.8 / len(set(data[hue]))
+
+    sns.stripplot(
+        data=data,
+        x=x,
+        y=y,
+        hue=hue,
+        ax=ax,
+        alpha=0.3,
+        legend=False,
+        dodge=dodge
+    )
+
+    sns.pointplot(
+        data=data,
+        x=x,
+        y=y,
+        hue=hue,
+        ax=ax,
+        estimator=&quot;mean&quot;,
+        linestyle=&quot;none&quot;,
+        errorbar=(&quot;ci&quot;, 95),
+        n_boot=1000,
+        markers=&quot;_&quot;,
+        markersize=25,
+        markeredgewidth=3,
+        dodge=dodge
+    )
+
+    # Build the list of columns to group by, skipping x or hue if not given
+    groupby_data = []
+
+    for i in [x, hue]:
+        if i != None:
+            groupby_data.append(i)
+
+    # Compute the mean of y for each combination of grouping variable(s),
+    gb = data.groupby(groupby_data).agg(**{
+        f&quot;{y}_mean&quot; : (y, &quot;mean&quot;)
+    }) 
+
+    return fig, gb</textarea>
+            </div>
+            <div id="code-cell-17-output" class="output" style="display: none;"></div>
+        </div>
+        <p>Try passing to the function different columns to test it&#x27;s capabilities:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-18">df.head(1)</textarea>
+            </div>
+            <div id="code-cell-18-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-19">plot, data = quantify_plot()
+
+data</textarea>
+            </div>
+            <button id="run-code-cell-19" class="run-button">Run Code</button>
+            <div id="code-cell-19-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="as-a-function">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>2.</strong></p>
+                <p>Amend the function above in two ways:<br>(1) Add the capability to modify the averaging function for both the plots and the groupby method:<ul class="nested-list"><li>give the argument an appropriate name</li><br><li>provide a default value</li></ul>(2) Add the capability to add custom <strong>axis</strong> labels and a title, where the defaults will be the column names or <code>&quot;&quot;</code> (an empty list) respectively<br>(3) Refactor the for loop that removes <code>None</code> values for the groupby list into a <strong>list comprehension</strong></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-20">def quantify_plot(data, y, x=None, hue=None):
+
+    fig, ax = plt.subplots(layout=&#x27;constrained&#x27;)
+
+    # If, no hue grouping, no need to dodge
+    if hue is None:
+        dodge = False
+    else:
+        dodge = 0.8 - 0.8 / len(set(data[hue]))
+
+    sns.stripplot(
+        data=data,
+        x=x,
+        y=y,
+        hue=hue,
+        ax=ax,
+        alpha=0.3,
+        legend=False,
+        dodge=dodge
+    )
+
+    sns.pointplot(
+        data=data,
+        x=x,
+        y=y,
+        hue=hue,
+        ax=ax,
+        estimator=&quot;mean&quot;,
+        linestyle=&quot;none&quot;,
+        errorbar=(&quot;ci&quot;, 95),
+        n_boot=1000,
+        markers=&quot;_&quot;,
+        markersize=25,
+        markeredgewidth=3,
+        dodge=dodge
+    )
+
+    # Build the list of columns to group by, skipping x or hue if not given
+    groupby_data = []
+
+    for i in [x, hue]:
+        if i != None:
+            groupby_data.append(i)
+
+    # Compute the mean of y for each combination of grouping variable(s),
+    gb = data.groupby(groupby_data).agg(**{
+        f&quot;{y}_mean&quot; : (y, &quot;mean&quot;)
+    })
+
+    return fig, gb</textarea>
+            </div>
+            <button id="run-code-cell-20" class="run-button">Run Code</button>
+            <div id="code-cell-20-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="confirming-the-assumptions">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Confirming the assumptions</h3>
+                        <p>To round out this topic, we will quickly demonstrate how to statistically confirm that two groups are different using <a href="https://docs.scipy.org/doc/scipy/reference/stats.html">scipy stats</a>.<br><br>For the sample, we will find out if the <strong>Gentoo</strong> and <strong>Chinstrap</strong> Female penguins have statistically different <em>bill length</em> distributions.</p>
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-21">plot, data = quantify_plot(df[(df[&#x27;species&#x27;]==&quot;Gentoo&quot;)|(df[&#x27;species&#x27;]==&quot;Chinstrap&quot;)], &quot;bill_length_mm&quot;, x=&quot;species&quot;, hue=&quot;sex&quot;)</textarea>
+            </div>
+            <button id="run-code-cell-21" class="run-button">Run Code</button>
+            <div id="code-cell-21-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-22">from scipy import stats</textarea>
+            </div>
+            <div id="code-cell-22-output" class="output" style="display: none;"></div>
+        </div>
+        <p>First, the data for each group must be isolated using conditional filtering, assigning the output to a new variable.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-23">group1 = df[(df[&#x27;species&#x27;] == &#x27;Chinstrap&#x27;) &amp; (df[&#x27;sex&#x27;] == &#x27;F&#x27;)][&#x27;bill_length_mm&#x27;]
+group2 = df[(df[&#x27;species&#x27;] == &#x27;Gentoo&#x27;) &amp; (df[&#x27;sex&#x27;] == &#x27;F&#x27;)][&#x27;bill_length_mm&#x27;]
+
+group1.head(5)</textarea>
+            </div>
+            <div id="code-cell-23-output" class="output"></div>
+        </div>
+        <p>These can then be passed to an <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.ttest_ind.html#scipy.stats.ttest_ind"><strong>independent</strong> T-test</a> from scipy stats. Scipy stats provides nearly all the statistical tests you would need, including all the variations of the T-test.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-24">stats.ttest_ind(group1, group2, equal_var=False)</textarea>
+            </div>
+            <div id="code-cell-24-output" class="output"></div>
+        </div>
+        
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>Setting <code>equal_var</code> to False employs the Welch method, which does not assume the variance is equal. Given this is the most likely situation, you will almost always want this to be false. Scipy has it as <em>True</em> by default due to backwards compatibility, despite Welch being more common.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="confirming-the-assumptions">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>3.</strong></p>
+                <p>Turn the process above into a function, <code>t_test_results</code>, that returns the results of an independent T-test.<br>The function should take the following arguments:<ul class="nested-list"><li><code>data</code>: the DataFrame containing the data</li><br><li><code>feature</code>: the column name used to split the data into groups (e.g. &quot;species&quot;)</li><br><li><code>grp1</code> and <code>grp2</code>: the two category values within <code>feature</code> to compare (e.g. &quot;Gentoo&quot; and &quot;Chinstrap&quot;)</li><br><li><code>measurement</code>: the column containing the numerical values to test (e.g. &quot;bill_length_mm&quot;)</li><br><li><code>conditionals</code>: an optional tuple of <code>(column, value)</code> used to further filter both groups before testing (e.g. only comparing females)</li></ul>First, isolate <code>group1</code> and <code>group2</code> using <code>feature</code>. Where there are <code>conditionals</code>, the data should be further filtered. Then pass the relevant <code>measurement</code> values from each group to an independent T-test, returning the result.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-25">def t_test_results(data, feature, grp1, grp2, measurement, conditionals=None):
+    pass</textarea>
+            </div>
+            <button id="run-code-cell-25" class="run-button">Run Code</button>
+            <div id="code-cell-25-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary</h3>
+                        <p>In this chapter, we explored how multiple visualisations can be <strong>combined and layered</strong> to communicate more information within a single figure. Using the Palmer Penguins dataset, we compared categorical groups and examined how bar plots, box plots, strip plots and point plots represent different aspects of a dataset, including averages, confidence intervals and the underlying distribution of observations. We explored Seaborn&#x27;s bootstrapped confidence intervals, combined strip and point plots on shared axes and accounted for categorical <code>hue</code> and <code>dodge</code> when aligning plot layers. We then wrapped our custom visualisation into a reusable <strong>function</strong> before using SciPy to statistically assess differences between groups with an independent t-test.</p>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./introduction.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./interactive-plotly-plots.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>

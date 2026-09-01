@@ -1,0 +1,1294 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <!-- MathJax for mathematical notation -->
+    <script>
+    MathJax = {
+        tex: {
+            inlineMath: [['$', '$']],
+            displayMath: [['$$', '$$']],
+            processEscapes: true
+        },
+        svg: {
+            fontCache: 'global'
+        }
+    };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    
+    <!-- Pyodide and CodeMirror -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
+    <link rel="icon" type="image/png" sizes="32x32" href="../assets/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="../assets/favicon-16x16.png">
+    <link rel="apple-touch-icon" sizes="192x192" href="../assets/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="../assets/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="512x512" href="../assets/android-chrome-512x512.png">
+
+    <!-- Core Stylesheets -->
+    <link rel="stylesheet" href=../assets/colours.css>
+    <link rel="stylesheet" href="../assets/shared-styles.css">
+    <link rel="stylesheet" href="../assets/nav-bar.css">
+    <link rel="stylesheet" href="../assets/module_card.css">
+    <link rel="stylesheet" href="../assets/learning_outcomes.css">
+    <link rel="stylesheet" href="../assets/learning_lists.css">
+    <link rel="stylesheet" href="../assets/box_styles.css">
+    <link rel="stylesheet" href="../assets/code_styles.css">
+    
+    <!-- Meta Tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>scryptIQ - DP4 - Interactive Plots with Plotly</title>
+    <script>
+        window.LESSON_FILES = [
+            {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp4/heart_disease.csv", filename: "heart_disease.csv", is_binary: false}
+        ];
+        window.LESSON_PACKAGES = ['pandas', 'numpy', 'matplotlib', 'plotly', 'statsmodels'];
+    </script>
+</head>
+<body>
+    
+    <!-- Sidebar Navigation -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <a href="../homepage.html" style="text-decoration: none; display: inline-block;">
+                <img src="../assets/scryptIQ_logo_dark.png" alt="scryptIQ Logo" class="sidebar-logo">
+            </a>
+        </div>
+
+        <h3>Content</h3>
+        <ul>
+            <li><a href="./introduction.html" class="">Introduction</a></li><li><a href="./custom-plots.html">Custom Plots</a></li>
+            <li>
+                <div class="nav-toggle active" data-target="expandable-section-2">
+                    Interactive Plots with Plotly
+                    <span class="toggle-icon">▼</span>
+                </div>
+                <ul class="nested-nav expanded" id="expandable-section-2"><li><a href="#introduction">Introduction</a></li><li><a href="#plotly-express">Plotly Express</a></li><li><a href="#loading-the-clinical-dataset">Loading the Clinical Dataset</a></li><li><a href="#setting-up-plotly">Setting up Plotly</a></li><li><a href="#drawing-an-interactive-plot">Drawing an interactive plot</a></li><li><a href="#enhancing-interactivity">Enhancing interactivity</a></li><li><a href="#advanced-interactions">Advanced interactions</a></li><li><a href="#exporting-interactive-plots">Exporting interactive plots</a></li><li><a href="#summary">Summary</a></li>
+                </ul>
+            </li><li><a href="./3-d-plots.html">3-D Data Visualisation</a></li><li><a href="./assignment.html">Assignment</a></li><li><a href="./feedback.html">Feedback</a></li>
+        </ul>
+
+        <h3 class="collapsible-header collapsed">
+            Resources
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+                <li><a href="./glossary.html">Glossary</a></li><li><a href="./downloads.html">Downloads</a></li><li><a href="../HB/introduction.html">Handbook</a></li>
+            </ul>
+        </div>
+
+        <h3 class="collapsible-header collapsed">
+            Previous Modules
+            <span class="collapse-icon">►</span>
+        </h3>
+        <div class="collapsible-content collapsed">
+            <ul>
+            <li><a href="../DP1/introduction.html">DP1</a></li>
+            <li><a href="../DP2/introduction.html">DP2</a></li>
+            <li><a href="../DP3/introduction.html">DP3</a></li>
+        </ul>
+        </div>
+
+        <h3>
+            <li><a href="./report-issue.html">Report an Issue</a></li>
+        </h3>
+    </div>
+
+    <!-- Sidebar Toggle Button -->
+    <button id="sidebar-toggle" class="sidebar-toggle">❮</button>
+
+    <!-- Main Content Area -->
+    <div id="main-content" class="main-content">
+        <!-- Top Navigation Bar -->
+        <div class="top-navbar">
+            <h1 class="page-title">Data Processing 4</h1>
+            <div class="nav-actions">
+                <a href="../homepage.html" class="text-button" title="Materials homepage">
+                    Homepage
+                </a>
+                <a href="https://scryptiq.ai/my-cohorts/" class="text-button scryptiq-button" title="Find out more about us">
+                    scryptIQ
+                </a>
+            </div>
+        </div>
+
+        
+            <div class="module-card" id="introduction">
+                <div class="module-header">
+                    Interactive Plots with Plotly <span class="module-tag">DP4</span>
+                </div>
+                <div class="module-body">
+                    <h3>Learning Objectives</h3>
+                    <div class="learning-outcomes">
+                        <div class="outcome-item">
+                    <span class="outcome-number">1</span>
+                    <span class="outcome-text">Create interactive scatter plots from Pandas DataFrames using <strong>Plotly Express</strong></span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">2</span>
+                    <span class="outcome-text">Explain the role of Plotly <strong>Figure objects</strong> and <strong>traces</strong></span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">3</span>
+                    <span class="outcome-text">Add, remove and customise information displayed in <strong>hover labels</strong></span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">4</span>
+                    <span class="outcome-text">Customise the layout and appearance of a Plotly figure using <code>update_layout()</code> and <code>update_traces()</code></span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">5</span>
+                    <span class="outcome-text">Create <strong>update menus</strong> containing dropdowns and buttons</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">6</span>
+                    <span class="outcome-text">Use interactive controls to show or hide traces and switch between variables within a figure</span>
+                </div>
+<div class="outcome-item">
+                    <span class="outcome-number">7</span>
+                    <span class="outcome-text">Export interactive Plotly figures as self-contained or CDN-dependent <strong>HTML files</strong></span>
+                </div>
+                    </div>
+                    <h3>Introduction</h3>
+                    <p>Up to this point in the course, we have created plots using <strong>Matplotlib</strong> and <strong>Seaborn</strong>, which have largely been static in their presentation. Once a figure has been generated, the information displayed within it is fixed and can be readily exported for use in publications, reports and presentations <em>etc</em>. We have not, however, directly interacted with the data displayed within our figures, before.<br><br>This section of Data Processing 4 introduces <strong>Plotly</strong>, a Python plotting library with powerful tools for easily creating <strong>interactive visualisations</strong>.<br><br>Among many features, interactivity within a Plotly plot can allow you to:<br><ul class="nested-list"><li>Hover over individual data points to reveal additional information</li><br><li>Zoom into regions of interest</li><br><li>Pan around a plot</li><br><li>Show or hide particular groups of data</li><br><li>Select individual observations or regions</li><br><li>Create interactive controls for changing what is displayed</li></ul>When working with complex and layered datasets, this interactivity can provide useful ways to explore and navigate data. A static scatter plot might show us the overall relationship between two variables, for example, while an interactive version of it could allow us to inspect additional features associated with individual observations, simply by hovering over individual data points.<br><br>This allows us to make additional information available <em>when it is needed</em>, without permanently adding that information to the visualisation and potentially making the figure difficult to interpret. As we will explore throughout this section, however, interactivity is most useful when it helps us investigate our data or answer a scientific question, rather than simply adding complexity to a figure. Economy and intentionality are key with good visualisations, and so we must be selective with how we use valuable plotting real estate to serve our observations and analyses.</p>
+                </div>
+            </div>
+            
+            <div class="module-card" id="plotly-express">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Plotly Express</h3>
+                        <p>Plotly provides several ways to construct figures in Python. In this notebook, we will primarily use <strong>Plotly Express</strong> - Plotly&#x27;s high-level interface for quickly creating common plots from DataFrames. Plotly Express creates standard Plotly figure objects behind the scenes, which can then be further customised using Plotly&#x27;s lower-level <strong>Graph Objects</strong> interface if greater control is required.<br><br>The conventional alias to use when importing plotly express is <code>px</code>.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-26">import plotly.express as px</textarea>
+            </div>
+            <div id="code-cell-26-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="loading-the-clinical-dataset">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Loading the Clinical Dataset</h3>
+                        <p>For our demonstration in this section of the lesson, we will be using the classic <strong>Heart Disease dataset</strong> - a widely recognised clinical dataset frequently featured on platforms like Kaggle and the UCI Machine Learning Repository. This real-world dataset contains anonymised patient records, including clinical features such as age, maximum heart rate achieved and serum cholesterol <em>etc.</em><br><br>It is a great candidate demonstrator for interactive plotting techniques, as it allows us to dynamically explore relationships between clinical measurements and observed heart-disease status, without overwhelming our display.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-27">import pandas as pd
+
+df = pd.read_csv(&quot;data/heart_disease.csv&quot;)
+df[&quot;Diagnosis&quot;] = df[&quot;target&quot;].map({0: &quot;No heart disease&quot;, 1: &quot;Heart disease&quot;, 2: &quot;Heart disease&quot;, 3: &quot;Heart disease&quot;, 4: &quot;Heart disease&quot;})
+df.head()</textarea>
+            </div>
+            <div id="code-cell-27-output" class="output"></div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-28">df.shape</textarea>
+            </div>
+            <div id="code-cell-28-output" class="output"></div>
+        </div>
+        <p>Checking the shape of our DataFrame tells us that we have 14 columns, representing 14 recorded variables, or <strong>features</strong>, for each patient (or <strong>sample</strong>, represented by a row).</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><ul class="nested-list"><li>In data science and machine learning, a sample (or observation) commonly refers to one individual item in a dataset. In a Pandas DataFrame, each sample is typically represented by a row.</li><br><li>A feature is a measurable property or variable associated with each sample. In a Pandas DataFrame, each feature is typically represented by a column.</li></ul></p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="drawing-an-interactive-plot">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Drawing an interactive plot</h3>
+                        <p>Let&#x27;s create our first interactive scatter plot. We will plot <em>maximum heart rate achieved</em> (<code>thalach</code>) against <em>age</em> (<code>age</code>). Maximum heart rate achieved is measured when a patient is exercising, and is expected to decline with advancing age. This is partly due to age-related changes in cardiovascular function, and how the heart responds to strenuous exercise.<br><br>We can also colour the points according to heart disease diagnosis (<code>Diagnosis</code>) to explore whether any immediate differences between the two diagnostic groups emerge.<br><br>With Plotly Express, we can create a scatter plot using the <code>px.scatter()</code> function. Our exploration of Seaborn in the previous section will certainly give the syntax used some familiarity.<br><br>We first pass our DataFrame, <code>df</code>, to the <code>px.scatter()</code> function, using the <code>x</code> and <code>y</code> arguments to specify which columns should be plotted on the x and y axes respectively:<br><ul class="nested-list"><li><code>x=&quot;age&quot;</code> places <strong>patient age</strong> on the x-axis</li><br><li><code>y=&quot;thalach&quot;</code> places <strong>maximum heart rate achieved</strong> on the y-axis</li><br><li><code>color=&quot;Diagnosis&quot;</code> colours each point according to the value in the <code>Diagnosis</code> column</li></ul>The <code>px.scatter()</code> function then creates a Plotly <strong>figure object</strong>, which we assign to the variable <code>fig</code> - rather like we did in earlier Data Processing lessons with Matplotlib. Calling <code>fig.show()</code> then displays the completed interactive figure, where each point represents <strong>one patient</strong> in the dataset, positioned according to their age and maximum heart rate achieved.<br><br>As you explore the figure, consider whether the expected decline in maximum heart rate with advancing age is apparent within our data, and whether this relationship appears similar across the two diagnostic groups.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-29">fig = px.scatter(df, x=&quot;age&quot;, y=&quot;thalach&quot;, color=&quot;Diagnosis&quot;)
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-29-output" class="output"></div>
+        </div>
+        
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>As you mouse over your Plotly figure, you will notice an auto-hiding toolbar in the top-right corner. Explore these buttons and controls as you please. They allow you to navigate, make selections, pan around, zoom in or out of your plot, and - at a single click - reset the view. You can also save the figure as a static PNG file, which you can then open separately, if you wish.</p>
+            </div>
+        </div>
+        <h4>Adding a trendline</h4><p>Visually inspecting a scatter plot can suggest that two variables might be related, but the appearance of a pattern alone does not really quantify that relationship.<br><br>Within Plotly Express, we can fit a simple regression line directly to a scatter plot using the <code>trendline</code> argument. This provides an immediate way to investigate whether an apparent relationship within our visualisation is supported by a fitted statistical model.<br><br>Setting <code>trendline=&quot;ols&quot;</code> fits an <strong>ordinary least squares (OLS) regression</strong> line. For a simple linear regression, this takes the form:<br><br>$$
+y = mx + c
+$$<br><br>where $m$ represents the <strong>slope</strong> of the fitted line and $c$ its <strong>intercept</strong>.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p><strong>Ordinary least squares</strong> (<strong>OLS</strong>) chooses the line that <em>minimises</em> the sum of the squared vertical distances between the observed data points and the fitted line.</p>
+            </div>
+        </div>
+        <p>When a categorical variable is also supplied using the <code>color</code> argument, Plotly fits a separate regression line to each group. In our example, this allows us to investigate the relationship between age and maximum heart rate separately within each diagnostic category.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-30">fig = px.scatter(
+    df,
+    x=&quot;age&quot;,
+    y=&quot;thalach&quot;,
+    color=&quot;Diagnosis&quot;,
+    trendline=&quot;ols&quot;
+)
+
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-30-output" class="output"></div>
+        </div>
+        <p>At first glance, both fitted regression lines suggest a <em>negative relationship</em> between age and maximum heart rate achieved. As age increases, maximum heart rate achieved during the exercise test tends to decrease, and this is clear from the downward trend observed in both healthy patients and heart disease sufferers.<br><br>The relationship does, however, appear to differ slightly between the two diagnostic groups. The downward trend is particularly steep among patients without heart disease, while the fitted line for patients with heart disease is shallower. We can also see a difference in the overall position of the two groups, with patients diagnosed with heart disease tending to achieve lower maximum heart rates across much of the age range.<br><br>These are interesting visual observations, but we should avoid judging the strength of a relationship from the appearance of a fitted line alone. Plotly stores the statistical models used to generate its trendlines, allowing us to examine these apparent relationships more quantitatively.<br><br>We can retrieve these models using the <code>px.get_trendline_results()</code> function and extract several useful quantities:<br><ul class="nested-list"><li>The <strong>slope</strong>, which describes the direction and magnitude of the fitted linear relationship</li><br><li><strong>$R^2$</strong>, which describes the proportion of variation in maximum heart rate accounted for by the fitted linear model</li><br><li>The <strong>p-value for the slope</strong>, which tests whether the fitted slope differs from zero under the assumptions of the regression model</li></ul>Together, these values will allow us to investigate whether the relationships suggested by our visualisation are supported by the fitted models.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-31">results = px.get_trendline_results(fig)
+
+for _, row in results.iterrows():
+
+    model = row[&quot;px_fit_results&quot;]
+
+    print(f&#x27;Diagnosis: {row[&quot;Diagnosis&quot;]}&#x27;)
+    print(f&#x27;Slope: {model.params[1]:.3f}&#x27;)
+    print(f&#x27;R²: {model.rsquared:.3f}&#x27;)
+    print(f&#x27;p-value: {model.pvalues[1]:.3g}&#x27;)
+    print()</textarea>
+            </div>
+            <div id="code-cell-31-output" class="output"></div>
+        </div>
+        <p>These values allow us to move beyond simply asking whether a relationship <em>looks</em> convincing in the scatter plot.<br><br>For patients with no heart disease:<br><ul class="nested-list"><li>The slope of -1.056 suggests that maximum heart rate <em>decreases</em> by approximately <em>1 beat per minute for each additional year of age</em>.</li><br><li>The $R^2$ value of 0.274 indicates that age accounts for around 27% of the variation captured by the fitted linear model, while the very small p-value provides strong evidence that the slope differs from zero.</li></ul>For patients with heart disease:<br><ul class="nested-list"><li>The relationship is much weaker. The slope shows a much more gradual descent at -0.368.</li><br><li>The $R^2$ is only 0.017, while a p-value of 0.129 provides insufficient evidence that the slope differs from zero.</li></ul>This is in line with the visual impression we get, where maximum heart rate shows a clear negative relationship with age in patients without heart disease, but there is, surprisingly, less evidence of a linear relationship within the heart disease group.</p>
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>These regressions demonstrate association rather than causation, and do not test whether the relationship itself differs significantly between the two diagnostic groups.</p>
+            </div>
+        </div>
+        <p>As for explaining why the relationship between these two variables differs in heart disease and healthy patients, one possibility could be that <code>thalach</code> reflects the maximum heart rate achieved during an <strong>exercise</strong> test, rather than a person&#x27;s physiological maximum. Patients with heart disease may stop exercising because of symptoms such as angina, breathlessness or fatigue before reaching their maximum heart rate.<br><br>Heart disease itself can also impair the heart&#x27;s ability to increase its rate during exercise, and medications such as beta-blockers could further suppress this response. These additional influences could weaken the normal relationship between age and maximum heart rate.</p><p><strong>NOTE BOX</strong><br><br>Plotly Express uses the <code>statsmodels</code> package to fit OLS regression models. This package must therefore be installed in the Python environment for <code>trendline=&quot;ols&quot;</code> to work.</p><h4>Exploring the interactivity</h4><p>If you hover your cursor over the data points in the plot above, you will immediately notice the core interactivity Plotly provides, by default. A small tooltip box appears, displaying the exact values for the x and y coordinates, as well as the target classification.</p>
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>You will also notice that we assigned the plot to a variable named <code>fig</code>, and then called <code>fig.show()</code>. In Plotly, this <code>fig</code> variable holds a <strong>Figure</strong> object.<br><br>Unlike Matplotlib&#x27;s <code>pyplot</code> interface, where plotting commands often add <em>elements</em> to <strong>Figure</strong> and <strong>Axes</strong> objects managed behind the scenes, Plotly Express explicitly creates and returns a <strong>Figure object</strong> which contains the data to be plotted, <em>together with</em> instructions describing how the plot should look and behave. Plotly then uses this object to render the interactive figure. Reiterating this, let&#x27;s check the <code>type</code> of our Plotly figure object:</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-32">type(fig)</textarea>
+            </div>
+            <div id="code-cell-32-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="enhancing-interactivity">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Enhancing interactivity</h3>
+                        <p>The Plotly figure we created above is already interactive, by default. However, Plotly also allows us to decide <em>what information should be revealed</em> during these interactions, customising how the figure itself is presented.<br><br>In this section, we will build on our existing scatter plot by:<br><ul class="nested-list"><li>Adding additional patient information to the hover labels</li><br><li>Giving the plot clearer axis labels and a descriptive title</li><br><li>Adjusting the appearance of the figure using its <code>Figure</code> object</li></ul>This allows us to make an interactive visualisation more informative without overcrowding the plot itself.</p><h4>Hover data</h4><p>One of the most useful features of an interactive plot is the ability to display additional information <em>only when we need it</em>. Currently, hovering over a point in our scatter plot shows the variables that Plotly is using to construct the figure. We can, however, add further columns from our DataFrame to the hover label using the <code>hover_data</code> argument.<br><br>For example, although we are plotting age against maximum heart rate, it may also be useful to know whether the patient experiences exercise-induced angina (<code>exang</code>) and their resting blood pressure (<code>trestbps</code>). This could be highly revealing: if a patient experiences angina during the test, this might explain why they stopped exercising before reaching their true physiological maximum heart rate, which could be the very reason we saw a weaker relationship between age and maximum heart rate for patients with heart disease earlier.<br><br>We can supply these column names to <code>hover_data</code> as a Python list:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-33">fig = px.scatter(
+    df,
+    x=&quot;age&quot;,
+    y=&quot;thalach&quot;,
+    color=&quot;Diagnosis&quot;,
+    hover_data=[&quot;exang&quot;, &quot;trestbps&quot;]
+)
+
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-33-output" class="output"></div>
+        </div>
+        <p>Now, move your cursor over some of the points in the figure above.<br><br>Precisely as with our previous figure, the position of each point is still determined by <code>age</code> and <code>thalach</code>, while its colour is determined by <code>Diagnosis</code>. However, the hover label now also reports the patient&#x27;s <code>exang</code> and <code>trestbps</code> values.<br><br>This is particularly useful when working with datasets containing many variables. Rather than trying to encode every variable visually using colour, size, shape or annotations, we can make additional information available <em>on demand</em> using the hover label. This keeps the primary visualisations clean and focused. By relegating secondary information to hover labels, we make additional complexity available without overcrowding the static display.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>Adding variables to <code>hover_data</code> does <strong>not</strong> change the <em>position</em> or <em>appearance</em> of the points. It only changes the information displayed when we interact with them.</p>
+            </div>
+        </div>
+        <p>Alternatively, we can supply a <strong>dictionary</strong> to <code>hover_data</code> when we want more control over the information displayed.<br><br>While a <strong>list</strong> allows us to <strong>add</strong> columns to the hover label, a <strong>dictionary</strong> also allows us to explicitly include or exclude variables. Setting a column to <code>True</code> includes it in the hover label, while setting it to <code>False</code> removes it. Dictionaries can also be used to control how individual values are formatted.</p>
+        <div class="info-box remember-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                REMEMBER
+            </div>
+            <div class="box-content">
+                <p>Supplying a dictionary to the <code>hover_data</code> argument can be useful because Plotly automatically displays variables already used to construct the plot (i.e. what was scattered on x and y axes).<br><br>Unlike a list, using a dictionary here allows us to explicitly <em>include</em> or <em>exclude</em> these variables from the hover label, as well as control how their values are formatted. Often useful for avoiding wasting valuable hover label screen real estate!</p>
+            </div>
+        </div>
+        <p>Let&#x27;s use a dictionary to specify that the <code>Diagnosis</code> - a plotted variable - is removed from the hover label, while adding cholesterol and resting blood pressure to it.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-34">fig = px.scatter(
+    df,
+    x=&quot;age&quot;,
+    y=&quot;thalach&quot;,
+    color=&quot;Diagnosis&quot;,
+    hover_data={
+        &quot;trestbps&quot;: True,
+        &quot;chol&quot;: True,
+        &quot;Diagnosis&quot;: False
+    }
+)
+
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-34-output" class="output"></div>
+        </div>
+        <p>Since the <code>Diagnosis</code> variable is already represented by the colour of each point and identified in the legend, displaying it again in the hover label is superfluous to requirement.</p><h4>Customising the layout</h4><p>Interactivity is only one part of creating an effective Plotly figure. We will usually also want to improve the plot&#x27;s <strong>layout</strong>, including its title, axis labels, legend and overall appearance.<br><br>Recall that <code>px.scatter()</code> returns a Plotly <strong>Figure object</strong> which we have stored in <code>fig</code>. Once the figure has been created, we can modify it using methods belonging to this object.<br><br>One of the most useful is <code>fig.update_layout()</code>, which allows us to change properties relating to the overall presentation of the figure.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-35">fig = px.scatter(
+    df,
+    x=&quot;age&quot;,
+    y=&quot;thalach&quot;,
+    color=&quot;Diagnosis&quot;,
+    hover_data=[&quot;exang&quot;, &quot;trestbps&quot;]
+)
+
+fig.update_layout(
+    title=&quot;Maximum Heart Rate vs Age&quot;,
+    title_x=0.5,                                        # Centres the title
+    xaxis_title=&quot;Age (years)&quot;,
+    yaxis_title=&quot;Maximum Heart Rate Achieved&quot;,
+    legend_title=&quot;Heart Disease&quot;
+)
+
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-35-output" class="output"></div>
+        </div>
+        <p>The underlying data have not changed. Instead, <code>update_layout()</code> modifies the instructions stored within the <code>fig</code> object that determine how the figure should be presented.<br><br>Here, we have changed four layout properties:<br><ul class="nested-list"><li><code>title</code> sets a descriptive title for the complete figure.</li><br><li><code>xaxis_title</code> replaces the DataFrame column name <code>age</code> with a more informative x-axis label.</li><br><li><code>yaxis_title</code> replaces <code>thalach</code> with a more informative y-axis label.</li><br><li><code>legend_title</code> gives the colour legend a clearer title.</li></ul>Notice that we are first <strong>creating</strong> the figure with <code>px.scatter()</code>, then <strong>modifying</strong> the resulting Figure object with <code>fig.update_layout()</code>, and finally <strong>displaying</strong> it with <code>fig.show()</code>. As with any complex operation in Python, this cumulative and iterative way of working is very common when making figures with Plotly.</p><h4>Customising appearance</h4><p>We can also customise the appearance of the plotted data themselves. For scatter plots, each collection of points is represented internally by a Plotly <strong>trace</strong>. The <code>update_traces()</code> method allows us to modify properties of these traces after the figure has been created.<br><br>Let&#x27;s try making the markers slightly larger and partially transparent, for example.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-36">fig.update_traces(
+    marker={
+        &quot;size&quot;: 10,
+        &quot;opacity&quot;: 0.7
+    }
+)
+
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-36-output" class="output"></div>
+        </div>
+        <p>Increasing the marker size can make individual observations easier to inspect, while reducing their opacity helps reveal regions in which multiple points overlap. Both adjustments can improve the interpretability of the figure while also allowing us to customise its appearance.<br><br>The distinction between these two methods is important to highlight:<br><ul class="nested-list"><li><code>update_layout()</code> changes the <strong>figure as a whole</strong>, such as titles, axes and legends</li><br><li><code>update_traces()</code> changes the <strong>data displayed within the figure</strong>, such as markers and lines</li></ul>Together, these methods allow us to start with the concise syntax of Plotly Express and then customise the Figure object in considerably more detail.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p>A <strong>trace</strong> is a <em>single collection of data</em> displayed within a Plotly figure. Each trace represents one visual layer or group of observations, such as a set of scatter points, a line or a group of bars.<br><br>A single figure can contain multiple traces. For example, when we use <code>color=&quot;Diagnosis&quot;</code> in <code>px.scatter()</code>, Plotly Express automatically creates a separate scatter trace for each diagnostic group. These traces can then be individually shown, hidden or customised.</p>
+            </div>
+        </div>
+        <p>Within the context of a scatter plot, other appearance properties that you can modify include the <strong>colour</strong>, <strong>symbol</strong> and <strong>outline</strong> of your scatter plot&#x27;s markers, as well as their size and opacity.<br><br>Let&#x27;s give each marker a dark outline and change its symbol from the default circle to a diamond. Notice that these changes affect the appearance of the observations without changing the data represented by the plot.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-37">fig.update_traces(
+    marker={
+        &quot;size&quot;: 10,
+        &quot;opacity&quot;: 0.7,
+        &quot;symbol&quot;: &quot;diamond&quot;,
+        &quot;line&quot;: {
+            &quot;width&quot;: 1,
+            &quot;color&quot;: &quot;black&quot;
+        }
+    }
+)
+
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-37-output" class="output"></div>
+        </div>
+        <p><code>update_traces()</code> can also be used to change the way information appears when we interact with the data. For example, <code>hoverlabel</code> allows us to customise the appearance of the hover labels displayed when we move the cursor over individual observations.<br><br>These options demonstrate the degree of control available through a Figure object. As with any visual encoding, however, additional styling should serve readability or interpretation rather than simply adding complexity.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-38">fig.update_traces(
+    hoverlabel={
+        &quot;bordercolor&quot;: &quot;white&quot;,
+        &quot;font&quot;: {
+            &quot;family&quot;: &quot;Times New Roman&quot;,
+            &quot;size&quot;: 14,
+                }
+        }
+)
+
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-38-output" class="output"></div>
+        </div>
+        <p>In this example, we changed the font family and size, as well as the colour of the hover label&#x27;s border. Note how we use another, nested dictionary to specify both the <code>family</code> and <code>size</code> properties of the <code>font</code> argument.</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="advanced-interactions">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Advanced interactions</h3>
+                        <p>So far, our interactions have allowed us to explore individual observations and navigate around a figure. Plotly can also add <strong>controls</strong> that change what the figure itself can display.<br><br>This might be particularly useful in the sciences, where - rather than creating several separate figures to examine different subsets of patients, for example - we can allow the viewer to switch between these, interactively.<br><br>Plotly provides these controls through <strong>update menus</strong>, which can be displayed as dropdown menus or sets of buttons.</p><h4>Adding dropdowns and buttons</h4><p>Let&#x27;s begin by implementing a dropdown menu to investigate our patients according to their heart disease diagnosis.<br><br>Earlier, we created the <code>Diagnosis</code> column containing descriptive labels for the values in <code>target</code>. We can now use these labels to create separate Plotly traces for the two diagnostic groups.<br><br>We can do this using Pandas’ <code>.map()</code> method, supplying a dictionary that maps the existing values in <code>target</code> to more descriptive labels. Each dictionary key represents an existing value in the column, while its corresponding value provides the label that will replace it.</p><p>Let&#x27;s next draw a scatter plot, similar to the one we created previously. By mapping <code>Diagnosis</code> to colour, Plotly creates a separate <strong>trace</strong> for each diagnostic group.<br><br>This is useful since Plotly can independently show or hide individual traces.</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-39">fig = px.scatter(
+    df,
+    x=&quot;age&quot;,
+    y=&quot;thalach&quot;,
+    color=&quot;Diagnosis&quot;,
+    hover_data=[&quot;exang&quot;, &quot;trestbps&quot;, &quot;oldpeak&quot;],
+    labels={
+        &quot;age&quot;: &quot;Age (years)&quot;,
+        &quot;exang&quot;: &quot;Exercise-Induced Angina&quot;,
+        &quot;thalach&quot;: &quot;Maximum Heart Rate Achieved&quot;,
+        &quot;Diagnosis&quot;: &quot;Diagnostic Group&quot;
+    },
+    title=&quot;Maximum Heart Rate vs. Age&quot;
+)
+
+fig.update_layout(title_x=0.5)
+
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-39-output" class="output"></div>
+        </div>
+        <p>Our figure now contains two traces: one for each group of patients <em>with</em> and <em>without</em> heart disease.<br><br>We can use an <strong>update menu</strong> to control the <code>visible</code> property of these traces. The menu below allows us to display all patients or isolate either diagnostic group.</p>
+        <div class="info-box key-terms-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                KEY TERMS
+            </div>
+            <div class="box-content">
+                <p>Relative to Plotly, an <strong>update menu</strong> is an interactive control that allows the user to change properties of a figure, such as which traces are visible or which data are displayed.</p>
+            </div>
+        </div>
+        <p><br>The controls are supplied to <code>fig.update_layout()</code> using the <code>updatemenus</code> argument. Each option is represented by a dictionary describing its label, what it should change and the values that should be applied.</p><p>Let&#x27;s sequentially break down some of the key components used to construct our update menu, in the Python cell, below.<br><ul class="nested-list"><li><strong><code>updatemenus</code></strong> - an <em>argument</em> of <code>update_layout()</code> that accepts a list of dictionaries defining one or more update menus.</li><br><li><strong><code>buttons</code></strong> - a <em>dictionary key</em> that accepts a list of dictionaries, each defining an option within the menu.</li><br><li><strong><code>direction</code></strong> - a <em>dictionary key</em> that sets the direction in which the menu opens. <code>&quot;down&quot;</code> creates a dropdown menu.</li><br><li><strong><code>showactive</code></strong> - a <em>dictionary key</em> that determines whether the currently selected option is highlighted.</li><br><li><strong><code>x</code></strong> - a <em>dictionary key</em> that sets the horizontal position of the menu. <code>1.02</code> places it just beyond the right of the plotting area.</li><br><li><strong><code>y</code></strong> - a <em>dictionary key</em> that sets the vertical position of the menu. <code>1</code> places it at the top of the plotting area.</li></ul></p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-40">fig.update_layout(
+    updatemenus=[
+        {
+            &quot;buttons&quot;: [
+                {
+                    &quot;label&quot;: &quot;All patients&quot;,
+                    &quot;method&quot;: &quot;update&quot;,
+                    &quot;args&quot;: [{&quot;visible&quot;: [True, True]}]
+                },
+                {
+                    &quot;label&quot;: &quot;No heart disease&quot;,
+                    &quot;method&quot;: &quot;update&quot;,
+                    &quot;args&quot;: [{&quot;visible&quot;: [True, False]}]
+                },
+                {
+                    &quot;label&quot;: &quot;Heart disease&quot;,
+                    &quot;method&quot;: &quot;update&quot;,
+                    &quot;args&quot;: [{&quot;visible&quot;: [False, True]}]
+                }
+            ],
+            &quot;direction&quot;: &quot;down&quot;,
+            &quot;showactive&quot;: True,
+            &quot;x&quot;: 1.02,
+            &quot;y&quot;: 1
+        }
+    ]
+)
+
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-40-output" class="output"></div>
+        </div>
+        <p>On the figure, try switching between the options.<br><br>The underlying data have not been altered. Instead, the dropdown menu controls which <strong>traces are visible</strong> within the existing Figure object.<br><br>The <code>visible</code> key accepts a list containing one Boolean value for each trace in the figure. For example, <code>[True, False]</code> displays the first trace and hides the second.<br><br>This provides a convenient way of examining different diagnostic groups in isolation while retaining exactly the same axes and visual context for direct comparison.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>Plotly figures can contain multiple <strong>traces</strong>, each representing a separate collection of plotted data. When we use <code>color=&quot;Diagnosis&quot;</code>, Plotly Express creates a trace for each diagnostic category, depending on how many there are.<br><br>Controls such as dropdown menus can therefore change the visibility or appearance of individual traces without recreating the entire figure.</p>
+            </div>
+        </div>
+        <h4>Switching between clinical variables</h4><p>Interactive controls can also allow the viewer to switch the <strong>variable being visualised</strong>.<br><br>Suppose we are interested in how different cardiovascular measurements vary with age. We could create several separate scatter plots to do this. However, using Plotly, we can place controls within a single figure and subsequently switch between measurements with a click of the mouse.<br><br>As an example, let&#x27;s compare:<br><ul class="nested-list"><li>maximum heart rate achieved (<code>thalach</code>)</li><br><li>resting blood pressure (<code>trestbps</code>)</li><br><li>serum cholesterol (<code>chol</code>)</li></ul>Rather than displaying these options in a dropdown menu, we can display them as a row of buttons, instead.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>Using buttons can make repeated comparisons particularly immediate, requiring only a single click to switch between views. This small injection of economy might seem trivial, but it can make a noticeable difference when repeatedly exploring different variables within the same figure.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-41">fig = px.scatter(
+    df,
+    x=&quot;age&quot;,
+    y=&quot;thalach&quot;,
+    hover_data=[&quot;chol&quot;, &quot;trestbps&quot;, &quot;target&quot;],
+    labels={
+        &quot;age&quot;: &quot;Age (years)&quot;,
+        &quot;thalach&quot;: &quot;Maximum Heart Rate Achieved&quot;
+    },
+    title=&quot;Age vs Maximum Heart Rate Achieved&quot;
+)
+
+fig.update_layout(
+    title_x=0.5,
+    updatemenus=[
+        {
+            &quot;type&quot;: &quot;buttons&quot;,
+            &quot;direction&quot;: &quot;right&quot;,
+            &quot;buttons&quot;: [
+                {
+                    &quot;label&quot;: &quot;Heart Rate&quot;,
+                    &quot;method&quot;: &quot;update&quot;,
+                    &quot;args&quot;: [
+                        {&quot;y&quot;: [df[&quot;thalach&quot;]]},
+                        {
+                            &quot;yaxis&quot;: {&quot;title&quot;: &quot;Maximum Heart Rate Achieved&quot;},
+                            &quot;title&quot;: &quot;Age vs Maximum Heart Rate Achieved&quot;
+                        }
+                    ]
+                },
+                {
+                    &quot;label&quot;: &quot;Blood Pressure&quot;,
+                    &quot;method&quot;: &quot;update&quot;,
+                    &quot;args&quot;: [
+                        {&quot;y&quot;: [df[&quot;trestbps&quot;]]},
+                        {
+                            &quot;yaxis&quot;: {&quot;title&quot;: &quot;Resting Blood Pressure (mm Hg)&quot;},
+                            &quot;title&quot;: &quot;Age vs Resting Blood Pressure&quot;
+                        }
+                    ]
+                },
+                {
+                    &quot;label&quot;: &quot;Cholesterol&quot;,
+                    &quot;method&quot;: &quot;update&quot;,
+                    &quot;args&quot;: [
+                        {&quot;y&quot;: [df[&quot;chol&quot;]]},
+                        {
+                            &quot;yaxis&quot;: {&quot;title&quot;: &quot;Serum Cholesterol (mg/dL)&quot;},
+                            &quot;title&quot;: &quot;Age vs Serum Cholesterol&quot;
+                        }
+                    ]
+                }
+            ],
+            &quot;x&quot;: 0.5,
+            &quot;xanchor&quot;: &quot;center&quot;,
+            &quot;y&quot;: 1.15,
+            &quot;yanchor&quot;: &quot;top&quot;
+        }
+    ]
+)
+
+fig.show()</textarea>
+            </div>
+            <div id="code-cell-41-output" class="output"></div>
+        </div>
+        <p>Each button now replaces the values plotted on the y-axis only, rescaling these axes, while maintaining <code>age</code>, fixed on the plot&#x27;s x-axis.<br><br>Notice that each button updates <strong>two different parts</strong> of the Figure object:<br><ol class="nested-list"><li>the <code>y</code> data displayed by the scatter trace</li><br><li>the layout information describing the y-axis and figure title</li></ol></p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="advanced-interactions">
+                <div class="module-body">
+                    <div class="module-section">
+                        
+        <div class="info-box practice-exercise-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                PRACTICE EXERCISE
+            </div>
+            <div class="box-content">
+                <p><strong>4.</strong></p>
+                <p>The interactive figure above currently allows us to explore how <strong>maximum heart rate</strong>, <strong>resting blood pressure</strong> and <strong>serum cholesterol</strong> vary with patient age.<br>Extend the figure by adding <strong>two additional buttons</strong> that allow the user to plot the following variables against age:<ul class="nested-list"><li>ST depression induced by exercise (<code>oldpeak</code>)</li><br><li>number of major vessels coloured by fluoroscopy (<code>ca</code>)</li></ul>Your new buttons should:<ol class="nested-list"><li>replace the data displayed on the y-axis with the appropriate column</li><br><li>update the y-axis title to describe the new variable</li><br><li>update the figure title to describe the new relationship</li></ol><strong>Hint:</strong> <em>You do not need to change the original <code>px.scatter()</code> call. Add two more dictionaries to the existing <code>buttons</code> list within <code>fig.update_layout()</code>.</em><br><strong>Questions to consider:</strong><ul class="nested-list"><li>Which of these clinical variables appears to show the clearest relationship with age?</li><br><li>Does the interactive figure provide enough evidence to conclude that this relationship is biologically or clinically meaningful?</li></ul></p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-editor">
+                <textarea id="code-cell-42"># Paste in the code from the previous code cell in this lesson material, to get started.</textarea>
+            </div>
+            <button id="run-code-cell-42" class="run-button">Run Code</button>
+            <div id="code-cell-42-output" class="output"></div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="exporting-interactive-plots">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Exporting interactive plots</h3>
+                        <p>A Plotly figure can also be exported as a static image (as we briefly saw with the dedicated PNG button), but doing so removes the interactive features that make Plotly particularly useful.<br><br>Instead, we can save the complete interactive figure as an <strong>HTML file</strong>. HTML is the format used to represent web pages, and Plotly can package the figure and its interactive controls into a file that can be opened in a web browser.<br><br>We can export our figure using the <code>write_html()</code> method.</p>
+        <div class="info-box tip-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                TIP
+            </div>
+            <div class="box-content">
+                <p>We have opted to prevent the export code from running in the web materials, as it generates a standalone file. But you can download this lesson as a Jupyter Notebook from the Resources tab on the left, to try it out for yourself.</p>
+            </div>
+        </div>
+        
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-43">fig.write_html(&quot;interactive_heart_disease_plot.html&quot;)</textarea>
+            </div>
+        </div>
+        <p>The resulting <code>.html</code> file contains an interactive version of the figure. When opened in a web browser, we can still hover over observations, zoom and pan around the plot and use the buttons that we added above.<br><br>This makes HTML export particularly useful when archiving or sharing an exploratory visualisation.<br><br>By default, Plotly includes the JavaScript required to display the figure inside the exported HTML file. This produces a larger file, but it also makes the figure <strong>self-contained</strong>: it can be opened and interacted with without requiring a separate Python environment or notebook.<br><br>If a smaller file is preferred, we can instead tell Plotly to load its JavaScript library from an online content delivery network using <code>include_plotlyjs=&quot;cdn&quot;</code>:</p>
+        <div class="code-area">
+            <div class="code-container code-fixed">
+                <textarea id="code-cell-44">fig.write_html(
+    &quot;interactive_heart_disease_plot.html&quot;,
+    include_plotlyjs=&quot;cdn&quot;
+)</textarea>
+            </div>
+        </div>
+        
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>The result of providing this argument is a <em>much</em> smaller HTML file, with the main caveat being that an internet connection will then be required when the figure is opened.</p>
+            </div>
+        </div>
+        <p>The preferred option therefore depends on how the visualisation will be shared. A self-contained HTML file is generally more portable, while the <code>cdn</code> option can be useful where file size is most important, and internet access can be assumed.</p>
+        <div class="info-box important-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                IMPORTANT
+            </div>
+            <div class="box-content">
+                <p>Interactive controls are most useful when they help the viewer answer a meaningful question. Dropdowns and buttons can be used to reveal subsets of observations, compare measurements or change how data are displayed without requiring a separate figure for every view.<br><br>Once complete, the entire interactive Figure object can be exported as HTML, preserving these interactions outside the Jupyter notebook.</p>
+            </div>
+        </div>
+        
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>Interactivity does not make a visualisation inherently more informative. Its value comes from allowing the viewer to reveal, compare or reorganise information in ways that help aid an investigation, without adding overwhelming complexity to the figure.<br><br>When designing an interactive figure, always make a point of considering what the interaction <em>adds</em> and allows the viewer to discover that would be difficult to communicate as clearly in a simpler, static plot.</p>
+            </div>
+        </div>
+        
+                    </div>
+                </div>
+            </div>
+            
+            <div class="module-card" id="summary">
+                <div class="module-body">
+                    <div class="module-section">
+                        <h3>Summary</h3>
+                        <p>In this section of Data Processing 4, we introduced <strong>Plotly Express</strong> as a high-level interface for creating interactive visualisations from Pandas DataFrames. Using the UCI Heart Disease dataset as our demonstrative example, we created interactive scatter plots and explored how Plotly <strong>Figure objects</strong> store the data and instructions required to render them. We added and controlled information displayed in <strong>hover labels</strong>, customised figure layouts and traces and used <strong>update menus</strong>, dropdowns and buttons to interactively reveal patient groups and switch between clinical variables. Finally, we explored how completed Plotly figures can be exported as <strong>HTML files</strong>, allowing their interactivity to be preserved outside of a specific Python environment or notebook.</p>
+                    </div>
+                </div>
+            </div>
+            
+
+        <div class="page-navigation">
+            <a href="./custom-plots.html" class="nav-button prev">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/>
+                </svg>
+                Previous
+            </a>
+            <a href="./3-d-plots.html" class="nav-button next">
+                Next
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+            </a></div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div>© All materials are copyright scryptIQ 2025</div>
+            <div>Powered by Pyodide</div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../assets/main.js"></script>
+    
+    <!-- Pyodide Initialisation Script -->
+    <script>
+
+// Generalisable Pyodide Initialisation Script
+// Variables and state build up naturally as code blocks execute in order
+
+async function main() {
+    // Show loading message for all output elements
+    document.querySelectorAll(".output").forEach(el => {
+        el.textContent = "Loading Pyodide...";
+        el.classList.add("loading-message");
+    });
+    
+    try {
+        // Load Pyodide
+        console.log("Loading Pyodide...");
+        const pyodideStartTime = performance.now();
+        let pyodide = await loadPyodide();
+        const pyodideLoadTime = performance.now() - pyodideStartTime;
+        console.log(`Pyodide loaded in ${pyodideLoadTime.toFixed(2)}ms`);
+        
+        // Load required packages only if specified
+        const lessonPackages = window.LESSON_PACKAGES || [];
+        
+        if (lessonPackages.length > 0) {
+            console.log("Loading required Python packages...");
+            const packagesStartTime = performance.now();
+            
+            // Separate built-in packages from PyPI packages
+            const builtInPackages = lessonPackages.filter(pkg => 
+                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
+            );
+            
+            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
+            
+            // Load built-in packages (fast)
+            if (builtInPackages.length > 0) {
+                await pyodide.loadPackage(builtInPackages);
+                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
+            }
+            
+            // Install PyPI packages (slower)
+            if (micropipPackages.length > 0) {
+                await pyodide.loadPackage(['micropip']);
+                const micropip = pyodide.pyimport('micropip');
+                await micropip.install(micropipPackages);
+                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
+            }
+            
+            const packagesLoadTime = performance.now() - packagesStartTime;
+            console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
+            console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
+        } else {
+            console.log("No packages to load for this lesson");
+            console.log(`Total initialisation time: ${pyodideLoadTime.toFixed(2)}ms`);
+        }
+
+        // Only set up basic Python environment - no pre-loaded variables
+        await pyodide.runPythonAsync(`
+            import sys
+            from io import StringIO
+        `);
+
+        // Only set up matplotlib if it's in the loaded packages
+        if (lessonPackages.includes('matplotlib')) {
+            await pyodide.runPythonAsync(`
+                # Set up matplotlib for web rendering
+                import matplotlib
+                matplotlib.use('AGG')
+                import matplotlib.pyplot as plt
+                import io
+                import base64
+                
+                def capture_matplotlib():
+                    """Capture current matplotlib figure as HTML img tag"""
+                    buf = io.BytesIO()
+                    plt.savefig(buf, format='png', bbox_inches='tight', dpi=100)
+                    buf.seek(0)
+                    img_base64 = base64.b64encode(buf.read()).decode('utf-8')
+                    plt.close()
+                    return f'<img src="data:image/png;base64,{img_base64}" style="max-width: 100%; height: auto;" />'
+
+                # Silence the "FigureCanvasAgg is non-interactive" warning that
+                # occurs when notebook code calls plt.show().  In this environment
+                # figures are captured automatically via capture_matplotlib(), so
+                # plt.show() should simply be a no-op.
+                plt.show = lambda *args, **kwargs: None
+            `);
+            console.log('Matplotlib capture function set up');
+        }
+        
+        console.log("Pyodide loaded successfully");
+        
+        // Load remote files if URLs are specified
+        const lessonFiles = window.LESSON_FILES || [];
+        
+        if (lessonFiles.length > 0) {
+            try {
+                console.log(`Checking for ${lessonFiles.length} remote file(s) to load...`);
+                
+                // Build Python code to load all files dynamically
+                let pythonCode = `
+from pyodide.http import pyfetch
+import os
+
+# Create data directory if it doesn't exist
+os.makedirs('./data', exist_ok=True)
+`;
+                
+                // Add loading code for each file
+                for (const file of lessonFiles) {
+                    if (file.is_binary) {
+                        // Binary files (images, etc.) - use bytes
+                        pythonCode += `
+# Load ${file.filename} (binary)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.bytes()
+    with open('./data/${file.filename}', 'wb') as f:
+        f.write(bytes(content))
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    } else {
+                        // Text files (CSV, etc.) - use string
+                        pythonCode += `
+# Load ${file.filename} (text)
+try:
+    response = await pyfetch("${file.url}")
+    content = await response.string()
+    with open('./data/${file.filename}', 'w') as f:
+        f.write(content)
+    print("Loaded: ${file.filename}")
+except Exception as e:
+    print(f"Could not load ${file.filename}: {e}")
+`;
+                    }
+                }
+                
+                await pyodide.runPythonAsync(pythonCode);
+                console.log("Remote files loaded successfully");
+            } catch (error) {
+                console.warn("Error loading remote files (continuing anyway):", error);
+            }
+        } else {
+            console.log("No remote files to load for this lesson");
+        }
+        
+        // Function to execute Python code and capture output
+        async function executePythonCode(code) {
+            try {
+                // Redirect Python stdout and stderr to capture print statements and warnings
+                await pyodide.runPythonAsync(`
+                    old_stdout = sys.stdout
+                    old_stderr = sys.stderr
+                    sys.stdout = mystdout = StringIO()
+                    sys.stderr = mystderr = StringIO()
+                `);
+
+                // Run the user code.
+                // We pass the code string via pyodide.globals to avoid JS-string escaping
+                // issues, then use Python's ast module to execute it.  The last expression
+                // (if any) is eval-ed inside Python so that repr() is called there —
+                // this means display settings such as np.set_printoptions() are always
+                // respected before the value crosses the Python→JS boundary.
+                // (Pyodide auto-converts numpy arrays to TypedArray, so String(result)
+                // would bypass numpy's formatting entirely.)
+                pyodide.globals.set('__cell_code__', code);
+                await pyodide.runPythonAsync(`
+import ast as _ast
+__cell_result__ = None
+try:
+    _tree = _ast.parse(__cell_code__)
+    if _tree.body and isinstance(_tree.body[-1], _ast.Expr):
+        _last = _tree.body.pop()
+        exec(compile(_ast.Module(body=_tree.body, type_ignores=[]), '<cell>', 'exec'), globals())
+        _val = eval(compile(_ast.Expression(body=_last.value), '<cell>', 'eval'), globals())
+        if _val is not None:
+            __cell_result__ = repr(_val)
+    else:
+        exec(compile(_tree, '<cell>', 'exec'), globals())
+finally:
+    for _k in ['_tree', '_last', '_val', '_ast']:
+        globals().pop(_k, None)
+    globals().pop('__cell_code__', None)
+`);
+
+                // Get the captured stdout and stderr
+                let stdout = await pyodide.runPythonAsync(`
+                    sys.stdout = old_stdout
+                    sys.stderr = old_stderr
+                    mystdout.getvalue()
+                `);
+
+                const stderr = await pyodide.runPythonAsync(`mystderr.getvalue()`);
+                if (stderr) {
+                    if (stdout) stdout += "\n";
+                    stdout += stderr;
+                }
+
+                // Retrieve the Python-side repr string (already formatted correctly)
+                const resultRepr = await pyodide.runPythonAsync(`
+_r = __cell_result__
+del __cell_result__
+_r
+`);
+
+                // Check for matplotlib figures only if matplotlib was loaded
+                const lessonPackages = window.LESSON_PACKAGES || [];
+                if (lessonPackages.includes('matplotlib')) {
+                    const hasFigures = await pyodide.runPythonAsync(`
+                        import matplotlib.pyplot as plt
+                        len(plt.get_fignums()) > 0
+                    `);
+
+                    if (hasFigures) {
+                        const figureHtml = await pyodide.runPythonAsync(`capture_matplotlib()`);
+                        if (stdout) stdout += "\n";
+                        stdout += figureHtml;
+                    }
+                }
+
+                // Combine stdout and result repr
+                let output = stdout;
+                if (resultRepr !== undefined && resultRepr !== null && String(resultRepr).trim() !== '') {
+                    if (output) output += "\n";
+                    output += String(resultRepr);
+                }
+                
+                return { success: true, output: output || "Code executed successfully (no output)" };
+                
+            } catch (error) {
+                // Attempt to restore stdout/stderr even on failure
+                try {
+                    await pyodide.runPythonAsync(`
+                        if 'old_stdout' in dir(): sys.stdout = old_stdout
+                        if 'old_stderr' in dir(): sys.stderr = old_stderr
+                    `);
+                } catch (_) {}
+                // Re-run through Python's traceback machinery to get a clean error message
+                let tracebackStr = '';
+                try {
+                    pyodide.globals.set('_traceback_code', code);
+                    await pyodide.runPythonAsync(`
+                        import traceback as _tb
+                        from io import StringIO as _SIO
+                        _trace_result = None
+                        _saved_io = (sys.stdout, sys.stderr)
+                        sys.stdout = sys.stderr = _SIO()
+                        try:
+                            exec(compile(_traceback_code, '<exec>', 'exec'), globals())
+                        except Exception:
+                            _trace_result = _tb.format_exc()
+                        finally:
+                            sys.stdout, sys.stderr = _saved_io
+                    `);
+                    const tbVal = await pyodide.runPythonAsync('_trace_result');
+                    if (tbVal) tracebackStr = tbVal;
+                } catch (_) {}
+                let displayMsg;
+                if (tracebackStr && tracebackStr.includes('File "<exec>"')) {
+                    const lines = tracebackStr.split('\n');
+                    let execIdx = -1;
+                    for (let i = lines.length - 1; i >= 0; i--) {
+                        if (lines[i].includes('File "<exec>"')) { execIdx = i; break; }
+                    }
+                    displayMsg = execIdx !== -1
+                        ? lines.slice(execIdx).join('\n').trim()
+                        : tracebackStr.trim();
+                } else {
+                    displayMsg = (error.message || '').trim() || error.type || String(error);
+                }
+                return { success: false, output: 'Error:\n' + displayMsg };
+            }
+        }
+        
+        // Execute all hidden code blocks first (for setup code like imports)
+        const hiddenCodeBlocks = Array.from(document.querySelectorAll('.hidden-code textarea'));
+        console.log(`Found ${hiddenCodeBlocks.length} hidden code blocks`);
+
+        for (const textarea of hiddenCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            console.log(`Executing hidden code block: ${textarea.id}`);
+            console.log(`Hidden code content: ${code.substring(0, 100)}...`);
+            const result = await executePythonCode(code);
+            
+            if (!result.success) {
+                console.error(`Error in hidden code block ${textarea.id}:`, result.output);
+            } else {
+                console.log(`Hidden code block ${textarea.id} executed successfully`);
+                console.log(`Result: ${result.output}`);
+            }
+        }
+
+        console.log("All hidden code blocks executed");
+        
+        // Get all fixed code blocks in document order
+        const fixedCodeBlocks = Array.from(document.querySelectorAll('.code-fixed textarea'));
+        
+        // Setup and execute fixed code blocks sequentially
+        for (const textarea of fixedCodeBlocks) {
+            const code = textarea.value.trim();
+            if (!code) continue;
+            
+            // Set up CodeMirror editor (read-only)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                readOnly: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding output element
+            const outputId = textarea.id + '-output';
+            const outputElement = document.getElementById(outputId);
+            
+            if (outputElement) {
+                outputElement.textContent = "Running code...";
+                outputElement.classList.add("loading-message");
+                
+                // Execute the code (this maintains state for subsequent blocks)
+                const result = await executePythonCode(code);
+                
+                // Display the output - check if it's HTML
+                const trimmedOutput = result.output.trim();
+                console.log('Output length:', trimmedOutput.length);
+                console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                
+                if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                    // It's Plotly HTML output - extract just the body content
+                    console.log('Rendering as Plotly HTML');
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(result.output, 'text/html');
+                    // Clear the output element and append the body content
+                    outputElement.innerHTML = '';
+                    
+                    // Find and load external scripts first (like Plotly CDN)
+                    const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                    const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                    
+                    // Append non-script content first
+                    Array.from(doc.body.children).forEach(child => {
+                        if (child.tagName !== 'SCRIPT') {
+                            outputElement.appendChild(child.cloneNode(true));
+                        }
+                    });
+                    
+                    // Load external scripts sequentially
+                    const loadScript = (src) => {
+                        return new Promise((resolve, reject) => {
+                            const script = document.createElement('script');
+                            script.src = src;
+                            script.onload = resolve;
+                            script.onerror = reject;
+                            document.head.appendChild(script);
+                        });
+                    };
+                    
+                    // Load all external scripts first
+                    Promise.all(externalScripts.map(s => loadScript(s.src)))
+                        .then(() => {
+                            console.log('External scripts loaded, executing inline scripts');
+                            // Now execute inline scripts
+                            inlineScripts.forEach(oldScript => {
+                                const newScript = document.createElement('script');
+                                newScript.textContent = oldScript.textContent;
+                                outputElement.appendChild(newScript);
+                            });
+                            console.log('Output element after processing:', outputElement.children.length, 'children');
+                        })
+                        .catch(err => {
+                            console.error('Failed to load external scripts:', err);
+                            outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                        });
+                } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                           trimmedOutput.startsWith('<html') ||
+                            trimmedOutput.startsWith('<div') ||
+                            trimmedOutput.startsWith('<img')) {
+                    console.log('Rendering as generic HTML');
+                    outputElement.innerHTML = result.output;
+                    console.log('Output element after innerHTML:', outputElement.children.length, 'children');
+                } else {
+                    console.log('Rendering as plain text');
+                    outputElement.textContent = result.output;
+                }
+                outputElement.classList.remove("loading-message");
+                if (result.success) {
+                    outputElement.classList.add("success-message");
+                    outputElement.classList.remove("error-message");
+                } else {
+                    outputElement.classList.add("error-message");
+                    outputElement.classList.remove("success-message");
+                }
+            }
+            
+            // Small delay to show progression
+            await new Promise(resolve => setTimeout(resolve, 100));
+        }
+        
+        // Set flag to indicate all FIXED cells have been executed
+        // This is used by PDF generation to ensure all outputs are ready
+        window.allCellsExecuted = true;
+        console.log("All FIXED cells executed successfully");
+        
+        // Setup all editable code blocks (but don't execute them)
+        document.querySelectorAll('.code-editor textarea').forEach((textarea) => {
+            // Set up CodeMirror editor (editable)
+            const editor = CodeMirror.fromTextArea(textarea, {
+                mode: "python",
+                theme: "pastel-on-dark",
+                lineNumbers: true,
+                viewportMargin: Infinity
+            });
+            
+            // Find corresponding run button and output element
+            const baseId = textarea.id;
+            const runButtonId = 'run-' + baseId;
+            const outputId = baseId + '-output';
+            
+            const runButton = document.getElementById(runButtonId);
+            const outputElement = document.getElementById(outputId);
+            
+            if (runButton && outputElement) {
+                // Set initial state
+                outputElement.textContent = "Ready to run code!";
+                outputElement.classList.remove("loading-message");
+                
+                runButton.addEventListener("click", async () => {
+                    const code = editor.getValue().trim();
+                    if (!code) {
+                        outputElement.textContent = "No code to run";
+                        return;
+                    }
+                    
+                    outputElement.textContent = "Running...";
+                    outputElement.classList.remove("error-message", "success-message");
+                    outputElement.classList.add("loading-message");
+                    
+                    // Execute the code (this also maintains state for future blocks)
+                    const result = await executePythonCode(code);
+                    
+                    // Display the output - check if it's HTML
+                    const trimmedOutput = result.output.trim();
+                    console.log('Output length:', trimmedOutput.length);
+                    console.log('Output starts with:', trimmedOutput.substring(0, 100));
+                    
+                    if (trimmedOutput.includes('<script') && trimmedOutput.includes('Plotly')) {
+                        // It's Plotly HTML output - extract just the body content
+                        console.log('Rendering as Plotly HTML');
+                        const parser = new DOMParser();
+                        const doc = parser.parseFromString(result.output, 'text/html');
+                        // Clear the output element and append the body content
+                        outputElement.innerHTML = '';
+                        
+                        // Find and load external scripts first (like Plotly CDN)
+                        const externalScripts = Array.from(doc.querySelectorAll('script[src]'));
+                        const inlineScripts = Array.from(doc.querySelectorAll('script:not([src])'));
+                        
+                        // Append non-script content first
+                        Array.from(doc.body.children).forEach(child => {
+                            if (child.tagName !== 'SCRIPT') {
+                                outputElement.appendChild(child.cloneNode(true));
+                            }
+                        });
+                        
+                        // Load external scripts sequentially
+                        const loadScript = (src) => {
+                            return new Promise((resolve, reject) => {
+                                const script = document.createElement('script');
+                                script.src = src;
+                                script.onload = resolve;
+                                script.onerror = reject;
+                                document.head.appendChild(script);
+                            });
+                        };
+                        
+                        // Load all external scripts first
+                        Promise.all(externalScripts.map(s => loadScript(s.src)))
+                            .then(() => {
+                                console.log('External scripts loaded, executing inline scripts');
+                                // Now execute inline scripts
+                                inlineScripts.forEach(oldScript => {
+                                    const newScript = document.createElement('script');
+                                    newScript.textContent = oldScript.textContent;
+                                    outputElement.appendChild(newScript);
+                                });
+                                console.log('Output element after processing:', outputElement.children.length, 'children');
+                            })
+                            .catch(err => {
+                                console.error('Failed to load external scripts:', err);
+                                outputElement.textContent = 'Error loading Plotly: ' + err.message;
+                            });
+                    } else if (trimmedOutput.startsWith('<!DOCTYPE') || 
+                               trimmedOutput.startsWith('<html') ||
+                               trimmedOutput.startsWith('<div') ||
+                               trimmedOutput.startsWith('<img')) {
+                        outputElement.innerHTML = result.output;
+                    } else {
+                        outputElement.textContent = result.output;
+                    }
+                    outputElement.classList.remove("loading-message");
+                    if (result.success) {
+                        outputElement.classList.add("success-message");
+                        outputElement.classList.remove("error-message");
+                    } else {
+                        outputElement.classList.add("error-message");
+                        outputElement.classList.remove("success-message");
+                    }
+                });
+            }
+        });
+        
+        console.log("All code blocks initialised successfully");
+
+        // Set flag to indicate Pyodide is fully ready
+        window.pyodideReady = true;
+        console.log("Pyodide fully ready");
+        
+    } catch (error) {
+        console.error("Failed to initialise Pyodide:", error);
+        document.querySelectorAll(".output").forEach(el => {
+            el.textContent = "Error loading Pyodide: " + error.message;
+            el.classList.remove("loading-message");
+            el.classList.add("error-message");
+        });
+    }
+}
+
+// Start the application when DOM is loaded
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', main);
+} else {
+    main();
+}
+    </script>
+    
+</body>
+</html>
