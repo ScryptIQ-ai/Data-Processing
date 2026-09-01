@@ -206,7 +206,7 @@ df_facs.head()</textarea>
                 IMPORTANT
             </div>
             <div class="box-content">
-                <p>Ordinarily, we will use the <code>fig.show()</code> function to display a Plotly plot. When running such code in your IDE or Codespace, you should and will be able to run this, normally. However, in order for them to display in our online lesson materials, we have to output the plots as HTML. For this, we are using the <code>fig.to_html()</code> function. Should you wish to copy and paste the code into your IDE, or download the lesson as a Jupyter Notebook, we are leaving the <code>fig.show()</code> function call inside each cell, but have commented it out.</p>
+                <p>Ordinarily, we will use the <code>fig.show()</code> function to display a Plotly plot. When running such code in your IDE or Codespace, you should and will be able to run this, normally. However, in order for them to display in our online lesson materials, we have to output the plots as HTML. For this, we are using the <code>fig.to_html()</code> function, wrapping this within a <code>print()</code> statement. Should you wish to copy and paste the code into your IDE, or download the lesson as a Jupyter Notebook, we are leaving the <code>fig.show()</code> function call inside each cell, but have commented it out.</p>
             </div>
         </div>
         
@@ -223,7 +223,7 @@ fig = px.scatter_3d(
 
 # fig.show()
 
-fig.to_html()</textarea>
+print(fig.to_html())</textarea>
             </div>
             <div id="code-cell-47-output" class="output"></div>
         </div>
@@ -271,7 +271,7 @@ fig.to_html()</textarea>
 
 # fig.show()
 
-fig.to_html()</textarea>
+print(fig.to_html())</textarea>
             </div>
             <button id="run-code-cell-48" class="run-button">Run Code</button>
             <div id="code-cell-48-output" class="output"></div>
@@ -309,7 +309,7 @@ fig.to_html()</textarea>
 
 # fig.show()
 
-fig.to_html()</textarea>
+print(fig.to_html())</textarea>
             </div>
             <div id="code-cell-49-output" class="output"></div>
         </div>
@@ -339,7 +339,7 @@ fig.to_html()</textarea>
 
 # fig_size.show()
 
-fig_size.to_html()</textarea>
+print(fig_size.to_html())</textarea>
             </div>
             <div id="code-cell-50-output" class="output"></div>
         </div>
@@ -360,7 +360,7 @@ fig_size.to_html()</textarea>
 
 # fig_size.show()
 
-fig_size.to_html()</textarea>
+print(fig_size.to_html())</textarea>
             </div>
             <div id="code-cell-51-output" class="output"></div>
         </div>
@@ -413,7 +413,7 @@ fig_size.to_html()</textarea>
 
 # fig.show()
 
-fig.to_html()</textarea>
+print(fig.to_html())</textarea>
             </div>
             <div id="code-cell-53-output" class="output"></div>
         </div>
@@ -461,7 +461,7 @@ fig.update_layout(
 
 # fig.show()
 
-fig.to_html()</textarea>
+print(fig.to_html())</textarea>
             </div>
             <div id="code-cell-54-output" class="output"></div>
         </div>
@@ -484,7 +484,7 @@ fig.to_html()</textarea>
 
 # fig_2d.show()
 
-fig_2d.to_html()</textarea>
+print(fig_2d.to_html())</textarea>
             </div>
             <div id="code-cell-55-output" class="output"></div>
         </div>
@@ -507,7 +507,7 @@ fig_2d.to_html()</textarea>
 
 # fig_2d.show()
 
-fig_2d.to_html()</textarea>
+print(fig_2d.to_html())</textarea>
             </div>
             <div id="code-cell-56-output" class="output"></div>
         </div>
