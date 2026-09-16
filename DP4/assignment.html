@@ -1,7 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Meta Tags -->
+    <!-- charset must stay within the first 1024 bytes of the
+         document or browsers stop looking and fall back to a
+         default encoding. Keep these two first in <head>. -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- MathJax for mathematical notation -->
+    <!-- v4 moved the loadable components out of the old es5 subdirectory and
+         up to the package root, so the path is part of the version, not just
+         the number. Getting it wrong is a 404 that fails silently, leaving
+         equations as raw dollar-delimited LaTeX on the page.
+         output.font pins the TeX font from v3; v4 would otherwise default to
+         New Computer Modern and change how every equation looks. fontPath is
+         set explicitly because MathJax's default resolves font data from an
+         *unversioned* jsDelivr URL, which is exactly what cdn_versions.yaml
+         exists to prevent. -->
     <script>
     MathJax = {
         tex: {
@@ -11,17 +27,30 @@
         },
         svg: {
             fontCache: 'global'
+        },
+        output: {
+            font: 'mathjax-tex',
+            fontPath: 'https://cdn.jsdelivr.net/npm/@mathjax/%%FONT%%-font@4.1.3'
+        },
+        startup: {
+            pageReady() {
+                // PDF export prints as soon as the page reports itself ready.
+                // Announce typesetting separately so it can be waited on.
+                return MathJax.startup.defaultPageReady().then(function () {
+                    window.mathJaxReady = true;
+                });
+            }
         }
     };
     </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.1.3/tex-svg.js"></script>
     
     <!-- Pyodide and CodeMirror -->
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.21/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.21/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.21/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.21/mode/python/python.min.js"></script>
 
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
@@ -41,16 +70,14 @@
     <link rel="stylesheet" href="../assets/box_styles.css">
     <link rel="stylesheet" href="../assets/code_styles.css">
     
-    <!-- Meta Tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>scryptIQ - DP4 - Assignment</title>
     <script>
         window.LESSON_FILES = [
             {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp4/facs_data.csv", filename: "facs_data.csv", is_binary: false},
             {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp4/synthetic_gene_expression.csv", filename: "synthetic_gene_expression.csv", is_binary: false}
         ];
-        window.LESSON_PACKAGES = ['pandas', 'numpy', 'matplotlib', 'plotly'];
+        window.LESSON_PACKAGES = ["pandas", "numpy", "matplotlib", "plotly"];
+        window.LESSON_PACKAGE_NAMES = ["pandas", "numpy", "matplotlib", "plotly"];
     </script>
 </head>
 <body>
@@ -225,28 +252,19 @@ async function main() {
         if (lessonPackages.length > 0) {
             console.log("Loading required Python packages...");
             const packagesStartTime = performance.now();
-            
-            // Separate built-in packages from PyPI packages
-            const builtInPackages = lessonPackages.filter(pkg => 
-                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
-            );
-            
-            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
-            
-            // Load built-in packages (fast)
-            if (builtInPackages.length > 0) {
-                await pyodide.loadPackage(builtInPackages);
-                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
-            }
-            
-            // Install PyPI packages (slower)
-            if (micropipPackages.length > 0) {
-                await pyodide.loadPackage(['micropip']);
-                const micropip = pyodide.pyimport('micropip');
-                await micropip.install(micropipPackages);
-                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
-            }
-            
+
+            // micropip resolves each requirement against the Pyodide lockfile
+            // *first* and only falls through to PyPI for packages Pyodide does
+            // not bundle (it sets search_pyodide_lock_first whenever the index
+            // URLs are left at their default).  So one call handles both cases
+            // and, unlike a hardcoded list of bundled package names, there is
+            // nothing to fall out of date when Pyodide is upgraded.  It also
+            // means version specifiers such as `pandas==2.2` work.
+            await pyodide.loadPackage(['micropip']);
+            const micropip = pyodide.pyimport('micropip');
+            await micropip.install(lessonPackages);
+            console.log(`Installed packages: ${lessonPackages.join(', ')}`);
+
             const packagesLoadTime = performance.now() - packagesStartTime;
             console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
             console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
@@ -261,8 +279,11 @@ async function main() {
             from io import StringIO
         `);
 
-        // Only set up matplotlib if it's in the loaded packages
-        if (lessonPackages.includes('matplotlib')) {
+        // Only set up matplotlib if it's in the loaded packages.  Checked
+        // against the canonical (lower-cased, un-versioned) names so that a
+        // PACKAGES cell saying `Matplotlib` or `matplotlib>=3.9` still works.
+        const lessonPackageNames = window.LESSON_PACKAGE_NAMES || [];
+        if (lessonPackageNames.includes('matplotlib')) {
             await pyodide.runPythonAsync(`
                 # Set up matplotlib for web rendering
                 import matplotlib
@@ -407,8 +428,8 @@ _r
 `);
 
                 // Check for matplotlib figures only if matplotlib was loaded
-                const lessonPackages = window.LESSON_PACKAGES || [];
-                if (lessonPackages.includes('matplotlib')) {
+                const lessonPackageNames = window.LESSON_PACKAGE_NAMES || [];
+                if (lessonPackageNames.includes('matplotlib')) {
                     const hasFigures = await pyodide.runPythonAsync(`
                         import matplotlib.pyplot as plt
                         len(plt.get_fignums()) > 0

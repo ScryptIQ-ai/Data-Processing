@@ -1,7 +1,23 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <!-- Meta Tags -->
+    <!-- charset must stay within the first 1024 bytes of the
+         document or browsers stop looking and fall back to a
+         default encoding. Keep these two first in <head>. -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <!-- MathJax for mathematical notation -->
+    <!-- v4 moved the loadable components out of the old es5 subdirectory and
+         up to the package root, so the path is part of the version, not just
+         the number. Getting it wrong is a 404 that fails silently, leaving
+         equations as raw dollar-delimited LaTeX on the page.
+         output.font pins the TeX font from v3; v4 would otherwise default to
+         New Computer Modern and change how every equation looks. fontPath is
+         set explicitly because MathJax's default resolves font data from an
+         *unversioned* jsDelivr URL, which is exactly what cdn_versions.yaml
+         exists to prevent. -->
     <script>
     MathJax = {
         tex: {
@@ -11,17 +27,30 @@
         },
         svg: {
             fontCache: 'global'
+        },
+        output: {
+            font: 'mathjax-tex',
+            fontPath: 'https://cdn.jsdelivr.net/npm/@mathjax/%%FONT%%-font@4.1.3'
+        },
+        startup: {
+            pageReady() {
+                // PDF export prints as soon as the page reports itself ready.
+                // Announce typesetting separately so it can be waited on.
+                return MathJax.startup.defaultPageReady().then(function () {
+                    window.mathJaxReady = true;
+                });
+            }
         }
     };
     </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@4.1.3/tex-svg.js"></script>
     
     <!-- Pyodide and CodeMirror -->
-    <script src="https://cdn.jsdelivr.net/pyodide/v0.29.3/full/pyodide.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/theme/pastel-on-dark.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.20/mode/python/python.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v314.0.7/full/pyodide.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.21/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.21/theme/pastel-on-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.21/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.21/mode/python/python.min.js"></script>
 
     <!-- Favicons -->
     <link rel="icon" type="image/x-icon" href="../assets/favicon.ico">
@@ -41,16 +70,14 @@
     <link rel="stylesheet" href="../assets/box_styles.css">
     <link rel="stylesheet" href="../assets/code_styles.css">
     
-    <!-- Meta Tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>scryptIQ - DP4 - 3-D Data Visualisation</title>
     <script>
         window.LESSON_FILES = [
             {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp4/facs_data.csv", filename: "facs_data.csv", is_binary: false},
             {url: "https://raw.githubusercontent.com/ScryptIQ-ai/lesson-data/refs/heads/main/dp4/synthetic_gene_expression.csv", filename: "synthetic_gene_expression.csv", is_binary: false}
         ];
-        window.LESSON_PACKAGES = ['pandas', 'numpy', 'matplotlib', 'plotly'];
+        window.LESSON_PACKAGES = ["pandas", "numpy", "matplotlib", "plotly"];
+        window.LESSON_PACKAGE_NAMES = ["pandas", "numpy", "matplotlib", "plotly"];
     </script>
 </head>
 <body>
@@ -166,19 +193,19 @@
                         <p>Let us first get acquainted with the dataset we will use in this section of the lesson. For demonstrative purposes, we have decided to use a <strong>synthetic flow cytometry dataset</strong> that has been generated for you. Synthetic data allow us to reproduce the kinds of patterns found in real-world biological datasets while keeping the underlying cell populations deliberately clear for pedagogical purposes.<br><br><strong>Flow cytometry</strong> measures characteristics of individual cells, commonly including the fluorescence associated with labelled proteins on the cell surface. Each row in our dataset therefore represents a <strong>single simulated cell</strong>, whilst numerical columns describe the expression of three cell-surface markers:<br><ul class="nested-list"><li><code>CD3</code> - associated strongly with T cells</li><br><li><code>CD19</code> - associated strongly with B cells</li><br><li><code>CD56</code> - commonly associated with natural killer (NK) cells</li></ul>The <code>Cell_Type</code> column records the simulated immune cell population to which each observation belongs.<br><br>Our dataset contains 3,000 <em>simulated</em> cells: 1,500 T cells, 1,000 B cells and 500 NK cells. The marker values have been generated so that these populations occupy different, but partially overlapping, regions of marker-expression space.<br><br>The dataset we will make use of here is modelled on the fluorescence measurements routinely generated in <strong>flow cytometry</strong>. In a flow-cytometry experiment, cells from a heterogeneous sample pass individually through one or more laser beams, where fluorescently labelled antibodies can be used to target specific proteins bound to the surface membrane, allowing the fluorescence associated with each marker to be measured for individual cells, alongside properties derived from scattered light. <strong>Fluorescence-Activated Cell Sorting (FACS)</strong>, therefore, is a specialised form of flow cytometry that can additionally <em>sort</em> cells into different populations based on these measured characteristics.<br><br>Our synthetic dataset contains three continuous variables representing the fluorescence intensities associated with three cell-surface markers: CD3, CD19 and CD56, whose expression profiles are typically associated with T-, B- and natural killer cell types. The dataset is a sound demonstrative candidate for 3-D visualisation, as it allows us to explore how the three measurements jointly contribute to the structure and separation of different cell populations.<br><br>Let&#x27;s begin by reading our data into a Pandas DataFrame, using <code>.head()</code> to get a quick overview of its structure, and column headers.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-45">import pandas as pd
+                <textarea id="code-cell-46">import pandas as pd
 
 df_facs = pd.read_csv(&quot;data/facs_data.csv&quot;)
 df_facs.head()</textarea>
             </div>
-            <div id="code-cell-45-output" class="output"></div>
+            <div id="code-cell-46-output" class="output"></div>
         </div>
         <p>We can see from the first few rows that each cell has a numerical value attributed to <code>CD3</code>, <code>CD19</code> and <code>CD56</code> expression, together with its corresponding <code>Cell_Type</code>.<br><br>Before plotting the data, let&#x27;s check how many cells belong to each simulated population.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-46">df_facs[&quot;Cell_Type&quot;].value_counts()</textarea>
+                <textarea id="code-cell-47">df_facs[&quot;Cell_Type&quot;].value_counts()</textarea>
             </div>
-            <div id="code-cell-46-output" class="output"></div>
+            <div id="code-cell-47-output" class="output"></div>
         </div>
         
         <div class="info-box note-box">
@@ -212,7 +239,7 @@ df_facs.head()</textarea>
         
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-47">import plotly.express as px
+                <textarea id="code-cell-48">import plotly.express as px
 
 fig = px.scatter_3d(
     df_facs,
@@ -225,7 +252,7 @@ fig = px.scatter_3d(
 
 print(fig.to_html())</textarea>
             </div>
-            <div id="code-cell-47-output" class="output"></div>
+            <div id="code-cell-48-output" class="output"></div>
         </div>
         <p>Each point in the figure represents <em>one simulated cell</em>. Its position in three-dimensional space is determined by that cell&#x27;s expression of the three markers; with its relative expression of all three markers contributing to each cell&#x27;s position. Note that as with Plotly&#x27;s 2-D scatter plots, mousing over each individual data point, reveals a hover label showing the plotted values for each of the cell surface markers.<br><br>You might notice that there are regions of greater point density within the plot. However, since all cells currently share the same appearance, it is difficult to determine which regions correspond to particular immune cell populations. Further into the lesson, we will use additional visual properties such as colour to make these populations easier to identify.</p>
         <div class="info-box key-terms-box">
@@ -259,7 +286,7 @@ print(fig.to_html())</textarea>
         <p>In addition to manual rotation with the mouse, we can also specify the <em>initial</em> Plotly camera position, programmatically. This can be useful when we want collaborators or readers to see the figure from a particular starting perspective. The <code>eye</code> coordinates describe the position of the virtual camera relative to the centre of the 3-D scene. Have a play with different values for <code>x</code>, <code>y</code> and <code>z</code> in the cell, below, and re-run it to see how this affects the starting position of the &#x27;virtual camera&#x27;.</p>
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-48">fig.update_layout(
+                <textarea id="code-cell-49">fig.update_layout(
     scene_camera={
         &quot;eye&quot;: {
             &quot;x&quot;: 1.6,
@@ -273,8 +300,8 @@ print(fig.to_html())</textarea>
 
 print(fig.to_html())</textarea>
             </div>
-            <button id="run-code-cell-48" class="run-button">Run Code</button>
-            <div id="code-cell-48-output" class="output"></div>
+            <button id="run-code-cell-49" class="run-button">Run Code</button>
+            <div id="code-cell-49-output" class="output"></div>
         </div>
         
         <div class="info-box tip-box">
@@ -298,7 +325,7 @@ print(fig.to_html())</textarea>
                         <p>So far, we have deliberately ignored the known identity of each simulated cell and explored the structure of the data using marker expression alone.<br><br>This gives us a useful exploratory question:<br><br><strong>Do the clusters that we can see in CD3-CD19-CD56 space correspond to biologically distinct immune cell populations?</strong><br><br>We can now reveal the <code>Cell_Type</code> information and examine whether the spatial structure of the data agrees with the simulated biological identities.</p><h4>Adding colour and size dimensions</h4><p>Perhaps the most obvious way to encode an additional categorical variable without changing the spatial position of the observations, is to alter its colour.<br><br>Here, we will colour each cell according to its known <code>Cell_Type</code>. Using the <code>color</code> keyword argument, we can simply provide the name of a categorical variable in our data. Plotly will automatically assign a different colour to each unique data category present within that variable.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-49">fig = px.scatter_3d(
+                <textarea id="code-cell-50">fig = px.scatter_3d(
     df_facs,
     x=&quot;CD3&quot;,
     y=&quot;CD19&quot;,
@@ -311,7 +338,7 @@ print(fig.to_html())</textarea>
 
 print(fig.to_html())</textarea>
             </div>
-            <div id="code-cell-49-output" class="output"></div>
+            <div id="code-cell-50-output" class="output"></div>
         </div>
         <p>The three spatial clusters can now be related directly to their immune cell identities. Remember that, broadly:<br><ul class="nested-list"><li><strong>T cells</strong> tend to occupy a relatively CD3-high region, reflecting greater cell-surface expression of CD3</li><br><li><strong>B cells</strong> tend to occupy a relatively CD19-high region, reflecting greater expression of CD19</li><br><li><strong>NK cells</strong> tend to occupy a relatively CD56-high region, reflecting greater expression of CD56</li></ul></p>
         <div class="info-box important-box">
@@ -326,7 +353,7 @@ print(fig.to_html())</textarea>
         <p>Notice that assigning <code>Cell_Type</code> to the <code>color</code> argument also tells Plotly Express to create a separate <strong>trace</strong> for each cell population. Populations can thus be individually shown or hidden using the legend, just as we saw with categorical colour, earlier in this lesson.</p><p>Plotly can also map a numerical variable to <strong>marker size</strong>. For demonstrative purposes, we can map <code>CD3</code> expression to the size of each point. This creates an additional visual encoding of the <em>same</em> variable already displayed on the x-axis.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-50">fig_size = px.scatter_3d(
+                <textarea id="code-cell-51">fig_size = px.scatter_3d(
     df_facs,
     x=&quot;CD3&quot;,
     y=&quot;CD19&quot;,
@@ -341,12 +368,12 @@ print(fig.to_html())</textarea>
 
 print(fig_size.to_html())</textarea>
             </div>
-            <div id="code-cell-50-output" class="output"></div>
+            <div id="code-cell-51-output" class="output"></div>
         </div>
         <p>Notice how the centres of some clusters appear almost white. This is a consequence of <strong>overplotting</strong> and transparency rather than a feature of the underlying biology.<br><br>Since each plotted point represents an individual simulated cell, and we have set the marker <code>opacity</code> to <code>0.7</code>, each point is now partially transparent. In densely populated regions, many markers are rendered such that they stack on top of one another. Plotly&#x27;s 3-D renderer blends these overlapping semi-transparent points, producing the bright, indistinct regions visible near the centres of each cluster.<br><br>Concurrently, since marker sizes now also encode <code>CD3</code> expression, cells with <em>higher CD3 expression</em> are represented by <em>larger points</em>, which is particularly apparent within the T-cell population. However, these larger markers also increase the amount of overlap between neighbouring observations.<br><br>This demonstrates an important limitation of adding further visual dimensions: even though <em>position</em>, <em>colour</em> and <em>size</em> allow us to represent several properties simultaneously, increasing the amount of information encoded within a plot can also make parts of the underlying distribution more difficult to see.</p><h4>Improving our visualisation</h4><p>Since the dense centres of our clusters are becoming difficult to distinguish, an immediate improvement that comes to mind would be to encircle each point in a line border. However, unlike Plotly&#x27;s two-dimensional scatter plots, <code>scatter_3d</code> does <em>not</em> support drawing an outline around each marker. Instead, we can improve the figure by making the markers <em>smaller</em> and slightly <em>less transparent</em>.<br><br>As we are mapping <code>CD3</code> expression to marker size, we can use the <code>size_max</code> argument to limit the maximum size that any point can reach. This preserves the relative size differences between cells while reducing overplotting.</p><p><strong>NOTE:</strong> While Plotly Express does provide a <code>size_max</code> argument, it interestingly has no equivalent <code>size_min</code>. Observations with very low values can therefore appear as extremely small markers when size is mapped to a continuous variable, and you may need to zoom into the plot to see them clearly. This is one <em>potential drawback</em> of using marker size to encode data: small values can become difficult to perceive or compare.</p><p>Increasing the <code>opacity</code> slightly also reduces the washed-out appearance produced when many semi-transparent markers are rendered together. The result should make individual observations and the internal structure of each population easier to distinguish.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-51">fig_size = px.scatter_3d(
+                <textarea id="code-cell-52">fig_size = px.scatter_3d(
     df_facs,
     x=&quot;CD3&quot;,
     y=&quot;CD19&quot;,
@@ -362,7 +389,7 @@ print(fig_size.to_html())</textarea>
 
 print(fig_size.to_html())</textarea>
             </div>
-            <div id="code-cell-51-output" class="output"></div>
+            <div id="code-cell-52-output" class="output"></div>
         </div>
         
         <div class="info-box tip-box">
@@ -386,9 +413,9 @@ print(fig_size.to_html())</textarea>
                         <p>As is apparent, the coloured 3-D plot suggests clear differences in marker expression between the three immune cell populations. While visualisation can be an excellent aid, apparent separation in a figure alone should not be treated as quantitative evidence.<br><br>It might be tempting, for instance, to propose that T cells have higher CD3 expression than B cells or NK cells in this dataset. However, before applying any statistical test, we can begin by summarising the marker-expression distributions, numerically.<br><br>Let&#x27;s start by calculating the <strong>median expression</strong> of each marker within a given cell population. We can do this using the Pandas <code>.median()</code> method.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-52">df_facs.groupby(&quot;Cell_Type&quot;)[[&quot;CD3&quot;, &quot;CD19&quot;, &quot;CD56&quot;]].median()</textarea>
+                <textarea id="code-cell-53">df_facs.groupby(&quot;Cell_Type&quot;)[[&quot;CD3&quot;, &quot;CD19&quot;, &quot;CD56&quot;]].median()</textarea>
             </div>
-            <div id="code-cell-52-output" class="output"></div>
+            <div id="code-cell-53-output" class="output"></div>
         </div>
         
         <div class="info-box note-box">
@@ -403,7 +430,7 @@ print(fig_size.to_html())</textarea>
         <p>The Pandas DataFrame above allows us to check whether the patterns suggested by our 3-D visualisation are also reflected numerically. Let&#x27;s use a box plot to compare the distribution of CD3 expression across our three cell populations. In keeping with the plots we&#x27;ve done in this and the previous section of this lesson, let&#x27;s use Plotly for this, using its <code>px.box</code> function.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-53">fig = px.box(
+                <textarea id="code-cell-54">fig = px.box(
     df_facs, 
     x=&quot;Cell_Type&quot;, 
     y=&quot;CD3&quot;, 
@@ -415,7 +442,7 @@ print(fig_size.to_html())</textarea>
 
 print(fig.to_html())</textarea>
             </div>
-            <div id="code-cell-53-output" class="output"></div>
+            <div id="code-cell-54-output" class="output"></div>
         </div>
         <p>As this is a Plotly plot, it retains the same informative interactivity that we have been acquainting ourselves with. If you hover your cursor over the boxes, you will see the exact quartiles, as well as the median values that we calculated in the previous step, in the hover label.<br><br>The box plot makes the distribution of CD3 expression within each population easier to compare directly, rather than the 3-D figure. The take-home message here is that exploratory visualisation and focused quantitative comparison can call for different representations of the same data. We would like to encourage your own thinking and playfulness here when approaching your data, as the choice of box plotting here is sensible given the nature of the data at hand.<br><ul class="nested-list"><li>A 3-D plot was useful for displaying and uncovering multidimensional structure</li><br><li>But ultimately, a 2-D plot was the more sound choice for comparing a specific variable between defined groups</li></ul>Whilst a statistical test could be used to formally investigate differences between populations, the appropriate test would depend on the experimental design, distribution of the measurements and scientific line of investigation being pursued.</p><h4>Customising the 3-D axes</h4><p>When working with 3-D plots in Plotly, the properties that define the three-dimensional plotting space are grouped within a component called the <strong>scene</strong>. We can customise these properties using the <code>scene</code> argument within Plotly&#x27;s <code>update_layout()</code> method.</p>
         <div class="info-box key-terms-box">
@@ -440,7 +467,7 @@ print(fig.to_html())</textarea>
         <p>Let&#x27;s start by simply labelling the x-, y- and z-axes.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-54">fig = px.scatter_3d(
+                <textarea id="code-cell-55">fig = px.scatter_3d(
     df_facs,
     x=&quot;CD3&quot;,
     y=&quot;CD19&quot;,
@@ -463,12 +490,12 @@ fig.update_layout(
 
 print(fig.to_html())</textarea>
             </div>
-            <div id="code-cell-54-output" class="output"></div>
+            <div id="code-cell-55-output" class="output"></div>
         </div>
         <p>We can also control the <em>relative proportions</em> of the three axes. By default, Plotly uses <code>aspectmode=&quot;auto&quot;</code> to determine the proportions of a 3-D scene automatically. We can instead specify how we want the axes to be scaled.<br><ul class="nested-list"><li>Setting <code>aspectmode=&quot;cube&quot;</code> gives the x-, y- and z-axes equal physical lengths within the plotting area, <em>regardless</em> of the numerical range represented by each axis.</li></ul>This can produce a visually balanced figure, but it may <em>distort</em> our perception of distances and spatial relationships if the three variables span substantially different ranges.<br><ul class="nested-list"><li>Alternatively, <code>aspectmode=&quot;data&quot;</code> scales the physical lengths of the axes in proportion to their data ranges.</li></ul>As CD3, CD19 and CD56 are represented on the same measurement scale in our synthetic dataset, this allows differences along each axis to be represented using a consistent visual scale.<br><br>In other words, a difference of one fluorescence unit is represented by approximately the same physical distance along each axis, helping to preserve the geometry of our data.</p><h4>When to opt for 2-D over 3-D visualisations</h4><p>So far, we have seen that plotting CD3, CD19 and CD56 simultaneously allows us to explore the organisation of our three simulated immune cell populations in a single 3-D space. However, more dimensions do not <em>necessarily</em> make a visualisation more informative.<br><br>Unless viewed using a virtual reality headset, a 3-D figure displayed on a flat computer screen is ultimately still projected onto a two-dimensional surface. This introduces some important limitations:<br><ul class="nested-list"><li>Distances can be difficult to judge</li><br><li>Points can obscure one another</li><br><li>The apparent separation between populations can change as we rotate the figure</li></ul>It is therefore important to question whether visualising your data in 3-D is actually adding anything meaningful. If not, a simpler 2-D visualisation may communicate the relationships in your data more clearly. That&#x27;s not to discourage you from plotting your data in 3-D to explore it, but also to cement in your mind that 3-D is not always the answer.<br><br>Let&#x27;s consider a specific question relative to the synthetic data we&#x27;ve been using, in this section of the lesson.<br><br><em>Can we distinguish the simulated B-cell and NK-cell populations from their marker expression, alone?</em><br><br>From our earlier exploration, we know that B cells tend to have greater CD19 expression, while NK cells tend to have greater CD56 expression. If these are the two marker dimensions most relevant to our question, we may not need CD3 to visualise their separation. Let&#x27;s therefore examine <em>only</em> CD19 and CD56.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-55">fig_2d = px.scatter(
+                <textarea id="code-cell-56">fig_2d = px.scatter(
     df_facs,
     x=&quot;CD19&quot;,
     y=&quot;CD56&quot;,
@@ -486,12 +513,12 @@ print(fig.to_html())</textarea>
 
 print(fig_2d.to_html())</textarea>
             </div>
-            <div id="code-cell-55-output" class="output"></div>
+            <div id="code-cell-56-output" class="output"></div>
         </div>
         <p>In this particular 2-D projection, the distinction between the B-cell and NK-cell populations is immediately visible. While we lose the advantage of displaying CD3 expression on the same plot, we can now more meaningfully compare cells along the CD19 and CD56 axes without needing to rotate the figure or interpret depth.<br><br>Importantly, we have <strong>not changed the observations themselves</strong>. We have simply chosen to visualise the two dimensions that are most relevant to our particular question.<br><br>CD3 expression may still contain useful biological information, but it is not necessary to resolve the distinction between B- and NK-cells. Breaking the problem down into lower-dimensional comparisons can be favourable.<br><br>Let&#x27;s next consider a different question.<br><br><em>Can we distinguish all three simulated cell populations using their marker-expression profiles?</em><br><br>Here, removing one marker may have a greater cost. Let&#x27;s examine CD3 and CD19, while omitting CD56.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
-                <textarea id="code-cell-56">fig_2d = px.scatter(
+                <textarea id="code-cell-57">fig_2d = px.scatter(
     df_facs,
     x=&quot;CD3&quot;,
     y=&quot;CD19&quot;,
@@ -509,7 +536,7 @@ print(fig_2d.to_html())</textarea>
 
 print(fig_2d.to_html())</textarea>
             </div>
-            <div id="code-cell-56-output" class="output"></div>
+            <div id="code-cell-57-output" class="output"></div>
         </div>
         <p>This projection retains enough information to distinguish all three simulated cell populations. T cells tend towards relatively high CD3 expression, B cells towards relatively high CD19 expression and NK cells occupy a region in which both markers are comparatively low.<br><br>However, we have removed <strong>CD56</strong>, so we can no longer see an important feature that characterises the NK-cell population in our simulated dataset: its relatively high CD56 expression.</p>
         <div class="info-box remember-box">
@@ -543,7 +570,7 @@ print(fig_2d.to_html())</textarea>
         
         <div class="code-area">
             <div class="code-container code-editor">
-                <textarea id="code-cell-57"># Load the synthetic gene-expression dataset
+                <textarea id="code-cell-58"># Load the synthetic gene-expression dataset
 df_genes = pd.read_csv(&quot;data/synthetic_gene_expression.csv&quot;)
 
 # Take a look at the structure of the dataset
@@ -556,8 +583,8 @@ df_genes.head()
 # Remember to customise the marker opacity, axis labels and aspect mode
 </textarea>
             </div>
-            <button id="run-code-cell-57" class="run-button">Run Code</button>
-            <div id="code-cell-57-output" class="output"></div>
+            <button id="run-code-cell-58" class="run-button">Run Code</button>
+            <div id="code-cell-58-output" class="output"></div>
         </div>
         
                     </div>
@@ -625,28 +652,19 @@ async function main() {
         if (lessonPackages.length > 0) {
             console.log("Loading required Python packages...");
             const packagesStartTime = performance.now();
-            
-            // Separate built-in packages from PyPI packages
-            const builtInPackages = lessonPackages.filter(pkg => 
-                ['numpy', 'scipy', 'matplotlib', 'pandas', 'scikit-learn', 'pillow', 'regex'].includes(pkg)
-            );
-            
-            const micropipPackages = lessonPackages.filter(pkg => !builtInPackages.includes(pkg));
-            
-            // Load built-in packages (fast)
-            if (builtInPackages.length > 0) {
-                await pyodide.loadPackage(builtInPackages);
-                console.log(`Loaded built-in packages: ${builtInPackages.join(', ')}`);
-            }
-            
-            // Install PyPI packages (slower)
-            if (micropipPackages.length > 0) {
-                await pyodide.loadPackage(['micropip']);
-                const micropip = pyodide.pyimport('micropip');
-                await micropip.install(micropipPackages);
-                console.log(`Installed PyPI packages: ${micropipPackages.join(', ')}`);
-            }
-            
+
+            // micropip resolves each requirement against the Pyodide lockfile
+            // *first* and only falls through to PyPI for packages Pyodide does
+            // not bundle (it sets search_pyodide_lock_first whenever the index
+            // URLs are left at their default).  So one call handles both cases
+            // and, unlike a hardcoded list of bundled package names, there is
+            // nothing to fall out of date when Pyodide is upgraded.  It also
+            // means version specifiers such as `pandas==2.2` work.
+            await pyodide.loadPackage(['micropip']);
+            const micropip = pyodide.pyimport('micropip');
+            await micropip.install(lessonPackages);
+            console.log(`Installed packages: ${lessonPackages.join(', ')}`);
+
             const packagesLoadTime = performance.now() - packagesStartTime;
             console.log(`Packages loaded in ${packagesLoadTime.toFixed(2)}ms`);
             console.log(`Total initialisation time: ${(pyodideLoadTime + packagesLoadTime).toFixed(2)}ms`);
@@ -661,8 +679,11 @@ async function main() {
             from io import StringIO
         `);
 
-        // Only set up matplotlib if it's in the loaded packages
-        if (lessonPackages.includes('matplotlib')) {
+        // Only set up matplotlib if it's in the loaded packages.  Checked
+        // against the canonical (lower-cased, un-versioned) names so that a
+        // PACKAGES cell saying `Matplotlib` or `matplotlib>=3.9` still works.
+        const lessonPackageNames = window.LESSON_PACKAGE_NAMES || [];
+        if (lessonPackageNames.includes('matplotlib')) {
             await pyodide.runPythonAsync(`
                 # Set up matplotlib for web rendering
                 import matplotlib
@@ -807,8 +828,8 @@ _r
 `);
 
                 // Check for matplotlib figures only if matplotlib was loaded
-                const lessonPackages = window.LESSON_PACKAGES || [];
-                if (lessonPackages.includes('matplotlib')) {
+                const lessonPackageNames = window.LESSON_PACKAGE_NAMES || [];
+                if (lessonPackageNames.includes('matplotlib')) {
                     const hasFigures = await pyodide.runPythonAsync(`
                         import matplotlib.pyplot as plt
                         len(plt.get_fignums()) > 0
