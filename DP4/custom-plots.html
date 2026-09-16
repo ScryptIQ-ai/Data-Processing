@@ -819,24 +819,15 @@ group1.head(5)</textarea>
                         <h3>Saving your plot</h3>
                         <p>Although we created our plot using <strong>Seaborn</strong>, it is important to note that Seaborn is built <em>on top</em> of Matplotlib. This means that we can use Matplotlib&#x27;s <code>plt.savefig()</code> function to save our figure. The file extension you provide determines the image format. For instance, <code>.png</code> saves the figure as a PNG image.<br><br>You can also specify the <strong>resolution</strong> using the <code>dpi</code> argument. DPI stands for <strong>dots per inch</strong>, with a higher value producing a higher-resolution image.<br><br>We&#x27;ve also used the <code>bbox_inches=&quot;tight&quot;</code> argument here, which removes unnecessary whitespace around the saved figure.</p>
         <div class="code-area">
-            <div class="code-container code-fixed">
-                <textarea id="code-cell-26"># Create the Seaborn scatter plot
-sns.scatterplot(
-    data=data,
-    x=&quot;flipper_length_mm&quot;,
-    y=&quot;body_mass_g&quot;,
-    hue=&quot;species&quot;
-)
-
-# Save the plot as a high-resolution PNG
-plt.savefig(
-    &quot;penguin_flipper_body_mass.png&quot;,
+            <div class="code-container code-editor">
+                <textarea id="code-cell-26"># Save the plot as a high-resolution PNG
+plot.savefig(
+    &quot;penguin_plot.png&quot;,
     dpi=300,
     bbox_inches=&quot;tight&quot;
-)
-
-plt.show()</textarea>
+)</textarea>
             </div>
+            <button id="run-code-cell-26" class="run-button">Run Code</button>
             <div id="code-cell-26-output" class="output"></div>
         </div>
         
@@ -846,7 +837,7 @@ plt.show()</textarea>
                 TIP
             </div>
             <div class="box-content">
-                <p>Make sure that you call <code>plt.savefig()</code> <strong>before</strong> <code>plt.show()</code>. Calling <code>plt.show()</code> displays the figure and, in some environments, may clear or close it. Saving first ensures that the complete figure is written to your file.</p>
+                <p>Note, if you&#x27;re using <code>plt.show()</code> in the same cell as <code>plt.safefig()</code>, make sure that you call <code>plt.savefig()</code> <strong>before</strong> <code>plt.show()</code>. Calling <code>plt.show()</code> displays the figure and, in some environments, may clear or close it. Saving first ensures that the complete figure is written to your file.</p>
             </div>
         </div>
         
