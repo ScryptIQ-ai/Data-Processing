@@ -817,12 +817,12 @@ group1.head(5)</textarea>
                 <div class="module-body">
                     <div class="module-section">
                         <h3>Saving your plot</h3>
-                        <p>Although we created our plot using <strong>Seaborn</strong>, note that Seaborn is built on top of Matplotlib. This means that we can use Matplotlib&#x27;s <code>plt.savefig()</code> function to save our figure. The file extension you provide determines the image format. For instance, <code>.png</code> saves the figure as a PNG image.<br><br>You can also specify the <strong>resolution</strong> using the <code>dpi</code> argument. DPI stands for <strong>dots per inch</strong>, with a higher value producing a higher-resolution image.<br><br>The <code>bbox_inches=&quot;tight&quot;</code> argument removes unnecessary whitespace around the saved figure.<br><br>Remember to save your figure <strong>before</strong> calling <code>plt.show()</code>.</p>
+                        <p>Although we created our plot using <strong>Seaborn</strong>, it is important to note that Seaborn is built <em>on top</em> of Matplotlib. This means that we can use Matplotlib&#x27;s <code>plt.savefig()</code> function to save our figure. The file extension you provide determines the image format. For instance, <code>.png</code> saves the figure as a PNG image.<br><br>You can also specify the <strong>resolution</strong> using the <code>dpi</code> argument. DPI stands for <strong>dots per inch</strong>, with a higher value producing a higher-resolution image.<br><br>We&#x27;ve also used the <code>bbox_inches=&quot;tight&quot;</code> argument here, which removes unnecessary whitespace around the saved figure.</p>
         <div class="code-area">
             <div class="code-container code-fixed">
                 <textarea id="code-cell-26"># Create the Seaborn scatter plot
 sns.scatterplot(
-    data=df_penguins,
+    data=data,
     x=&quot;flipper_length_mm&quot;,
     y=&quot;body_mass_g&quot;,
     hue=&quot;species&quot;
@@ -830,7 +830,7 @@ sns.scatterplot(
 
 # Save the plot as a high-resolution PNG
 plt.savefig(
-    &quot;../images/penguin_flipper_body_mass.png&quot;,
+    &quot;penguin_flipper_body_mass.png&quot;,
     dpi=300,
     bbox_inches=&quot;tight&quot;
 )
