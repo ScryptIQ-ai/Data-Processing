@@ -32,18 +32,24 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebarToggle.innerHTML = '❯';
     }
 
-    sidebarToggle.addEventListener('click', function() {
-        sidebar.classList.toggle('collapsed');
-        mainContent.classList.toggle('expanded');
-        sidebarToggle.classList.toggle('collapsed');
+    // The homepage and about-us pages have no sidebar, so these elements are
+    // absent there. Without this guard the whole DOMContentLoaded handler threw
+    // on `null.addEventListener`, and everything below it -- collapsible
+    // sections, nav links, tabs -- silently never got wired up.
+    if (sidebarToggle && sidebar) {
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('collapsed');
+            mainContent && mainContent.classList.toggle('expanded');
+            sidebarToggle.classList.toggle('collapsed');
 
-        // Change the toggle button text based on state
-        if (sidebar.classList.contains('collapsed')) {
-            sidebarToggle.innerHTML = '❯';
-        } else {
-            sidebarToggle.innerHTML = '❮';
-        }
-    });
+            // Change the toggle button text based on state
+            if (sidebar.classList.contains('collapsed')) {
+                sidebarToggle.innerHTML = '❯';
+            } else {
+                sidebarToggle.innerHTML = '❮';
+            }
+        });
+    }
     
     // Collapsible sections in sidebar
     const collapsibleHeaders = document.querySelectorAll('.collapsible-header');
