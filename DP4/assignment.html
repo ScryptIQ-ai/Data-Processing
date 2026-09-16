@@ -158,7 +158,7 @@
                 <div class="module-body">
                     <div class="module-section">
                         <h3>Question 1:</h3>
-                        <p>We will begin by evaluating physical characteristics across different penguin species.<br><ul class="nested-list"><li>Load <code>data/penguins_cleaned.csv</code> using pandas.</li><br><li>Create a Seaborn <code>scatterplot</code> comparing <code>flipper_length_mm</code> against <code>body_mass_g</code>, using <code>hue</code> to separate the points by <code>species</code>.</li><br><li>Use Matplotlib functions to customise the plot: add a descriptive title, change both axis labels to be more readable, and adjust the legend appropriately.</li><br><li>Save the resulting plot to the <code>images/</code> folder as a <code>.png</code> file with a high resolution (<code>dpi=300</code>).</li></ul></p>
+                        <p>We will begin by evaluating physical characteristics across different penguin species.<br><ul class="nested-list"><li>Load <code>data/penguins_cleaned.csv</code> using pandas.</li><br><li>Create a Seaborn <code>scatterplot</code> comparing <code>flipper_length_mm</code> against <code>body_mass_g</code>, using <code>hue</code> to separate the points by <code>species</code>.</li><br><li>Use Matplotlib functions to customise the plot: add a descriptive title, change both axis labels to be more readable, and adjust the legend appropriately.</li><br><li>Save the resulting plot to a new <code>images/</code> folder (you may need to create one) as a <code>.png</code> file with a high resolution (<code>dpi=300</code>).</li></ul></p>
                     </div>
                 </div>
             </div>
@@ -167,7 +167,7 @@
                 <div class="module-body">
                     <div class="module-section">
                         <h3>Question 2:</h3>
-                        <p>Let us analyse longitudinal tumour volume data to compare a control group against a treatment group.<br><ul class="nested-list"><li>Load <code>data/tumor_growth.csv</code>.</li><br><li>Create an interactive 2-D scatter plot using <code>px.scatter()</code>, plotting <code>Day</code> on the x-axis and <code>Tumor_Volume_mm3</code> on the y-axis, separated by <code>Group</code> (<code>color=&quot;Group&quot;</code>).</li><br><li>Add Ordinary Least Squares (<code>ols</code>) trendlines to the figure.</li><br><li>Write a custom <code>hovertemplate</code> to display the <code>Mouse_ID</code>, <code>Day</code>, and <code>Tumor_Volume_mm3</code> clearly, removing unnecessary default Plotly trace information.</li></ul></p>
+                        <p>Let us analyse longitudinal tumour volume data to compare a control group against a treatment group.<br><ul class="nested-list"><li>Load <code>data/tumor_growth.csv</code>.</li><br><li>Create an interactive 2-D scatter plot using <code>px.scatter()</code>, plotting <code>Day</code> on the x-axis and <code>Tumor_Volume_mm3</code> on the y-axis, separated by <code>Group</code> (<code>color=&quot;Group&quot;</code>).</li><br><li>Add Ordinary Least Squares (<code>ols</code>) trendlines to the figure.</li><br><li>Write a custom <code>hover_data</code> dictionary to display the <code>Mouse_ID</code>, <code>Day</code>, and <code>Tumor_Volume_mm3</code> clearly, removing unnecessary default Plotly trace information.</li></ul></p>
                     </div>
                 </div>
             </div>
@@ -185,7 +185,7 @@
                 <div class="module-body">
                     <div class="module-section">
                         <h3>Question 4:</h3>
-                        <p>Flow cytometry (FACS) data often measures multiple markers simultaneously on single cells. We will visualise three markers across different cell types.<br><ul class="nested-list"><li>Load <code>data/synthetic_facs.csv</code>.</li><br><li>Create a 3-D interactive scatter plot using <code>px.scatter_3d()</code>, mapping <code>CD3</code>, <code>CD19</code>, and <code>CD56</code> to the x, y, and z axes respectively.</li><br><li>Map <code>Cell_Type</code> to the colour argument to distinguish the cell populations.</li><br><li>Modify the layout using the <code>scene</code> dictionary to customise the 3-D axes (for example, by changing background colours or hiding the gridlines).</li></ul></p>
+                        <p>Flow cytometry (FACS) data often measures multiple markers simultaneously on single cells. We will visualise three markers across different cell types.<br><ul class="nested-list"><li>Load <code>data/facs_data.csv</code>.</li><br><li>Create a 3-D interactive scatter plot using <code>px.scatter_3d()</code>, mapping <code>CD3</code>, <code>CD19</code>, and <code>CD56</code> to the x, y, and z axes respectively.</li><br><li>Map <code>Cell_Type</code> to the colour argument to distinguish the cell populations.</li><br><li>Modify the layout using the <code>scene</code> dictionary to customise the 3-D axes (for example, by changing background colours or hiding the gridlines).</li></ul></p>
                     </div>
                 </div>
             </div>

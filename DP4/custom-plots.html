@@ -819,7 +819,7 @@ group1.head(5)</textarea>
                         <h3>Saving your plot</h3>
                         <p>Although we created our plot using <strong>Seaborn</strong>, it is important to note that Seaborn is built <em>on top</em> of Matplotlib. This means that we can use Matplotlib&#x27;s <code>plt.savefig()</code> function to save our figure. The file extension you provide determines the image format. For instance, <code>.png</code> saves the figure as a PNG image.<br><br>You can also specify the <strong>resolution</strong> using the <code>dpi</code> argument. DPI stands for <strong>dots per inch</strong>, with a higher value producing a higher-resolution image.<br><br>We&#x27;ve also used the <code>bbox_inches=&quot;tight&quot;</code> argument here, which removes unnecessary whitespace around the saved figure.</p>
         <div class="code-area">
-            <div class="code-container code-editor">
+            <div class="code-container code-fixed">
                 <textarea id="code-cell-26"># Save the plot as a high-resolution PNG
 plot.savefig(
     &quot;penguin_plot.png&quot;,
@@ -827,8 +827,6 @@ plot.savefig(
     bbox_inches=&quot;tight&quot;
 )</textarea>
             </div>
-            <button id="run-code-cell-26" class="run-button">Run Code</button>
-            <div id="code-cell-26-output" class="output"></div>
         </div>
         
         <div class="info-box tip-box">
